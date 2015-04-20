@@ -79,7 +79,7 @@ function CaImagingDataSet    = getCaImagingData(CaImagingDir, CaImagingFileList,
                 position_from_bregma                        = get_cell_position_from_bregma(RoiCenterPos, [ML, AP], Angle);
                 CaImagingDataSet(tot_Unit).ML_in_um         = position_from_bregma(1);
                 CaImagingDataSet(tot_Unit).AP_in_um         = position_from_bregma(2);
-                CaImagingDataSet(tot_Unit).cell_type        = 'putative_pyramidal';
+                CaImagingDataSet(tot_Unit).cell_type        = 'non_classified';
             end            
         end
         

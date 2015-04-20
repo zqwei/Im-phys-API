@@ -80,7 +80,7 @@ function plotMeanActivityImagescWithSortWithCellinfo (nDataSet, params, cellinfo
     % sort the order of trial by the starting point of activity point:
     % an activity bump is defined as the longest consecutive activity 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    actMat                    = actMat([cellinfo.cellType]==1,:);    
+%     actMat                    = actMat([cellinfo.cellType]==1,:);    
     bumpActThres              = 0.6; % > bumpActThres considering as a bump
     bumpMat                   = actMat > bumpActThres;
     bumpSize                  = ones(size(actMat,1),1);
@@ -101,11 +101,11 @@ function plotMeanActivityImagescWithSortWithCellinfo (nDataSet, params, cellinfo
         end
     end
     
-    figure;
-    plot3([cellinfo([cellinfo.cellType]==1).depth],[cellinfo([cellinfo.cellType]==1).ML_axis],mod(bumpSize,numT+blankSpace)*params.binsize,'o');
-    xlabel('depth (um)');
-    ylabel('ML location (um)')
-    zlabel('bump starting point (s)')
+%     figure;
+%     plot3([cellinfo([cellinfo.cellType]==1).depth],[cellinfo([cellinfo.cellType]==1).ML_axis],mod(bumpSize,numT+blankSpace)*params.binsize,'o');
+%     xlabel('depth (um)');
+%     ylabel('ML location (um)')
+%     zlabel('bump starting point (s)')
     
     [~, similaritySort]       = sortrows([bumpStartPoint, bumpSize], [1 -2]);
     similaritySort            = similaritySort(end:-1:1);
@@ -143,40 +143,40 @@ function plotMeanActivityImagescWithSortWithCellinfo (nDataSet, params, cellinfo
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
 
-%     figure;
-%     % 3. plot of imagesc
-%     % subplot(3, 6, [1 2 7 8 13 14])
-%     hold on;
-%     timeSeries                    = params.timeSeries;
-%     minTime                       = params.timeSeries(1);
-%     maxTime                       = params.timeSeries(end);
-%     betweenSpace                  = blankSpace * params.binsize;
-%     constShift                    =  - minTime + maxTime + betweenSpace;
-%     timeSeries                    = [timeSeries, maxTime + (1:blankSpace)*params.binsize, timeSeries+constShift];
-%     tMaxTime                      = timeSeries(end);
-%     b = imagesc(timeSeries, 1:length(similaritySort), actMat(similaritySort, :), [0 1]);
-%     set(b,'AlphaData',~isnan(actMat));
-%     axis xy;
-%     %gridxy ([maxTime + betweenSpace/2],[], 'Color','k','Linestyle','-','linewid', 2.0)
-%     gridxy ([params.polein, params.poleout, 0, params.polein+constShift, params.poleout+constShift, constShift],[], 'Color','k','Linestyle','--','linewid', 1.0)
-%     ax              = gca;
-%     hColor          = colorbar;    
-%     ylabel(hColor, 'Normalized activity');
-%     cPos            = hColor.Position;
-%     axpos           = ax.Position;
-% %     ax.Position     = axpos;
-%     hColor.Position = [axpos(1)+axpos(3)+0.11 cPos(2)+cPos(4)*0.25 cPos(3)*0.5 cPos(4)*0.5];    
-%     box off
-%     xTicks                        = round(minTime):floor(maxTime);
-%     xTickLabel                    = arrayfun(@(x) num2str(x), xTicks,'Uniform',false);
-%     xTickLabel(mod(xTicks,2)==1)  = {''};
-%     set(ax, 'XTick', [xTicks xTicks+constShift], 'XTickLabel', [xTickLabel, xTickLabel]);
-%     axis([minTime, tMaxTime, 1, length(similaritySort)]);
-%     
-%     xlabel('Time (s)')
-%     ylabel('Neuronal index');
-%     
-%     hold off
+    figure;
+    % 3. plot of imagesc
+    % subplot(3, 6, [1 2 7 8 13 14])
+    hold on;
+    timeSeries                    = params.timeSeries;
+    minTime                       = params.timeSeries(1);
+    maxTime                       = params.timeSeries(end);
+    betweenSpace                  = blankSpace * params.binsize;
+    constShift                    =  - minTime + maxTime + betweenSpace;
+    timeSeries                    = [timeSeries, maxTime + (1:blankSpace)*params.binsize, timeSeries+constShift];
+    tMaxTime                      = timeSeries(end);
+    b = imagesc(timeSeries, 1:length(similaritySort), actMat(similaritySort, :), [0 1]);
+    set(b,'AlphaData',~isnan(actMat));
+    axis xy;
+    %gridxy ([maxTime + betweenSpace/2],[], 'Color','k','Linestyle','-','linewid', 2.0)
+    gridxy ([params.polein, params.poleout, 0, params.polein+constShift, params.poleout+constShift, constShift],[], 'Color','k','Linestyle','--','linewid', 1.0)
+    ax              = gca;
+    hColor          = colorbar;    
+    ylabel(hColor, 'Normalized activity');
+    cPos            = hColor.Position;
+    axpos           = ax.Position;
+%     ax.Position     = axpos;
+    hColor.Position = [axpos(1)+axpos(3)+0.11 cPos(2)+cPos(4)*0.25 cPos(3)*0.5 cPos(4)*0.5];    
+    box off
+    xTicks                        = round(minTime):floor(maxTime);
+    xTickLabel                    = arrayfun(@(x) num2str(x), xTicks,'Uniform',false);
+    xTickLabel(mod(xTicks,2)==1)  = {''};
+    set(ax, 'XTick', [xTicks xTicks+constShift], 'XTickLabel', [xTickLabel, xTickLabel]);
+    axis([minTime, tMaxTime, 1, length(similaritySort)]);
+    
+    xlabel('Time (s)')
+    ylabel('Neuronal index');
+    
+    hold off
     
     % 4. plot of example neurons
 %     numExampleNeurons            = 9;

@@ -99,17 +99,16 @@ end
 
 
 
-ylabels                 = {'Fring Rate (Hz)', 'dF/F', 'dF/F', 'dF/F', 'dF/F'};
-yAxes_set                = [0 60; -0.5 2.0; -0.5 2.0; -0.5 2.0; -0.5 2.0];
-lowFiringThres          = [20, 0.5, 0.5, 0.5, 0.5];
+ylabels                 = {'Fring Rate (Hz)', 'dF/F', 'dF/F', 'dF/F', 'dF/F' , 'dF/F'};
+yAxes_set                = [0 60; -0.5 2.0; -0.5 2.0; -0.5 2.0; -0.5 2.0 ; -0.5 2.0];
+lowFiringThres          = [20, 0.5, 0.5, 0.5, 0.5, 0.5];
 skipPlot                = false;
 if ~skipPlot
-    for nData             = 1:1%length(DataSetList)
+    for nData             = 1:length(DataSetList)
         load([TempDatDir DataSetList(nData).name '.mat'])
         plotMeanActivityImagescWithSortWithCellinfo(nDataSet, DataSetList(nData).params, DataSetList(nData).cellinfo, [], [], ylabels{nData}, lowFiringThres(nData), yAxes_set(nData,:)); 
         title(DataSetList(nData).name,'interpreter','none')
-
-        %         setPrint(6*2, 3*3, [PlotDir '/Single_UnitsImagescWithSort/Single_UnitsImagescWithSort_' DataSetList(nData).name], 'tif')
+        setPrint(6*2, 3*3, [PlotDir '/Single_UnitsImagescWithSort/Single_UnitsImagescWithSort_' DataSetList(nData).name], 'tif')
     end
 end
 

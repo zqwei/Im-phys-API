@@ -34,4 +34,13 @@ CaImagingLongDelayFastFileList  = dir([CaImagingDataDir 'delay3f0t/*.mat']);
 CaImagingLongDelaySlowFileList  = dir([CaImagingDataDir 'delay3s0t/*.mat']);
 
 TempDatDir                   = '../TempDat/';
+
+if ~exist(TempDatDir, 'dir')
+    mkdir(TempDatDir)
+end
+
 PlotDir                      = '../Plot/';
+
+if ~exist(PlotDir, 'dir')
+    mkdir(PlotDir)
+end
