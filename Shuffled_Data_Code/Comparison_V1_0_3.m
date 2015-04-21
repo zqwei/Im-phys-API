@@ -65,8 +65,8 @@ for nUnit = 1: size(actMat,1)
     end
 end
 
-[~, similaritySort]       = sortrows([bumpStartPoint, bumpSize, bumpSign], [-3 -1 -2]);
-% similaritySort            = similaritySort(end:-1:1);
+% [~, similaritySort]       = sortrows([bumpStartPoint, bumpSize, bumpSign], [-3 -1 -2]);
+% % similaritySort            = similaritySort(end:-1:1);
 % figure;
 % imagesc(DataSetList(nData).params.timeSeries, 1:numUnits, zScores(similaritySort,:))
 % colormap(french(128,2))
@@ -79,26 +79,31 @@ end
 
 
 cThres        = 0.1;
-
-iGroup        = [DataSetList(nData).cellinfo(ephysCellIndex).ML_axis];
-histcounts(iGroup, [unique(iGroup) inf])
-[~, ~, stats] = anova1(DataSetList(nData).params.timeSeries(bumpStartPoint), ...
-                iGroup,'off');
-c             = multcompare(stats,'display','off');
 disp(DataSetList(nData).name)
 disp('ML dependent:')
-disp(c(c(:,end)<cThres, 1:2))
-
-
-iGroup        = floor(([DataSetList(nData).cellinfo(ephysCellIndex).depth]-110)/40);
-histcounts(iGroup, [unique(iGroup) inf])
+iGroup        = [DataSetList(nData).cellinfo(ephysCellIndex).ML_axis];
+uGroup        = unique(iGroup);
+nGroup        = histcounts(iGroup, [uGroup inf]);
 [~, ~, stats] = anova1(DataSetList(nData).params.timeSeries(bumpStartPoint), ...
                 iGroup,'off');
 c             = multcompare(stats,'display','off');
+disp('Number of Cells:')
+disp([uGroup' nGroup'])
+disp('Distinguishable pairs')
+disp(num2str([uGroup(c(c(:,end)<cThres, 1:2)) c(c(:,end)<cThres, end)],'%d\t%d\t%.3f'))
+disp('----------------------------------------------------------------')
 disp('depth dependent:')
-disp(c(c(:,end)<cThres, 1:2))
-disp('-------------------')
-
+iGroup        = floor(([DataSetList(nData).cellinfo(ephysCellIndex).depth]-110)/40);
+uGroup        = unique(iGroup);
+nGroup        = histcounts(iGroup, [uGroup inf]);
+[~, ~, stats] = anova1(DataSetList(nData).params.timeSeries(bumpStartPoint), ...
+                iGroup,'off');
+c             = multcompare(stats,'display','off');
+disp('Number of Cells:')
+disp([uGroup'*40+130 nGroup'])
+disp('Distinguishable pairs')
+disp(num2str([uGroup(c(c(:,end)<cThres, 1:2))*40+130 c(c(:,end)<cThres, end)],'%d\t%d\t%.3f'))
+disp('================================================================')
 
 
 for nData           = 2:length(fileList)
@@ -140,8 +145,8 @@ for nData           = 2:length(fileList)
         end
     end
 
-    [~, similaritySort]       = sortrows([bumpStartPoint, bumpSize, bumpSign], [-3 -1 -2]);
-    % similaritySort            = similaritySort(end:-1:1);
+%     [~, similaritySort]       = sortrows([bumpStartPoint, bumpSize, bumpSign], [-3 -1 -2]);
+%     % similaritySort            = similaritySort(end:-1:1);
 %     figure;
 %     imagesc(DataSetList(nData).params.timeSeries, 1:numUnits, zScores(similaritySort,:))
 %     colormap(french(128,2))
@@ -152,32 +157,45 @@ for nData           = 2:length(fileList)
 %     box off;
 %     title(DataSetList(nData).name, 'interpreter', 'none')
 % 
-    
+    disp(DataSetList(nData).name)
     iGroup        = floor(([DataSetList(nData).cellinfo(ephysCellIndex).ML_axis]-1100)/200);
+    disp('ML dependent:')
+    uGroup        = unique(iGroup);
+    nGroup        = histcounts(iGroup, [uGroup inf]);
     [~, ~, stats] = anova1(DataSetList(nData).params.timeSeries(bumpStartPoint), ...
                     iGroup,'off');
     c             = multcompare(stats,'display','off');
-    histcounts(iGroup, [unique(iGroup) inf])
-    disp(DataSetList(nData).name)
-    disp('ML dependent:')
-    disp(c(c(:,end)<cThres, 1:2))
-    
+    disp('Number of Cells:')
+    disp([uGroup'*200+1200 nGroup'])
+    disp('Distinguishable pairs')
+    disp(num2str([uGroup(c(c(:,end)<cThres, 1:2))*200+1200 c(c(:,end)<cThres, end)],'%d\t%d\t%.3f'))
+
+    disp('----------------------------------------------------------------')
     disp('depth dependent:')
     if length(unique([DataSetList(nData).cellinfo(ephysCellIndex).depth]))>1  
-        [~, ~, iGroup] = unique([DataSetList(nData).cellinfo(ephysCellIndex).depth]);
-        histcounts(iGroup, [unique(iGroup)' inf])
+        [uGroup, ~, iGroup] = unique([DataSetList(nData).cellinfo(ephysCellIndex).depth]);
+        iGroup        = iGroup';
+%         uGroup        = unique(iGroup);
+        nGroup        = histcounts([DataSetList(nData).cellinfo(ephysCellIndex).depth], [uGroup inf]);
         [~, ~, stats] = anova1(DataSetList(nData).params.timeSeries(bumpStartPoint), ...
                         iGroup,'off');
         c             = multcompare(stats,'display','off');
-        disp(c(c(:,end)<cThres, 1:2))
+        disp('Number of Cells:')
+        disp([uGroup' nGroup'])
+        disp('Distinguishable pairs')
+        disp(num2str([uGroup(c(c(:,end)<cThres, 1:2)) c(c(:,end)<cThres, end)],'%d\t%d\t%.3f'))
     end
+    disp('----------------------------------------------------------------')
+    disp('AP dependent:')
     iGroup        = floor(([DataSetList(nData).cellinfo(ephysCellIndex).AP_axis]-2100)/50);
+    uGroup        = unique(iGroup);
+    nGroup        = histcounts(iGroup, [uGroup inf]);
     [~, ~, stats] = anova1(DataSetList(nData).params.timeSeries(bumpStartPoint), ...
                     iGroup,'off');
     c             = multcompare(stats,'display','off');
-    histcounts(iGroup, [unique(iGroup) inf])
-    disp('AP dependent:')
-    disp(c(c(:,end)<cThres, 1:2))  
-    
-    disp('-------------------')
+    disp('Number of Cells:')
+    disp([uGroup'*50+2100 nGroup'])
+    disp('Distinguishable pairs')
+    disp(num2str([uGroup(c(c(:,end)<cThres, 1:2))*50+2100 c(c(:,end)<cThres, end)],'%d\t%d\t%.3f'))
+    disp('================================================================')
 end
