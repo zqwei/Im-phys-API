@@ -12,11 +12,13 @@ addpath('../Func');
 setDir;
 load ([TempDatDir 'DataList.mat']);
 
-addNoise         = [1 0 0 0 0];
+addNoise         = [1 0 0 0 0 0];
 
 numFold          = 30;
 
-
+if ~exist([PlotDir '/Single_Session_Decodability'],'dir')
+    mkdir([PlotDir '/Single_Session_Decodability'])
+end
 
 for nData             = 1:length(DataSetList)
     load([TempDatDir DataSetList(nData).name '.mat'])
@@ -35,7 +37,7 @@ for nData             = 1:length(DataSetList)
         n_no         = size(nDataSet3D(nPlot).unit_no_trial, 2);
         minTrial     = min(n_yes, n_no);
         
-        if numUnit(nPlot) < minTrial - 10
+        if numUnit(nPlot) < minTrial - 5
         
             decodability = zeros(numFold, size(nSessionDataOrginal, 3));
 
@@ -66,7 +68,7 @@ for nData             = 1:length(DataSetList)
             title([num2str(length(nDataSet3D(nPlot).nUnit)) ' Neurons'])
         end
     end
-    setPrint(4*4, m*3, [PlotDir 'Single_Session_Decodability_' DataSetList(nData).name], 'pdf')
+    setPrint(4*4, m*3, [PlotDir 'Single_Session_Decodability/Single_Session_Decodability_' DataSetList(nData).name], 'pdf')
 end
 
 

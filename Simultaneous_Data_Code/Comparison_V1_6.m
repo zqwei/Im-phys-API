@@ -63,14 +63,17 @@ addpath('../Func');
 setDir;
 
 numFold             = 30;
-numTrials           = 200;
-numTestTrials       = 100;
+numTrials           = 1200;
+numTestTrials       = 600;
 numTrainingTrials   = numTrials - numTestTrials;
 
 
 load ([TempDatDir 'DataList.mat']);
-addNoise         = [1 0 0 0 0];
+addNoise         = [1 0 0 0 0 0];
 
+if ~exist([PlotDir '/Collected_Units_Decodability'],'dir')
+    mkdir([PlotDir '/Collected_Units_Decodability'])
+end
 
 for nData             = 1:length(DataSetList)
     load([TempDatDir DataSetList(nData).name '.mat'])
@@ -101,5 +104,6 @@ for nData             = 1:length(DataSetList)
     hold off;
     xlabel('Time (s)');
     ylabel('Decodability');
-    setPrint(4, 3, [PlotDir 'Collected_Units_Decodability__' DataSetList(nData).name], 'pdf')
+    setPrint(4, 3, [PlotDir 'Collected_Units_Decodability/Collected_Units_Decodability__' DataSetList(nData).name], 'pdf')
 end
+close all;

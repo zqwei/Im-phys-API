@@ -3,8 +3,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Comparison_V1_7
 
-numTrials           = 200;
-numTestTrials       = 100;
+addpath('../Func');
+setDir;
+numTrials           = 1200;
+numTestTrials       = 600;
 numTrainingTrials   = numTrials - numTestTrials;
 trainingTargets     = [true(numTrainingTrials/2,1); false(numTrainingTrials/2,1)];
 trainingTargets     = trainingTargets(randperm(numTrainingTrials));
@@ -12,7 +14,7 @@ testTargets         = [true(numTestTrials/2,1); false(numTestTrials/2,1)];
 testTargets         = testTargets(randperm(numTestTrials));
 totTargets          = [testTargets; trainingTargets];
 load ([TempDatDir 'DataList.mat']);
-addNoise         = [1 1 0 0 0];
+addNoise            = [1 0 0 0 0 0];
 
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -71,6 +73,9 @@ addNoise         = [1 1 0 0 0];
 %     setPrint(8, 6, [PlotDir 'Collected_Units_LDA_Coeffs_Kurtosis_' DataSetList(nData).name], 'pdf')    
 % end
 
+if ~exist([PlotDir '/Collected_Units_LDA_Coeffs__KickOut'],'dir')
+    mkdir([PlotDir '/Collected_Units_LDA_Coeffs__KickOut'])
+end
 
 perKickOut = 0:0.05:0.90;
 numFold    = 30;
@@ -78,7 +83,7 @@ numFold    = 30;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 7.3  Plot of Sparsness using Kicking-out neurons
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-for nData             = [1 4 5]%1:length(DataSetList)
+for nData             = [1 3 4 5 6]%1:length(DataSetList)
     load([TempDatDir DataSetList(nData).name '.mat'])  
     nSessionData = shuffleSessionData(nDataSet, totTargets, numTestTrials);
     numUnits     = length(nDataSet);
@@ -96,5 +101,5 @@ for nData             = [1 4 5]%1:length(DataSetList)
     hold off;
     xlabel('Time (s)');
     ylabel('% KO neurons');
-    setPrint(8, 6, [PlotDir 'Collected_Units_LDA_Coeffs__KickOut_' DataSetList(nData).name], 'pdf')
+    setPrint(8, 6, [PlotDir 'Collected_Units_LDA_Coeffs__KickOut/Collected_Units_LDA_Coeffs__KickOut_' DataSetList(nData).name], 'pdf')
 end

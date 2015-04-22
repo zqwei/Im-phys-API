@@ -96,9 +96,12 @@ numTrials      = 1000;
 % 11.1.4  dPCA with optimal regularization for collected data
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-numComps             = 5;
+numComps             = 15;
+if ~exist([PlotDir '/Collected_Units_dPCA'],'dir')
+    mkdir([PlotDir '/Collected_Units_dPCA'])
+end
 
-for nData            = [1 3 4 5]% 1:length(DataSetList)
+for nData            = [1 3 4 5 6]% 1:length(DataSetList)
     load([TempDatDir DataSetList(nData).name '.mat']);
     time               = DataSetList(nData).params.timeSeries;
     timeEvents         = [DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0];
@@ -107,7 +110,7 @@ for nData            = [1 3 4 5]% 1:length(DataSetList)
     trialNum           = ones(size(firingRatesAverage, 1), size(firingRatesAverage, 2))*numTrials;
     optimalLambda = dpca_optimizeLambda(firingRatesAverage, firingRates, ...
                 trialNum, ...
-                'numComps', 5, ....
+                'numComps', numComps, ....
                 'combinedParams', combinedParams, ...
                 'numRep', 10, ...  % increase this number to ~10 for better accuracy
                 'filename', 'tmp_optimalLambdas.mat',...
@@ -130,7 +133,7 @@ for nData            = [1 3 4 5]% 1:length(DataSetList)
                 'timeMarginalization', 3,           ...
                 'legendSubplot', 16);
 
-    setPrint(40, 24, [PlotDir 'dPCA_dPCA_OR_' DataSetList(nData).name], 'pdf')
+    setPrint(40, 24, [PlotDir 'Collected_Units_dPCA/dPCA_dPCA_OR_' DataSetList(nData).name], 'pdf')
     
 %     S = 2;
 %     % combinedParams = {{1, [1 2]}, {2}};
@@ -168,6 +171,4 @@ for nData            = [1 3 4 5]% 1:length(DataSetList)
     
 end
 
-%% Decoding
-
-
+close all

@@ -221,9 +221,9 @@ addNoise         = [1 0 0 0 0 0];
 if ~exist([PlotDir '/Collected_Units_Decodability_Epoch'],'dir')
     mkdir([PlotDir '/Collected_Units_Decodability_Epoch'])
 end
-
-numTrials           = 1200;
-numTestTrials       = 600;
+controlUnits        = 35;
+numTrials           = 400;
+numTestTrials       = 200;
 numTrainingTrials   = numTrials - numTestTrials;
 trainingTargets     = [true(numTrainingTrials/2,1); false(numTrainingTrials/2,1)];
 trainingTargets     = trainingTargets(randperm(numTrainingTrials));
@@ -240,7 +240,8 @@ for nData             = [1 3 4 5 6]%1:length(DataSetList)
     numPeriods   = length(timePoints) - 1;
     decodability = zeros(numFold, numPeriods, size(nDataSet(1).unit_yes_trial,2));
     for nFold       = 1:numFold
-        nSessionData = shuffleSessionData(nDataSet, totTargets, numTestTrials);
+        numUnits     = length(nDataSet);
+        nSessionData = shuffleSessionData(nDataSet(randperm(numUnits, controlUnits)), totTargets, numTestTrials);
         % nSessionData : Ntrial x Nneuron x Nt
         nSessionData = permute(nSessionData,[1 3 2]);
         % nSessionData : Ntrial x Nt x Nneuron
@@ -260,7 +261,7 @@ for nData             = [1 3 4 5 6]%1:length(DataSetList)
     hold off;
     ylabel('Decodability')
     xlabel('Time (s)')
-    setPrint(4, 3, [PlotDir 'Collected_Units_Decodability_Epoch/Collected_Units_Decodability_EpochLDA1AllAcc_' DataSetList(nData).name], 'pdf')
+    setPrint(4, 3, [PlotDir 'Collected_Units_Decodability_Epoch/Collected_Units_Decodability_EpochLDA1AllAccFixedNumUnits_' DataSetList(nData).name], 'pdf')
 end
 
 close all

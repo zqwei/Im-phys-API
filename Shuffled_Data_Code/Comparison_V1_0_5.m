@@ -97,7 +97,7 @@ for nData                     = 1:length(fileList)
     colormap(h, parula)
     colorbar;
     xlim([1100 1900])
-    ylim([2100 2750])
+    ylim([2100 2900])
     ylabel('AP location (um)')
     xlabel('ML location (um)')
     box off

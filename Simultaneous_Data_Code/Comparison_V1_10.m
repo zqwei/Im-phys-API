@@ -6,14 +6,16 @@
 addpath('../Func');
 setDir;
 load ([TempDatDir 'DataList.mat']);
-addNoise         = [1 1 0 0 0];
+addNoise         = [1 0 0 0 0 0];
 numTrials           = 3000;
 numTestTrials       = 600;
 numTrainingTrials   = numTrials - numTestTrials;
 trainingTargets     = rand(numTrainingTrials, 1) > 0.5;
 testTargets         = rand(numTestTrials, 1) > 0.5;
 totTargets          = [testTargets; trainingTargets];
-
+if ~exist([PlotDir '/Collected_Units_PCA_LDA'],'dir')
+    mkdir([PlotDir '/Collected_Units_PCA_LDA'])
+end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -75,32 +77,32 @@ for nData             = 1:length(DataSetList)
 %     caxis([-1 1])
 %     colorbar
 %     axis off
-    setPrint(4*6, m*4.5, [PlotDir 'Similarity_LDA_coeff_' DataSetList(nData).name], 'tif')
+    setPrint(4*6, m*4.5, [PlotDir 'Collected_Units_PCA_LDA/Similarity_LDA_coeff_' DataSetList(nData).name], 'tif')
 end
 
-% for nData             = 1:length(DataSetList)
-%     load([TempDatDir DataSetList(nData).name '.mat'])
-%     numSession       = length(nDataSet3D);
-%     m                = ceil(sqrt(numSession + 2));
-%     figure;
-%     hold on
-%     nSessionData = shuffleSessionData(nDataSet, totTargets);
-%     nSessionData = normalizationDim(nSessionData, 2);
-%     coeffs       = coeffLDA(nSessionData +randn(size(nSessionData))*1e-3/sqrt(numTrials)* addNoise(nData), trainingTargets, testTargets);
-%     imagesc(DataSetList(nData).params.timeSeries, DataSetList(nData).params.timeSeries, coeffs'*coeffs);
-%     xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
-%     ylim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
-%     caxis([-1 1]);
-%     axis xy;
-%     gridxy ([DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0],[DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0], 'Color','k','Linestyle','--','linewid', 0.5);
-%     box off;
-%     hold off;
-%     xlabel('Time (s)')
-%     ylabel('Time (s)')
-%     setPrint(6, 4.5, [PlotDir 'Similarity_LDA_coeffAll_' DataSetList(nData).name], 'tif')
-% end
-
-%%
+for nData             = 1:length(DataSetList)
+    load([TempDatDir DataSetList(nData).name '.mat'])
+    numSession       = length(nDataSet3D);
+    m                = ceil(sqrt(numSession + 2));
+    figure;
+    hold on
+    nSessionData = shuffleSessionData(nDataSet, totTargets, numTrials);
+    nSessionData = normalizationDim(nSessionData, 2);
+    coeffs       = coeffLDA(nSessionData +randn(size(nSessionData))*1e-3/sqrt(numTrials)* addNoise(nData), trainingTargets, testTargets);
+    imagesc(DataSetList(nData).params.timeSeries, DataSetList(nData).params.timeSeries, coeffs'*coeffs);
+    xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
+    ylim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
+    caxis([-1 1]);
+    axis xy;
+    gridxy ([DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0],[DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0], 'Color','k','Linestyle','--','linewid', 0.5);
+    box off;
+    hold off;
+    xlabel('Time (s)')
+    ylabel('Time (s)')
+    setPrint(6, 4.5, [PlotDir 'Collected_Units_PCA_LDA/Similarity_LDA_coeffAll_' DataSetList(nData).name], 'tif')
+end
+close all
+%%%
 for nData             = 1:length(DataSetList)
     load([TempDatDir DataSetList(nData).name '.mat'])
     numSession       = length(nDataSet3D);
@@ -132,33 +134,33 @@ for nData             = 1:length(DataSetList)
 %     caxis([0 1])
 %     colorbar
 %     axis off
-    setPrint(4*6, m*4.5, [PlotDir 'Similarity_PCA_coeff_' DataSetList(nData).name], 'tif')
+    setPrint(4*6, m*4.5, [PlotDir 'Collected_Units_PCA_LDA/Similarity_PCA_coeff_' DataSetList(nData).name], 'tif')
 end
 
-% for nData             = 1:length(DataSetList)
-%     load([TempDatDir DataSetList(nData).name '.mat'])
-%     numSession       = length(nDataSet3D);
-%     m                = ceil(sqrt(numSession + 2));
-%     figure;
-%     hold on
-%     nSessionData = shuffleSessionData(nDataSet, totTargets);
-%     nSessionData = normalizationDim(nSessionData, 2);
-%     coeffs       = coeffPCA(nSessionData +randn(size(nSessionData))*1e-3/sqrt(numTrials)* addNoise(nData));
-%     imagesc(DataSetList(nData).params.timeSeries, DataSetList(nData).params.timeSeries, coeffs'*coeffs);
-%     xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
-%     ylim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
-%     caxis([0 1]);
-%     axis xy;
-%     gridxy ([DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0],[DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0], 'Color','k','Linestyle','--','linewid', 0.5);
-%     box off;
-%     hold off;
-%     xlabel('Time (s)')
-%     ylabel('Time (s)')
-%     setPrint(6, 4.5, [PlotDir 'Similarity_PCA_coeffAll_' DataSetList(nData).name], 'tif')
-% end
-
+for nData             = 1:length(DataSetList)
+    load([TempDatDir DataSetList(nData).name '.mat'])
+    numSession       = length(nDataSet3D);
+    m                = ceil(sqrt(numSession + 2));
+    figure;
+    hold on
+    nSessionData = shuffleSessionData(nDataSet, totTargets, numTrials);
+    nSessionData = normalizationDim(nSessionData, 2);
+    coeffs       = coeffPCA(nSessionData +randn(size(nSessionData))*1e-3/sqrt(numTrials)* addNoise(nData));
+    imagesc(DataSetList(nData).params.timeSeries, DataSetList(nData).params.timeSeries, coeffs'*coeffs);
+    xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
+    ylim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
+    caxis([0 1]);
+    axis xy;
+    gridxy ([DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0],[DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0], 'Color','k','Linestyle','--','linewid', 0.5);
+    box off;
+    hold off;
+    xlabel('Time (s)')
+    ylabel('Time (s)')
+    setPrint(6, 4.5, [PlotDir 'Collected_Units_PCA_LDA/Similarity_PCA_coeffAll_' DataSetList(nData).name], 'tif')
+end
+close all
     
-%%    
+%%%    
 
 for nData             = 1:length(DataSetList)
     load([TempDatDir DataSetList(nData).name '.mat'])
@@ -196,28 +198,30 @@ for nData             = 1:length(DataSetList)
 %     caxis([0 1])
 %     colorbar
 %     axis off
-    setPrint(4*6, m*4.5, [PlotDir 'Similarity_PCA_LDA_coeff_' DataSetList(nData).name], 'tif')
+    setPrint(4*6, m*4.5, [PlotDir 'Collected_Units_PCA_LDA/Similarity_PCA_LDA_coeff_' DataSetList(nData).name], 'tif')
 end
 
-% for nData             = 1:length(DataSetList)
-%     load([TempDatDir DataSetList(nData).name '.mat'])
-%     numSession       = length(nDataSet3D);
-%     m                = ceil(sqrt(numSession + 2));
-%     figure;
-%     hold on
-%     nSessionData = shuffleSessionData(nDataSet, totTargets);
-%     nSessionData = normalizationDim(nSessionData, 2);
-%     coeffPCAs    = coeffPCA(nSessionData +randn(size(nSessionData))*1e-3/sqrt(numTrials)* addNoise(nData));
-%     coeffLDAs    = coeffLDA(nSessionData +randn(size(nSessionData))*1e-3/sqrt(numTrials)* addNoise(nData), trainingTargets, testTargets);
-%     imagesc(DataSetList(nData).params.timeSeries, DataSetList(nData).params.timeSeries, abs(coeffPCAs'*coeffLDAs));
-%     xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
-%     ylim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
-%     caxis([0 1]);
-%     axis xy;
-%     gridxy ([DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0],[DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0], 'Color','k','Linestyle','--','linewid', 0.5);
-%     box off;
-%     hold off;
-%     xlabel('Time (s)')
-%     ylabel('Time (s)')
-%     setPrint(6, 4.5, [PlotDir 'Similarity_PCA_LDA_coeffAll_' DataSetList(nData).name], 'tif')
-% end
+for nData             = 1:length(DataSetList)
+    load([TempDatDir DataSetList(nData).name '.mat'])
+    numSession       = length(nDataSet3D);
+    m                = ceil(sqrt(numSession + 2));
+    figure;
+    hold on
+    nSessionData = shuffleSessionData(nDataSet, totTargets, numTrials);
+    nSessionData = normalizationDim(nSessionData, 2);
+    coeffPCAs    = coeffPCA(nSessionData +randn(size(nSessionData))*1e-3/sqrt(numTrials)* addNoise(nData));
+    coeffLDAs    = coeffLDA(nSessionData +randn(size(nSessionData))*1e-3/sqrt(numTrials)* addNoise(nData), trainingTargets, testTargets);
+    imagesc(DataSetList(nData).params.timeSeries, DataSetList(nData).params.timeSeries, abs(coeffPCAs'*coeffLDAs));
+    xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
+    ylim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
+    caxis([0 1]);
+    axis xy;
+    gridxy ([DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0],[DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0], 'Color','k','Linestyle','--','linewid', 0.5);
+    box off;
+    hold off;
+    xlabel('Time (s)')
+    ylabel('Time (s)')
+    setPrint(6, 4.5, [PlotDir 'Collected_Units_PCA_LDA/Similarity_PCA_LDA_coeffAll_' DataSetList(nData).name], 'tif')
+end
+
+close all
