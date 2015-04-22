@@ -13,7 +13,7 @@
 % weiz@janelia.hhmi.org
 % 
 
-function plotMeanActivityImagescWithSortWithCellinfo (nDataSet, params, cellinfo, maxValue, minValue, ylabels, lowFiringThres, yAxes_set)    
+function plotMeanActivityImagescWithSortWithCellinfoOld (nDataSet, params, cellinfo, maxValue, minValue, ylabels, lowFiringThres, yAxes_set)    
 
     blankSpace = 10;
     numT       = size(nDataSet(1).unit_yes_trial,2);
@@ -49,7 +49,38 @@ function plotMeanActivityImagescWithSortWithCellinfo (nDataSet, params, cellinfo
     % 2. sort the neurons
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % 2.1 using depth information
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %  [~, depthOrder]           = sort([cellinfo.depth]);
+    %  similaritySort            = [depthOrder([cellinfo(depthOrder).cellType]==1)';...
+    %                               depthOrder([cellinfo(depthOrder).cellType]==0)'];
+    %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % This is not working
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % 2.2 using pyr and clustering methods based on the simiarity of
+    % activity
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % actMat                    = actMat([cellinfo.cellType]==1,:);
+    % hDendrogram               = figure;
+    % similarityValue           = linkage(actMat(:, [1:numT, numT+blankSpace+1:end]), 'complete','euclidean');
+    % [~, ~, similaritySort]    = dendrogram(similarityValue,0);
+    % similaritySort            = similaritySort(end:-1:1);
+    % close(hDendrogram);
+    %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % This is not working
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % 2.3 using pyr and 
+    % sort the order of trial by the starting point of activity point:
+    % an activity bump is defined as the longest consecutive activity 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     actMat                    = actMat([cellinfo.cellType]==1,:);    
     bumpActThres              = 0.6; % > bumpActThres considering as a bump
     bumpMat                   = actMat > bumpActThres;
     bumpSize                  = ones(size(actMat,1),1);
@@ -73,6 +104,39 @@ function plotMeanActivityImagescWithSortWithCellinfo (nDataSet, params, cellinfo
     [~, similaritySort]       = sortrows([bumpStartPoint, bumpSize], [1 -2]);
     similaritySort            = similaritySort(end:-1:1);
     
+    
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % 2.4 using pyr and 
+    % clustering methods:
+    % ROC curve
+    % similarity in each ROC groups
+    % 
+    % ROC groups:
+    % ROC threshold = 0.7 (for instance)
+    % high ROC in sample, delay, response,
+    % group 1. sample (choice 1 or 2)
+    % group 2. sample + delay (choice 1 or 2)
+    % group 3. sample + delay + response (or sample + response) (choice 1 or 2)
+    % group 4. delay (choice 1 or 2)
+    % group 5. delay + response (choice 1 or 2)
+    % group 6. response (choice 1 or 2)
+    % group 7. no ROC (choice 1 or 2)
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    
+    % actMat                    = actMat([cellinfo.cellType]==1,:);
+    % hDendrogram               = figure;
+    % similarityValue           = linkage(actMat(:, [1:numT, numT+blankSpace+1:end]), 'complete','euclidean');
+    % [~, ~, similaritySort]    = dendrogram(similarityValue,0);
+    % similaritySort            = similaritySort(end:-1:1);
+    % close(hDendrogram);
+    %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % This is not working
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+
     figure;
     % 3. plot of imagesc
     subplot(3, 6, [1 2 7 8 13 14])
@@ -118,11 +182,13 @@ function plotMeanActivityImagescWithSortWithCellinfo (nDataSet, params, cellinfo
     % lowFiringThres                = 0.5;
     highActMatIndex               = find(maxActMat> lowFiringThres);
     highActMat                    = actMat(highActMatIndex, :);
+%     clusterIndex                 = clusterWithKickOut(highActMat(:, [1:numT, numT+blankSpace+1:end]), numExampleNeurons, 2);
     clusterIndex                  = cluster(...
                                 linkage(highActMat(:, [1:numT, numT+blankSpace+1:end]), 'single','correlation'),...
                                 'maxclust',numExampleNeurons);
-    m                             = ceil(numExampleNeurons/3);
 
+%     m                             = ceil(numExampleNeurons/3);
+%     nCluster                      = 1;
 %     for nNeuron                   = 1:numExampleNeurons        
 %         if sum(clusterIndex==nNeuron) > 2 && nCluster <= 9
 %             subplot(3, 6, (mod(nCluster-1,3)+4) + floor((nCluster-1)/3)*6)
@@ -130,20 +196,33 @@ function plotMeanActivityImagescWithSortWithCellinfo (nDataSet, params, cellinfo
 %             plotMeanActivityTrace (nDataSet, nNeuronIndex, params, ylabels)
 %             nCluster                  = nCluster + 1;
 %         end
-    
-    nCluster                      = 1;
-    for nNeuron                   = 1:length(unique(clusterIndex))    
-        if sum(clusterIndex==nNeuron) >= 1 && nCluster <= numExampleNeurons        
-            subplot(3, 6, (mod(nCluster-1,3)+4) + floor((nCluster-1)/3)*6)
-            nNeuronIndex          = highActMatIndex(find(clusterIndex==nNeuron,1,'first'));% negResponseNeuronIndex(nNeuron); % highActMatIndex(find(clusterIndex==nNeuron,1,'first')); 
-            if nCluster == 4
-                plotMeanActivityTrace (nDataSet, nNeuronIndex, params, ylabels, ' ', yAxes_set)
-            elseif nCluster == 8
-                plotMeanActivityTrace (nDataSet, nNeuronIndex, params, ' ', 'Time (s)', yAxes_set)
-            else
-                plotMeanActivityTrace (nDataSet, nNeuronIndex, params, ' ', ' ', yAxes_set)
-            end
-            nCluster               = nCluster + 1;
+%     end
+
+    m                             = ceil(numExampleNeurons/3);
+
+%     timePoints                    = timePointTrialPeriod(params.polein, params.poleout, params.timeSeries);  
+%     negResponseNeuronIndex        = mean(actMat(:,timePoints(4):timePoints(5)),2)<0;
+%     negResponseNeuronIndex        = find(negResponseNeuronIndex);
+%     
+%     figure;
+%     
+%     m = ceil(sqrt(length(negResponseNeuronIndex)));
+%     
+%     for nNeuron                   = 1: length(negResponseNeuronIndex)% numExampleNeurons 
+%         subplot(m, m, nNeuron)
+%         nNeuronIndex              = negResponseNeuronIndex(nNeuron);
+%         plotMeanActivityTrace (nDataSet, nNeuronIndex, params, ylabels, ' ', yAxes_set)
+%     end
+
+    for nNeuron                   = 1:numExampleNeurons        
+        subplot(3, 6, (mod(nNeuron-1,3)+4) + floor((nNeuron-1)/3)*6)
+        nNeuronIndex              = highActMatIndex(find(clusterIndex==nNeuron,1,'first'));% negResponseNeuronIndex(nNeuron); % highActMatIndex(find(clusterIndex==nNeuron,1,'first')); 
+        if nNeuron == 4
+            plotMeanActivityTrace (nDataSet, nNeuronIndex, params, ylabels, ' ', yAxes_set)
+        elseif nNeuron == 8
+            plotMeanActivityTrace (nDataSet, nNeuronIndex, params, ' ', 'Time (s)', yAxes_set)
+        else
+            plotMeanActivityTrace (nDataSet, nNeuronIndex, params, ' ', ' ', yAxes_set)
         end
     end
     

@@ -51,7 +51,7 @@ load ([TempDatDir 'DataListShuffle.mat']);
 % xlabels               = {'Firing rate(Hz)', 'dF/F', 'dF/F', 'dF/F', 'dF/F'};
 % yAxes_set             = [-150 150; -100 100; -100 100; -200 200; -500 500];
 % xAxes_set             = [0 20; -0.5 0.5; -0.4 0.41; -0.4 0.41; -0.4 0.41];
-barSeries             = {0:1:60, -0.4:0.02:0.4, -0.4:0.02:0.4, -0.4:0.02:0.4, -0.4:0.02:0.4};
+barSeries             = {0:1:60, -0.4:0.02:0.4, -0.4:0.02:0.4, -0.4:0.02:0.4, -0.4:0.02:0.4, -0.4:0.02:0.4};
 
 % for nData             = 1:length(DataSetList)
 %     load([TempDatDir DataSetList(nData).name '.mat'])
@@ -61,10 +61,16 @@ barSeries             = {0:1:60, -0.4:0.02:0.4, -0.4:0.02:0.4, -0.4:0.02:0.4, -0
 % end
 
 nFactor = 1/2;
+if ~exist([PlotDir '/Single_Units_Hist'],'dir')
+    mkdir([PlotDir '/Single_Units_Hist'])
+end
 
-for nData             = 2:length(DataSetList)
+
+for nData             = 1:length(DataSetList)
     load([TempDatDir DataSetList(nData).name '.mat'])
-    plotHistActivityPopWithNonActiveNeurons(nDataSet, DataSetList(nData).params, barSeries{nData}, nFactor); 
+    plotHistActivityPopWithNonActiveNeurons(nDataSet(ephysCellIndex{nData}), DataSetList(nData).params, barSeries{nData}, nFactor); 
     m = 2;
     setPrint(m*8, m*6, [PlotDir 'Single_Units_Hist/Single_Units_Hist_' DataSetList(nData).name ], 'pdf')
 end
+
+close all

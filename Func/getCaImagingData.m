@@ -65,17 +65,20 @@ function CaImagingDataSet    = getCaImagingData(CaImagingDir, CaImagingFileList,
                     case '041'
                         AP                                      = 2200;
                         ML                                      = 1300;
-                        Angle                                   = 30;  
+                        Angle                                   = 30; 
+                        orgFOV                                  = 1;
                     case '044'
                         AP                                      = 1970;
                         ML                                      = 1600;
                         Angle                                   = 34;
+                        orgFOV                                  = 1;
                     otherwise
                         AP                                      = 2500;
                         ML                                      = 1500;
                         Angle                                   = 30;
+                        orgFOV                                  = 0;
                 end    
-                RoiCenterPos                                = ROI_list(nUnit).centerPos;
+                RoiCenterPos                                = ROI_list(nUnit).centerPos - (1-orgFOV)*[256 256];
                 position_from_bregma                        = get_cell_position_from_bregma(RoiCenterPos, [ML, AP], Angle);
                 CaImagingDataSet(tot_Unit).ML_in_um         = position_from_bregma(1);
                 CaImagingDataSet(tot_Unit).AP_in_um         = position_from_bregma(2);

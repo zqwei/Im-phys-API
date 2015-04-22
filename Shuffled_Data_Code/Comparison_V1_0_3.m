@@ -109,7 +109,7 @@ disp('================================================================')
 for nData           = 2:length(fileList)
     load([TempDatDir DataSetList(nData).name '.mat']);
     ephysCellIndex  = [DataSetList(nData).cellinfo(:).AP_axis]  > 2100 &...
-                      [DataSetList(nData).cellinfo(:).AP_axis]  < 2750 &...
+                      [DataSetList(nData).cellinfo(:).AP_axis]  < 2900 &...
                       [DataSetList(nData).cellinfo(:).ML_axis]  > 1100 &...
                       [DataSetList(nData).cellinfo(:).ML_axis]  < 1900;
     numUnits                  = length(nDataSet(ephysCellIndex));
@@ -187,15 +187,15 @@ for nData           = 2:length(fileList)
     end
     disp('----------------------------------------------------------------')
     disp('AP dependent:')
-    iGroup        = floor(([DataSetList(nData).cellinfo(ephysCellIndex).AP_axis]-2100)/50);
+    iGroup        = floor(([DataSetList(nData).cellinfo(ephysCellIndex).AP_axis]-2100)/100);
     uGroup        = unique(iGroup);
     nGroup        = histcounts(iGroup, [uGroup inf]);
     [~, ~, stats] = anova1(DataSetList(nData).params.timeSeries(bumpStartPoint), ...
                     iGroup,'off');
     c             = multcompare(stats,'display','off');
     disp('Number of Cells:')
-    disp([uGroup'*50+2100 nGroup'])
+    disp([uGroup'*100+2100 nGroup'])
     disp('Distinguishable pairs')
-    disp(num2str([uGroup(c(c(:,end)<cThres, 1:2))*50+2100 c(c(:,end)<cThres, end)],'%d\t%d\t%.3f'))
+    disp(num2str([uGroup(c(c(:,end)<cThres, 1:2))*100+2100 c(c(:,end)<cThres, end)],'%d\t%d\t%.3f'))
     disp('================================================================')
 end

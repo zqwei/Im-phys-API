@@ -54,10 +54,14 @@ addpath('../Func');
 setDir;
 load ([TempDatDir 'DataListShuffle.mat']);
 
+if ~exist([PlotDir '/Single_Units_ROC'],'dir')
+    mkdir([PlotDir '/Single_Units_ROC'])
+end
+
 for nData             = 1:length(DataSetList)
     load([TempDatDir DataSetList(nData).name '.mat'])
     plotROCPopAccLines(nDataSet, DataSetList(nData).params); 
-    setPrint(8, 6, [PlotDir 'Single_Units_ROC/Single_Units_ROC2_' DataSetList(nData).name], 'pdf')
+    setPrint(8, 6, [PlotDir 'Single_Units_ROC/Single_Units_ROC_' DataSetList(nData).name], 'pdf')
 end
 
 close all

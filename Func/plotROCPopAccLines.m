@@ -45,6 +45,7 @@ function plotROCPopAccLines(nDataSet, params)
     xlim([0 1])
     ylim([0 1])
     legend({'pre-sample','sample','delay','response'},'location','southeast')
+    legend('boxoff')
     box off
 end
 
