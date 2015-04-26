@@ -19,7 +19,7 @@ totTargets          = [testTargets; trainingTargets];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 10.1 Fraction of variance captured by PCA, per session, by trial period.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-for nData             = 1:length(DataSetList)
+for nData             = fileToAnalysis
     load([TempDatDir DataSetList(nData).name '.mat'])
     numSession       = length(nDataSet3D);
     m                = ceil(sqrt(numSession + 1));

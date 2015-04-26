@@ -11,6 +11,7 @@
 addpath('../Func');
 setDir;
 load ([TempDatDir 'DataList.mat']);
+fileToAnalysis                = [1 4 5]; % 1:length(DataSetList);
 
 addNoise         = [1 0 0 0 0 0];
 
@@ -20,7 +21,7 @@ if ~exist([PlotDir '/Single_Session_Decodability'],'dir')
     mkdir([PlotDir '/Single_Session_Decodability'])
 end
 
-for nData             = 1:length(DataSetList)
+for nData             = fileToAnalysis
     load([TempDatDir DataSetList(nData).name '.mat'])
     numSession       = length(nDataSet3D);
     m                = ceil(numSession/4);

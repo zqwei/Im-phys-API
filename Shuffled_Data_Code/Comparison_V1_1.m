@@ -71,7 +71,7 @@ load ([TempDatDir 'DataListShuffle.mat']);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 skipPlot                = true;
 if ~skipPlot
-    for nData             = 1:length(DataSetList)
+    for nData             = fileToAnalysis
         load([TempDatDir DataSetList(nData).name '.mat'])
         plotMeanActivityExampleTrace(nDataSet, 1:length(nDataSet), DataSetList(nData).params); 
         m                     = ceil(sqrt(length(nDataSet)));
@@ -100,16 +100,16 @@ end
 
 
 ylabels                 = {'Fring Rate (Hz)', 'dF/F', 'dF/F', 'dF/F', 'dF/F' , 'dF/F'};
-yAxes_set                = [0 60; -0.5 2.0; -0.5 2.0; -0.5 2.0; -0.5 2.0 ; -0.5 2.0];
-lowFiringThres          = [20, 0.5, 0.5, 0.5, 0.5, 0.5];
+yAxes_set               = [0 60; -0.5 2.0; -0.5 2.0; -0.5 2.0; -0.5 2.0 ; -0.5 2.0];
+lowFiringThres          = [15, 0.3, 0.3, 0.3, 0.3, 0.3];
 skipPlot                = false;
 if ~skipPlot
     if ~exist([PlotDir '/Single_UnitsImagescWithSort'],'dir')
         mkdir([PlotDir '/Single_UnitsImagescWithSort'])
     end
-    for nData             = 1:length(DataSetList)
+    for nData             = fileToAnalysis
         load([TempDatDir DataSetList(nData).name '.mat'])
-        plotMeanActivityImagescWithSortWithCellinfo(nDataSet(ephysCellIndex{nData}), DataSetList(nData).params, DataSetList(nData).cellinfo, [], [], ylabels{nData}, lowFiringThres(nData), yAxes_set(nData,:)); 
+        plotMeanActivityImagescWithSortWithCellinfo(nDataSet(ephysCellIndex{nData}), DataSetList(nData).params, [], [], ylabels{nData}, lowFiringThres(nData), yAxes_set(nData,:)); 
 %         title(DataSetList(nData).name,'interpreter','none')
         setPrint(6*4, 3*3, [PlotDir '/Single_UnitsImagescWithSort/Single_UnitsImagescWithSort_' DataSetList(nData).name], 'tif')
     end

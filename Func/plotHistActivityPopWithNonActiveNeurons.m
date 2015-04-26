@@ -12,7 +12,7 @@
 % weiz@janelia.hhmi.org
 % 
 
-function plotHistActivityPopWithNonActiveNeurons(nDataSet, params, barSeries, nFactor)
+function plotHistActivityPopWithNonActiveNeurons(nDataSet, params, barSeries, nFactor, xlabels)
     
     timePoints          = timePointTrialPeriod(params.polein, params.poleout, params.timeSeries);        
     
@@ -74,7 +74,8 @@ function plotHistActivityPopWithNonActiveNeurons(nDataSet, params, barSeries, nF
         
         xlim([barSeries(1) barSeries(end)])
         ylim([-length(nDataSet)*nFactor length(nDataSet)*nFactor])
-        
+        xlabel(xlabels)
+        ylabel('Count (#)')
         s = get(gca,'YTick');
         yTickLabels = arrayfun(@num2str, abs(s), 'UniformOutput', false);
         set(gca,'YTick',s,'YTickLabel',yTickLabels);    

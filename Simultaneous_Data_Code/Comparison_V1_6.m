@@ -63,9 +63,10 @@ addpath('../Func');
 setDir;
 
 numFold             = 30;
-numTrials           = 1200;
-numTestTrials       = 600;
+numTrials           = 400;
+numTestTrials       = 200;
 numTrainingTrials   = numTrials - numTestTrials;
+fileToAnalysis      = [1 4 5]; % 1:length(DataSetList);
 
 
 load ([TempDatDir 'DataList.mat']);
@@ -75,7 +76,7 @@ if ~exist([PlotDir '/Collected_Units_Decodability'],'dir')
     mkdir([PlotDir '/Collected_Units_Decodability'])
 end
 
-for nData             = 1:length(DataSetList)
+for nData             = fileToAnalysis
     load([TempDatDir DataSetList(nData).name '.mat'])
     figure;
     

@@ -26,6 +26,7 @@ function HighFRDataSet = filterOutLowFR(nDataSet, params, ROCThres)
         
     ROCIndex           = ROCPop(nDataSet, params);
     ROCIndex           = ROCIndex > ROCThres;
+%     ROCDataIndex       = sum(ROCIndex(:,2:end),2)>2;
     ROCDataIndex       = sum(ROCIndex(:,2:end),2)>0;    
     HighFRDataSet      = nDataSet(ROCDataIndex);
     

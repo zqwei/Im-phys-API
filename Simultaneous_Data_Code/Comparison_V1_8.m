@@ -222,8 +222,8 @@ if ~exist([PlotDir '/Collected_Units_Decodability_Epoch'],'dir')
     mkdir([PlotDir '/Collected_Units_Decodability_Epoch'])
 end
 
-numTrials           = 1200;
-numTestTrials       = 600;
+numTrials           = 1600;
+numTestTrials       = 400;
 numTrainingTrials   = numTrials - numTestTrials;
 trainingTargets     = [true(numTrainingTrials/2,1); false(numTrainingTrials/2,1)];
 trainingTargets     = trainingTargets(randperm(numTrainingTrials));
@@ -233,7 +233,7 @@ totTargets          = [testTargets; trainingTargets];
 
 numFold               = 30;
 
-for nData             = [1 3 4 5 6]%1:length(DataSetList)
+for nData             = fileToAnalysis
     load([TempDatDir DataSetList(nData).name '.mat'])   
     figure;
     timePoints   = timePointTrialPeriod(DataSetList(nData).params.polein, DataSetList(nData).params.poleout, DataSetList(nData).params.timeSeries);

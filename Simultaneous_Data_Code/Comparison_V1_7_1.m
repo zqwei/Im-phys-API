@@ -5,7 +5,7 @@
 
 addpath('../Func');
 setDir;
-controlUnits        = 35;
+% controlUnits        = 60;
 numTrials           = 400;
 numTestTrials       = 200;
 numTrainingTrials   = numTrials - numTestTrials;
@@ -27,10 +27,10 @@ numFold    = 30;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 7.3  Plot of Sparsness using Kicking-out neurons
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-for nData             = [1 3 4 5 6]%1:length(DataSetList)
+for nData             = fileToAnalysis
     load([TempDatDir DataSetList(nData).name '.mat'])  
     numUnits     = length(nDataSet);
-    nSessionData = shuffleSessionData(nDataSet(randperm(numUnits, controlUnits)), totTargets, numTestTrials);
+    nSessionData = shuffleSessionData(nDataSet(randperm(numUnits, numRandPickUnits)), totTargets, numTestTrials);
     numUnits     = length(nDataSet);
     decodability = decodabilityLDAKickOut(nSessionData +randn(size(nSessionData))*1e-3/sqrt(numTrials)* addNoise(nData), trainingTargets, testTargets, perKickOut, numFold);    
     figure;
@@ -48,3 +48,5 @@ for nData             = [1 3 4 5 6]%1:length(DataSetList)
     ylabel('% KO neurons');
     setPrint(8, 6, [PlotDir 'Collected_Units_LDA_Coeffs__KickOut/Collected_Units_LDA_Coeffs_FixedNumUnits_KickOut_' DataSetList(nData).name], 'pdf')
 end
+
+close all

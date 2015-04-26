@@ -90,7 +90,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 addpath('../Func');
 setDir;
-load ([TempDatDir 'DataListShuffle.mat'], 'DataSetList', 'ephysCellIndex');
+load ([TempDatDir 'DataListShuffle.mat'], 'DataSetList', 'ephysCellIndex', 'fileToAnalysis', '');
 DataListShuffle        = DataSetList;
 fileList               = {SpikeFileList; CaImagingShortDelayFastFileList; CaImagingShortDelaySlowFileList;...
                             CaImagingLongDelayFastFileList; CaImagingLongDelaySlowFileList; CaImagingShortDelaySlowVirusFileList};
@@ -104,7 +104,7 @@ DataSetList(6).name    = 'Ca_Slow_Short_Delay_Virus';
 
 minRate                = 5;
 perMinRate             = 0.4;
-ROCThres               = 0.70;
+% ROCThres               = 0.60;
 minUnitsSession        = 3;
 
 
@@ -121,5 +121,5 @@ for nData              = 2:length(DataSetList)
     save([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet', 'nDataSet3D');    
 end
 
-save([TempDatDir 'DataList.mat'], 'DataSetList');
+save([TempDatDir 'DataList.mat'], 'DataSetList', 'fileToAnalysis');
 

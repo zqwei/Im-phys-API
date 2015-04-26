@@ -14,7 +14,7 @@ numFold             = 50;
 numTrials           = 200;
 numTestTrials       = 100;
 numTrainingTrials   = numTrials - numTestTrials;
-
+% numRandPickUnits    = 60;
 
 load ([TempDatDir 'DataList.mat']);
 addNoise         = [1 0 0 0 0 0];
@@ -23,7 +23,7 @@ if ~exist([PlotDir '/Collected_Units_Decodability'],'dir')
     mkdir([PlotDir '/Collected_Units_Decodability'])
 end
 
-for nData             = 1:length(DataSetList)
+for nData             = fileToAnalysis
     load([TempDatDir DataSetList(nData).name '.mat'])
     figure;
     
@@ -41,7 +41,7 @@ for nData             = 1:length(DataSetList)
         totDecisions        = [testDecisions; trainingDecisions];
         
         randPickUnits       = randperm(length(nDataSet));
-        randPickUnits       = randPickUnits(1:9);
+        randPickUnits       = randPickUnits(1:numRandPickUnits);
                 
         nSessionData        = shuffleSessionData(nDataSet(randPickUnits), totTargets, numTestTrials);
         decodability(nFold,:) = decodabilityLDA(nSessionData +randn(size(nSessionData))*1e-3/sqrt(numTrials)* addNoise(nData), trainingTargets, testTargets);

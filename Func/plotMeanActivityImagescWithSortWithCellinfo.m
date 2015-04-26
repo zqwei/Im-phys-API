@@ -13,7 +13,7 @@
 % weiz@janelia.hhmi.org
 % 
 
-function plotMeanActivityImagescWithSortWithCellinfo (nDataSet, params, cellinfo, maxValue, minValue, ylabels, lowFiringThres, yAxes_set)    
+function plotMeanActivityImagescWithSortWithCellinfo (nDataSet, params, maxValue, minValue, ylabels, lowFiringThres, yAxes_set)    
 
     blankSpace = 10;
     numT       = size(nDataSet(1).unit_yes_trial,2);
@@ -109,44 +109,66 @@ function plotMeanActivityImagescWithSortWithCellinfo (nDataSet, params, cellinfo
     hold off
     
     % 4. plot of example neurons
-    numExampleNeurons            = 9;
-    % only using the neurons with a high activity
-    %
-    % numExampleNeurons is also the number of the clusters
-    %
-    % 4.1 filtering out the low firing units
-    % lowFiringThres                = 0.5;
-    highActMatIndex               = find(maxActMat> lowFiringThres);
-    highActMat                    = actMat(highActMatIndex, :);
-    clusterIndex                  = cluster(...
-                                linkage(highActMat(:, [1:numT, numT+blankSpace+1:end]), 'single','correlation'),...
-                                'maxclust',numExampleNeurons);
-    m                             = ceil(numExampleNeurons/3);
-
-%     for nNeuron                   = 1:numExampleNeurons        
-%         if sum(clusterIndex==nNeuron) > 2 && nCluster <= 9
+%     numExampleNeurons            = 9;
+%     % only using the neurons with a high activity
+%     %
+%     % numExampleNeurons is also the number of the clusters
+%     %
+%     % 4.1 filtering out the low firing units
+%     % lowFiringThres                = 0.5;
+%     highActMatIndex               = find(maxActMat> lowFiringThres);
+%     highActMat                    = actMat(highActMatIndex, :);
+%     clusterIndex                  = cluster(...
+%                                 linkage(highActMat(:, [1:numT, numT+blankSpace+1:end]), 'single','correlation'),...
+%                                 'maxclust',numExampleNeurons);
+%     m                             = ceil(numExampleNeurons/3);
+% 
+% %     for nNeuron                   = 1:numExampleNeurons        
+% %         if sum(clusterIndex==nNeuron) > 2 && nCluster <= 9
+% %             subplot(3, 6, (mod(nCluster-1,3)+4) + floor((nCluster-1)/3)*6)
+% %             nNeuronIndex              = highActMatIndex(find(clusterIndex==nNeuron,1,'first')); 
+% %             plotMeanActivityTrace (nDataSet, nNeuronIndex, params, ylabels)
+% %             nCluster                  = nCluster + 1;
+% %         end
+%     
+%     nCluster                      = 1;
+%     for nNeuron                   = 1:length(unique(clusterIndex))    
+%         if sum(clusterIndex==nNeuron) >= 1 && nCluster <= numExampleNeurons        
 %             subplot(3, 6, (mod(nCluster-1,3)+4) + floor((nCluster-1)/3)*6)
-%             nNeuronIndex              = highActMatIndex(find(clusterIndex==nNeuron,1,'first')); 
-%             plotMeanActivityTrace (nDataSet, nNeuronIndex, params, ylabels)
-%             nCluster                  = nCluster + 1;
+%             nNeuronIndex          = highActMatIndex(find(clusterIndex==nNeuron,1,'first'));% negResponseNeuronIndex(nNeuron); % highActMatIndex(find(clusterIndex==nNeuron,1,'first')); 
+%             if nCluster == 4
+%                 plotMeanActivityTrace (nDataSet, nNeuronIndex, params, ylabels, ' ', yAxes_set)
+%             elseif nCluster == 8
+%                 plotMeanActivityTrace (nDataSet, nNeuronIndex, params, ' ', 'Time (s)', yAxes_set)
+%             else
+%                 plotMeanActivityTrace (nDataSet, nNeuronIndex, params, ' ', ' ', yAxes_set)
+%             end
+%             nCluster               = nCluster + 1;
 %         end
+%     end
     
-    nCluster                      = 1;
-    for nNeuron                   = 1:length(unique(clusterIndex))    
-        if sum(clusterIndex==nNeuron) >= 1 && nCluster <= numExampleNeurons        
-            subplot(3, 6, (mod(nCluster-1,3)+4) + floor((nCluster-1)/3)*6)
-            nNeuronIndex          = highActMatIndex(find(clusterIndex==nNeuron,1,'first'));% negResponseNeuronIndex(nNeuron); % highActMatIndex(find(clusterIndex==nNeuron,1,'first')); 
-            if nCluster == 4
-                plotMeanActivityTrace (nDataSet, nNeuronIndex, params, ylabels, ' ', yAxes_set)
-            elseif nCluster == 8
-                plotMeanActivityTrace (nDataSet, nNeuronIndex, params, ' ', 'Time (s)', yAxes_set)
-            else
-                plotMeanActivityTrace (nDataSet, nNeuronIndex, params, ' ', ' ', yAxes_set)
-            end
-            nCluster               = nCluster + 1;
+
+
+%     maxActMat                     = maxActMat(similaritySort, :);
+%     highActMatIndex               = find(maxActMat> lowFiringThres);
+% %     highActMat                    = actMat(highActMatIndex, :);
+    numExampleNeurons             = 9;
+%     stepLength                    = floor((length(highActMatIndex)-10)/numExampleNeurons);
+%     exampleNeuronIndex            = 1:stepLength:length(highActMatIndex);
+
+    [~, indexMaxActMat]           = sort(maxActMat, 1, 'descend');
+
+    for nNeuron                   = 1:numExampleNeurons    
+        subplot(3, 6, (mod(nNeuron-1,3)+4) + floor((nNeuron-1)/3)*6)
+        nNeuronIndex              = indexMaxActMat(nNeuron);%similaritySort(highActMatIndex(exampleNeuronIndex(nNeuron)));
+        if nNeuron == 4
+            plotMeanActivityTrace (nDataSet, nNeuronIndex, params, ylabels, ' ', yAxes_set)
+        elseif nNeuron == 8
+            plotMeanActivityTrace (nDataSet, nNeuronIndex, params, ' ', 'Time (s)', yAxes_set)
+        else
+            plotMeanActivityTrace (nDataSet, nNeuronIndex, params, ' ', ' ', yAxes_set)
         end
     end
-    
 end
 
 function plotMeanActivityTrace (nDataSet, nNeuron, params, ylabels, xlabels, yAxes_set)

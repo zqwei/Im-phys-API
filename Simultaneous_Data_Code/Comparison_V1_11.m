@@ -101,7 +101,7 @@ if ~exist([PlotDir '/Collected_Units_dPCA'],'dir')
     mkdir([PlotDir '/Collected_Units_dPCA'])
 end
 
-for nData            = [1 3 4 5 6]% 1:length(DataSetList)
+for nData            = fileToAnalysis
     load([TempDatDir DataSetList(nData).name '.mat']);
     time               = DataSetList(nData).params.timeSeries;
     timeEvents         = [DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0];
