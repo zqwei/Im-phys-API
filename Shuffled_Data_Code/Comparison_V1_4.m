@@ -66,6 +66,15 @@ end
 
 close all
 
+
+for nData             = fileToAnalysis
+    load([TempDatDir DataSetList(nData).name '.mat'])
+    plotROCPopCompLines(nDataSet, DataSetList(nData).params); 
+    setPrint(8, 6, [PlotDir 'Single_Units_ROC/Single_Units_PreSampleVSampleROC_' DataSetList(nData).name], 'pdf')
+end
+
+close all
+
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % 4.2 % neuron with strong ROC across trial
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

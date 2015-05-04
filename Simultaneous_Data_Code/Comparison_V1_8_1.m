@@ -52,7 +52,7 @@ for nData             = fileToAnalysis
     hold off;
     ylabel('Decodability')
     xlabel('Time (s)')
-    setPrint(4, 3, [PlotDir 'Collected_Units_Decodability_Epoch/Collected_Units_Decodability_EpochLDA1AllAccFixedNumUnits_' DataSetList(nData).name], 'pdf')
+    setPrint(8, 6, [PlotDir 'Collected_Units_Decodability_Epoch/Collected_Units_Decodability_EpochLDA1AllAccFixedNumUnits_' DataSetList(nData).name], 'pdf')
 end
 
 close all

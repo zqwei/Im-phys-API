@@ -105,7 +105,7 @@ for nData                     = 1:length(fileList)
         end
     end
 
-    
+%     bumpStartPoint(bumplength<15) = numT;
     ML_axis                      = [DataSetList(nData).cellinfo(:).ML_axis];
     AP_axis                      = [DataSetList(nData).cellinfo(:).AP_axis];
     depth                        = [DataSetList(nData).cellinfo(:).depth];    

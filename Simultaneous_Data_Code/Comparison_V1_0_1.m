@@ -90,7 +90,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 addpath('../Func');
 setDir;
-load ([TempDatDir 'DataListShuffle.mat'], 'DataSetList', 'ephysCellIndex', 'fileToAnalysis', '');
+load ([TempDatDir 'DataListShuffle.mat'], 'DataSetList', 'ephysCellIndex', 'fileToAnalysis');
 DataListShuffle        = DataSetList;
 fileList               = {SpikeFileList; CaImagingShortDelayFastFileList; CaImagingShortDelaySlowFileList;...
                             CaImagingLongDelayFastFileList; CaImagingLongDelaySlowFileList; CaImagingShortDelaySlowVirusFileList};
