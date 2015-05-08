@@ -1,9 +1,7 @@
 clear all
 close all
 
-
-file_list = dir('..\datafiles\data_structure_*.mat');
-
+file_list = dir([file_dir,'data_structure_*.mat']);
 
 
 %% establish variables to compute and save

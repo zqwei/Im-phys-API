@@ -14,7 +14,7 @@ function setPrint(width, height, fname, printType)
         case 'PDF'
             print('-dpdf',[fname '.pdf'])
         case 'TIF'
-            print('-dtiff','-r600',[fname '.tif'])
+            print('-dtiff','-r300',[fname '.tif'])
     end
     
     
