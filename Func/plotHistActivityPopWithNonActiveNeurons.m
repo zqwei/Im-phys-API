@@ -12,13 +12,14 @@
 % weiz@janelia.hhmi.org
 % 
 
-function plotHistActivityPopWithNonActiveNeurons(nDataSet, params, barSeries, nFactor, xlabels)
+function plotHistActivityPopWithNonActiveNeurons(nDataSet, params, barSeries, nFactor, xlabels, nDataSetName)
     
     timePoints          = timePointTrialPeriod(params.polein, params.poleout, params.timeSeries);        
     
     m                   = ceil(sqrt(length(timePoints)-1));
     figure;
     
+    suptitle(nDataSetName);
     % barSeries           = 10;
     
     nTitle              = {'Pre-sample', 'Sample', 'Delay', 'Response'};
@@ -49,20 +50,20 @@ function plotHistActivityPopWithNonActiveNeurons(nDataSet, params, barSeries, nF
     for nPeriods        = 1: length(timePoints) -1
         subplot(m, m, nPeriods)                
         hold on        
-        nonHistFreq      = hist(yesTrialDataSet(yesNonActiveNeurons, nPeriods), barSeries);
-        nonEpochHistFreq = hist(yesTrialDataSet(~yesNonActiveNeurons & ~tYesTrialDataSet(:, nPeriods), nPeriods), barSeries);
-        actHistFreq      = hist(yesTrialDataSet(~yesNonActiveNeurons & tYesTrialDataSet(:, nPeriods), nPeriods), barSeries);
+        nonHistFreq      = histc(yesTrialDataSet(yesNonActiveNeurons, nPeriods), barSeries);
+        nonEpochHistFreq = histc(yesTrialDataSet(~yesNonActiveNeurons & ~tYesTrialDataSet(:, nPeriods), nPeriods), barSeries);
+        actHistFreq      = histc(yesTrialDataSet(~yesNonActiveNeurons & tYesTrialDataSet(:, nPeriods), nPeriods), barSeries);
         
-        barPlot              = bar(barSeries, [actHistFreq; nonEpochHistFreq; nonHistFreq]','stacked', 'edgeColor','b', 'faceColor', 'b');%,'linewid',1
+        barPlot              = bar(barSeries, [actHistFreq, nonEpochHistFreq, nonHistFreq],'stacked', 'edgeColor','b', 'faceColor', 'b','linewid',0.2);%,'linewid',1
         barPlot(2).FaceColor = [0.5 0.5 1];
         barPlot(3).FaceColor = 'w';
 %         barPlot              = bar(barSeries, [actHistFreq]', 'edgeColor','b', 'faceColor', 'b');
         
-        nonHistFreq      = hist(noTrialDataSet(noNonActiveNeurons, nPeriods), barSeries);
-        nonEpochHistFreq = hist(noTrialDataSet(~noNonActiveNeurons & ~tNoTrialDataSet(:, nPeriods), nPeriods), barSeries);
-        actHistFreq      = hist(noTrialDataSet(~noNonActiveNeurons & tNoTrialDataSet(:, nPeriods), nPeriods), barSeries);
+        nonHistFreq      = histc(noTrialDataSet(noNonActiveNeurons, nPeriods), barSeries);
+        nonEpochHistFreq = histc(noTrialDataSet(~noNonActiveNeurons & ~tNoTrialDataSet(:, nPeriods), nPeriods), barSeries);
+        actHistFreq      = histc(noTrialDataSet(~noNonActiveNeurons & tNoTrialDataSet(:, nPeriods), nPeriods), barSeries);
         
-        barPlot              = bar(barSeries, -[actHistFreq; nonEpochHistFreq; nonHistFreq]','stacked', 'edgeColor','r', 'faceColor', 'r');%,'linewid',1
+        barPlot              = bar(barSeries', -[actHistFreq, nonEpochHistFreq, nonHistFreq],'stacked', 'edgeColor','r', 'faceColor', 'r','linewid',0.2);%,'linewid',1
         barPlot(2).FaceColor = [1 0.5 0.5];
         barPlot(3).FaceColor = 'w';
 %         barPlot              = bar(barSeries, -[actHistFreq]', 'edgeColor','r', 'faceColor', 'r');

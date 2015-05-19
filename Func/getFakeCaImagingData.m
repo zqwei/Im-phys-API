@@ -15,77 +15,49 @@
 
 
 
-function SpikeDataSet = getFakeCaImagingData(SpikingDataDir, SpikeFileList, minNumTrialToAnalysis, paramsSpike)
+function nDataSet = getFakeCaImagingData(spikeDataSet, params)
     
-    SpikeDataSet       = repmat(struct('sessionIndex',1, 'nUnit', 1, ...
-                                'unit_yes_trial', 1, 'unit_no_trial', 1),1000, 1);
-    tot_Unit           = 0;
+    nDataSet           = repmat(struct('sessionIndex',1, 'nUnit', 1, ...
+                                'unit_yes_trial', 1, 'unit_no_trial', 1),length(spikeDataSet), 1);
+                            
+    timePoints         = timePointTrialPeriod(params.polein, params.poleout, params.timeSeries);
+    timeSeriesData     = params.timeSeries;
+    constFMean         = 0; %2
+    linearNoise        = params.linearNoise;
+    constNoise         = params.constNoise;
     
-    TimeToAnalysis     = paramsSpike.timeSeries;
-    
-    h                  = waitbar(0,'Initializing data loads...');
-    
-    for nfile = 1:length(SpikeFileList)
+    for nData          = 1:length(spikeDataSet)
+        paramsSet                                = [params.Fm(nData), params.K(nData), params.n(nData), params.tau_d(nData), params.tau_r(nData)];
+        nDataSet(nData).sessionIndex             = spikeDataSet(nData).sessionIndex;
+        nDataSet(nData).nUnit                    = spikeDataSet(nData).nUnit;
+        allTrialFirngAct_correct                 = [spikeDataSet(nData).unit_yes_trial; spikeDataSet(nData).unit_no_trial];
+        rMean                                    = mean(mean(allTrialFirngAct_correct(:,timePoints(1):timePoints(2))));
+        if rMean == 0; rMean = rand(); end % pre-sample is 0.5 sec, if there is one spike, then the minimal rate is 2 Hz.
+        nDataSet(nData).unit_yes_trial           = spikeTimeToImaging(spikeDataSet(nData).unit_yes_trial_spk_time, timeSeriesData, paramsSet, rMean);
+        nDataSet(nData).unit_yes_trial_index     = spikeDataSet(nData).unit_yes_trial_index;
+        nDataSet(nData).unit_no_trial            = spikeTimeToImaging(spikeDataSet(nData).unit_no_trial_spk_time, timeSeriesData, paramsSet, rMean);
+        nDataSet(nData).unit_no_trial_index      = spikeDataSet(nData).unit_no_trial_index;
+        allTrial_correct                         = [nDataSet(nData).unit_yes_trial; nDataSet(nData).unit_no_trial];
+        fMean                                    = mean(mean(allTrial_correct(:,timePoints(1):timePoints(2))));
+        nDataSet(nData).unit_yes_trial           = (nDataSet(nData).unit_yes_trial - fMean)/(fMean+constFMean);
+        nDataSet(nData).unit_no_trial            = (nDataSet(nData).unit_no_trial - fMean)/(fMean+constFMean);
+        nDataSet(nData).unit_yes_trial           = nDataSet(nData).unit_yes_trial.*(randn(size(nDataSet(nData).unit_yes_trial))*linearNoise+1)...
+                                                    +randn(size(nDataSet(nData).unit_yes_trial))*constNoise;
+        nDataSet(nData).unit_no_trial            = nDataSet(nData).unit_no_trial.*(randn(size(nDataSet(nData).unit_no_trial))*linearNoise+1)...
+                                                    +randn(size(nDataSet(nData).unit_no_trial))*constNoise;
         
-        fname               = SpikeFileList(nfile).name;
-        load([SpikingDataDir fname])
-        
-        valid_trials = (~behavior_early_report) & (behavior_report== 1) & ...
-                        (task_stimulation(:,1)==0);  %#ok<NODEF>
-                    
-        numUnits     = length(neuron_single_units); %#ok<USENS>
-        % numTrials    = length(behavior_report);
-        task_type    = task_trial_type =='y';
-        
-        
-        for nUnit           = 1:numUnits
-            n_missing_dat   = cellfun(@isempty, neuron_single_units{nUnit});
-            n_valid_yes     = valid_trials & ~n_missing_dat & task_type;
-            n_valid_no      = valid_trials & ~n_missing_dat & ~task_type;
-            sum_valid_yes   = sum(n_valid_yes);
-            sum_valid_no    = sum(n_valid_no);
-
-            if sum_valid_yes> minNumTrialToAnalysis && sum_valid_no> minNumTrialToAnalysis
-                unit_yes_trial = nan(sum_valid_yes, length(TimeToAnalysis));
-                unit_no_trial  = nan(sum_valid_no, length(TimeToAnalysis));
-                
-                find_n_valid_yes    = find(n_valid_yes)';
-                for n_trial  = 1: sum_valid_yes
-                    trial_no           = find_n_valid_yes(n_trial);
-                    end_delay          = task_cue_time(trial_no);
-                    unit_trial_spikes  = neuron_single_units{nUnit}{trial_no};
-                    unit_trial         = unit_trial_spikes - end_delay;
-                    unit_trial         = unit_trial(unit_trial>min(TimeToAnalysis) ...
-                                         & unit_trial < max(TimeToAnalysis));
-                    unit_yes_trial(n_trial,:) = spikeToImagingNonCell(unit_trial, paramsSpike);
-                end
-
-                find_n_valid_no    = find(n_valid_no)';
-
-                for n_trial  = 1: sum_valid_no    
-                    trial_no           = find_n_valid_no(n_trial);
-                    end_delay          = task_cue_time(trial_no);
-                    unit_trial_spikes  = neuron_single_units{nUnit}{trial_no};
-                    unit_trial         = unit_trial_spikes - end_delay;
-                    unit_trial         = unit_trial(unit_trial>min(TimeToAnalysis) ...
-                                         & unit_trial < max(TimeToAnalysis));
-                    unit_no_trial(n_trial,:) = spikeToImagingNonCell(unit_trial, paramsSpike);             
-                end
-                tot_Unit                              = tot_Unit + 1;
-                SpikeDataSet(tot_Unit).sessionIndex   = nfile;
-                SpikeDataSet(tot_Unit).nUnit          = nUnit;
-                SpikeDataSet(tot_Unit).unit_yes_trial = unit_yes_trial;
-                SpikeDataSet(tot_Unit).unit_yes_trial_index = find_n_valid_yes;
-                SpikeDataSet(tot_Unit).unit_no_trial  = unit_no_trial; 
-                SpikeDataSet(tot_Unit).unit_no_trial_index  = find_n_valid_no;
-            end
-        end
-        
-        waitbar(nfile/length(SpikeFileList), h, sprintf('%d of %d files have been finished...',nfile, length(SpikeFileList)));
+        nDataSet(nData).unit_yes_error           = spikeTimeToImaging(spikeDataSet(nData).unit_yes_error_spk_time, timeSeriesData, paramsSet, rMean);
+        nDataSet(nData).unit_yes_error_index     = spikeDataSet(nData).unit_yes_error_index;
+        nDataSet(nData).unit_no_error            = spikeTimeToImaging(spikeDataSet(nData).unit_no_error_spk_time, timeSeriesData, paramsSet, rMean);
+        nDataSet(nData).unit_no_error_index      = spikeDataSet(nData).unit_no_error_index;  
+        nDataSet(nData).unit_yes_error           = (nDataSet(nData).unit_yes_error - fMean)/(fMean+constFMean);
+        nDataSet(nData).unit_no_error            = (nDataSet(nData).unit_no_error - fMean)/(fMean+constFMean);
+        nDataSet(nData).unit_yes_error           = nDataSet(nData).unit_yes_error.*(randn(size(nDataSet(nData).unit_yes_error))*linearNoise+1)...
+                                                    +randn(size(nDataSet(nData).unit_yes_error))*constNoise;
+        nDataSet(nData).unit_no_error            = nDataSet(nData).unit_no_error.*(randn(size(nDataSet(nData).unit_no_error))*linearNoise+1)...
+                                                    +randn(size(nDataSet(nData).unit_no_error))*constNoise;
+        nDataSet(nData).depth_in_um              = spikeDataSet(nData).depth_in_um;
+        nDataSet(nData).AP_in_um                 = spikeDataSet(nData).AP_in_um;
+        nDataSet(nData).ML_in_um                 = spikeDataSet(nData).ML_in_um;
+        nDataSet(nData).cell_type                = spikeDataSet(nData).cell_type;
     end
-    
-    if tot_Unit < 1000
-        SpikeDataSet = SpikeDataSet(1:tot_Unit);
-    end
-    
-    close (h)

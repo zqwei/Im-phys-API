@@ -102,7 +102,7 @@ end
 ylabels                 = {'Fring Rate (Hz)', 'dF/F', 'dF/F', 'dF/F', 'dF/F' , 'dF/F'};
 yAxes_set               = [0 60; -0.5 2.0; -0.5 2.0; -0.5 2.0; -0.5 2.0 ; -0.5 2.0];
 lowFiringThres          = [15, 0.3, 0.3, 0.3, 0.3, 0.3];
-skipPlot                = false;
+skipPlot                = true;
 if ~skipPlot
     if ~exist([PlotDir '/Single_UnitsImagescWithSort'],'dir')
         mkdir([PlotDir '/Single_UnitsImagescWithSort'])
@@ -116,6 +116,27 @@ if ~skipPlot
 end
 
 close all;
+
+
+ylabels                 = {'Fring Rate (Hz)', 'dF/F', 'dF/F', 'dF/F', 'dF/F' , 'dF/F'};
+yAxes_set               = [0 60; -0.5 2.0; -0.5 2.0; -0.5 2.0; -0.5 2.0 ; -0.5 2.0];
+lowFiringThres          = [15, 0.3, 0.3, 0.3, 0.3, 0.3];
+skipPlot                = false;
+if ~skipPlot
+    if ~exist([PlotDir '/Single_UnitsImagescWithSort'],'dir')
+        mkdir([PlotDir '/Single_UnitsImagescWithSort'])
+    end
+    for nData             = 1:length(DataSetList)
+        load([TempDatDir DataSetList(nData).name '.mat'])
+        plotMeanActivityImagescWithSortWithCellinfo(nDataSet, DataSetList(nData).params, [], [], ylabels{nData}, lowFiringThres(nData), yAxes_set(nData,:)); 
+%         title(DataSetList(nData).name,'interpreter','none')
+        setPrint(6*4, 3*3, [PlotDir '/Single_UnitsImagescWithSort/Single_UnitsImagescWithSort_' DataSetList(nData).name], 'tif')
+    end
+end
+
+close all;
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % version 3.0

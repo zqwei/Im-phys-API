@@ -58,20 +58,27 @@ if ~exist([PlotDir '/Single_Units_ROC'],'dir')
     mkdir([PlotDir '/Single_Units_ROC'])
 end
 
-for nData             = fileToAnalysis
+% for nData             = fileToAnalysis
+%     load([TempDatDir DataSetList(nData).name '.mat'])
+%     plotROCPopAccLines(nDataSet, DataSetList(nData).params); 
+%     setPrint(8, 6, [PlotDir 'Single_Units_ROC/Single_Units_ROC_' DataSetList(nData).name], 'pdf')
+% end
+
+for nData             = 1:length(DataSetList)
     load([TempDatDir DataSetList(nData).name '.mat'])
     plotROCPopAccLines(nDataSet, DataSetList(nData).params); 
+    title(strrep(DataSetList(nData).name, '_', ' '))
     setPrint(8, 6, [PlotDir 'Single_Units_ROC/Single_Units_ROC_' DataSetList(nData).name], 'pdf')
 end
 
 close all
 
 
-for nData             = fileToAnalysis
-    load([TempDatDir DataSetList(nData).name '.mat'])
-    plotROCPopCompLines(nDataSet, DataSetList(nData).params); 
-    setPrint(8, 6, [PlotDir 'Single_Units_ROC/Single_Units_PreSampleVSampleROC_' DataSetList(nData).name], 'pdf')
-end
+% for nData             = fileToAnalysis
+%     load([TempDatDir DataSetList(nData).name '.mat'])
+%     plotROCPopCompLines(nDataSet, DataSetList(nData).params); 
+%     setPrint(8, 6, [PlotDir 'Single_Units_ROC/Single_Units_PreSampleVSampleROC_' DataSetList(nData).name], 'pdf')
+% end
 
 close all
 
