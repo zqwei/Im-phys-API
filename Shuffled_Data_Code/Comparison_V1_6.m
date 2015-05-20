@@ -1,58 +1,42 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 6.  Collected population decision decodability over time
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Comparison_V1_6
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 6.  Collected population decision decodability over time
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Comparison_V1_6_1
+% The same amount of units in analysis
 
 
-% numTrials           = 3000;
-% numTestTrials       = 600;
-% numTrainingTrials   = numTrials - numTestTrials;
-% trainingTargets     = rand(numTrainingTrials, 1) > 0.5;
-% testTargets         = rand(numTestTrials, 1) > 0.5;
-% totTargets          = [testTargets; trainingTargets];
-% 
-% load ('TempDat/DataList.mat');
-% addNoise         = [1 1 0 0];
-% 
-% for nData             = 1:length(DataSetList)
-%     load(['TempDat/' DataSetList(nData).name '.mat'])    
-%     figure;
-%     nSessionData = shuffleSessionData(nDataSet, totTargets);
-%     decodability = decodabilityLDA(nSessionData +randn(size(nSessionData))*1e-3/sqrt(numTrials)* addNoise(nData), trainingTargets, testTargets);
-%     hold on
-%     plot(DataSetList(nData).params.timeSeries, decodability, 'k', 'linewid',1);
-%     xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
-%     ylim([0.5 1])
-%     gridxy ([DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0],[], 'Color','k','Linestyle','--','linewid', 0.5)
-%     box off;
-%     hold off;
-%     setPrint(4, 3, ['Plot/Collected_Units_Decodability_' DataSetList(nData).name], 'png')
-% end
 
 
 addpath('../Func');
 setDir;
 
-numFold             = 50;
-numTrials           = 4000;
-numTestTrials       = 2000;
+numFold             = 10;
+numTrials           = 500;
+numTestTrials       = 200;
 numTrainingTrials   = numTrials - numTestTrials;
-% numRandPickUnits    = 60;
+numRandPickUnits    = 100;
+ROCThres            = 0.6;
 
 load ([TempDatDir 'DataListShuffle.mat']);
-numRandPickUnits    = 1000;
-addNoise            = [1 0 0 0 0 0];
-fileToAnalysis      = [1 5];
+addNoise         = [1 0 0 0 0 0];
 
-if ~exist([PlotDir '/Collected_Units_Decodability'],'dir')
-    mkdir([PlotDir '/Collected_Units_Decodability'])
+if ~exist([PlotDir '/CollectedUnitsDecodability'],'dir')
+    mkdir([PlotDir '/CollectedUnitsDecodability'])
 end
 
-for nData             = fileToAnalysis
+
+for nData             = [1 3 6]%1:length(DataSetList)
     load([TempDatDir DataSetList(nData).name '.mat'])
     figure;
+    selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';% & [DataSetList(nData).cellinfo(:).cellType] == 1;
+    selectedNeuronalIndex = selectedHighROCneurons(nDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);
+    nDataSet              = nDataSet(selectedNeuronalIndex);
+    decodability          = zeros(numFold, size(nDataSet(1).unit_yes_trial,2));
     
-    decodability = zeros(numFold, size(nDataSet(1).unit_yes_trial,2));
+    
     
     for nFold    = 1:numFold
         trainingTargets     = [true(numTrainingTrials/2,1); false(numTrainingTrials/2,1)];
@@ -80,6 +64,7 @@ for nData             = fileToAnalysis
     hold off;
     xlabel('Time (s)');
     ylabel('Decodability');
-    setPrint(4, 3, [PlotDir 'Collected_Units_Decodability/All_Units_Decodability_FixedNumberUnits_' DataSetList(nData).name], 'pdf')
+    setPrint(4, 3, [PlotDir 'CollectedUnitsDecodability/CollectedUnitsDecodabilityFixedNumberUnits_' DataSetList(nData).name], 'pdf')
 end
+
 close all;

@@ -67,8 +67,15 @@ end
 for nData             = 1:length(DataSetList)
     load([TempDatDir DataSetList(nData).name '.mat'])
     plotROCPopAccLines(nDataSet, DataSetList(nData).params); 
-    title(strrep(DataSetList(nData).name, '_', ' '))
-    setPrint(8, 6, [PlotDir 'Single_Units_ROC/Single_Units_ROC_' DataSetList(nData).name], 'pdf')
+%     title(strrep(DataSetList(nData).name, '_', ' '))
+    setPrint(8, 6, [PlotDir 'Single_Units_ROC/SingleUnitsROC_' DataSetList(nData).name], 'pdf')
+end
+
+for nData             = 2:length(DataSetList)
+    load([TempDatDir DataSetList(nData).name '.mat'])
+    plotROCPopAccLines(nDataSet(DataSetList(nData).ActiveNeuronIndex), DataSetList(nData).params); 
+%     title(strrep(DataSetList(nData).name, '_', ' '))
+    setPrint(8, 6, [PlotDir 'Single_Units_ROC/SingleActUnitsROC_' DataSetList(nData).name], 'pdf')
 end
 
 close all

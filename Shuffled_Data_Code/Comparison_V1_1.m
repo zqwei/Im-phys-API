@@ -134,6 +134,20 @@ if ~skipPlot
     end
 end
 
+
+skipPlot                = false;
+if ~skipPlot
+    if ~exist([PlotDir '/Single_UnitsImagescWithSort'],'dir')
+        mkdir([PlotDir '/Single_UnitsImagescWithSort'])
+    end
+    for nData             = 2:length(DataSetList)
+        load([TempDatDir DataSetList(nData).name '.mat'])
+        plotMeanActivityImagescWithSortWithCellinfo(nDataSet(DataSetList(nData).ActiveNeuronIndex), DataSetList(nData).params, [], [], ylabels{nData}, lowFiringThres(nData), yAxes_set(nData,:)); 
+%         title(DataSetList(nData).name,'interpreter','none')
+        setPrint(6*4, 3*3, [PlotDir '/Single_UnitsImagescWithSort/Single_UnitsImagescWithSort_' DataSetList(nData).name], 'tif')
+    end
+end
+
 close all;
 
 

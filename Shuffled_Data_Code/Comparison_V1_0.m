@@ -113,8 +113,10 @@ params.tau_rise        =  0.0670;
 %
 % Spike
 nDataSet               = getSpikeData(SpikingDataDir, SpikeFileList, params.minNumTrialToAnalysis, params.timeSeries, params.binsize); %#ok<NASGU>
+nDataSet               = getDFFSpike(nDataSet, params);
 DataSetList(1).name    = 'Shuffle_Spikes';
 DataSetList(1).params  = params; 
+DataSetList(2).ActiveNeuronIndex = true(length(nDataSet),1);
 save([TempDatDir DataSetList(1).name '.mat'], 'nDataSet');
 
 % % Fake Ca
@@ -142,9 +144,9 @@ params.minNumTrialToAnalysis =  minNumTrialToAnalysis;
 params.expression      = 'Transgentic';
 nDataSet               = getCaImagingData(CaImagingShortDelayFastDir, CaImagingShortDelayFastFileList, params.minNumTrialToAnalysis, params); %#ok<NASGU>
 nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
-nDataSet               = nDataSet(~nonActiveNeuronIndex);
 DataSetList(2).name    = 'Shuffle_Ca_Fast_Short_Delay';
 DataSetList(2).params  = params; 
+DataSetList(2).ActiveNeuronIndex = ~nonActiveNeuronIndex;
 save([TempDatDir DataSetList(2).name '.mat'], 'nDataSet');
 
 % short Ca slow
@@ -160,9 +162,9 @@ params.minNumTrialToAnalysis =  minNumTrialToAnalysis;
 params.expression      = 'Transgentic';
 nDataSet               = getCaImagingData(CaImagingShortDelaySlowDir, CaImagingShortDelaySlowFileList, params.minNumTrialToAnalysis, params); %#ok<NASGU>
 nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
-nDataSet               = nDataSet(~nonActiveNeuronIndex);
 DataSetList(3).name    = 'Shuffle_Ca_Slow_Short_Delay';
 DataSetList(3).params  = params; 
+DataSetList(3).ActiveNeuronIndex = ~nonActiveNeuronIndex;
 save([TempDatDir DataSetList(3).name '.mat'], 'nDataSet');
 
 % short Ca slow
@@ -178,9 +180,9 @@ params.minNumTrialToAnalysis =  minNumTrialToAnalysis;
 params.expression      = 'Transgentic';
 nDataSet               = getCaImagingData(CaImagingLongDelayFastDir, CaImagingLongDelayFastFileList, params.minNumTrialToAnalysis, params); %#ok<NASGU>
 nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
-nDataSet               = nDataSet(~nonActiveNeuronIndex);
 DataSetList(4).name    = 'Shuffle_Ca_Fast_Long_Delay';
 DataSetList(4).params  = params; 
+DataSetList(4).ActiveNeuronIndex = ~nonActiveNeuronIndex;
 save([TempDatDir DataSetList(4).name '.mat'], 'nDataSet');
 
 % long Ca slow
@@ -196,9 +198,9 @@ params.minNumTrialToAnalysis =  minNumTrialToAnalysis;
 params.expression      = 'Transgentic';
 nDataSet               = getCaImagingData(CaImagingLongDelaySlowDir, CaImagingLongDelaySlowFileList, params.minNumTrialToAnalysis, params); %#ok<NASGU>
 nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
-nDataSet               = nDataSet(~nonActiveNeuronIndex);
 DataSetList(5).name    = 'Shuffle_Ca_Slow_Long_Delay';
 DataSetList(5).params  = params; 
+DataSetList(5).ActiveNeuronIndex = ~nonActiveNeuronIndex;
 save([TempDatDir DataSetList(5).name '.mat'], 'nDataSet');
 
 
@@ -214,9 +216,11 @@ params.minNumTrialToAnalysis =  minNumTrialToAnalysis;
 params.expression      = 'Virus';
 nDataSet               = getCaImagingData(CaImagingShortDelaySlowVirusDir, CaImagingShortDelaySlowVirusFileList, params.minNumTrialToAnalysis, params);
 nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
-nDataSet               = nDataSet(~nonActiveNeuronIndex);
 DataSetList(6).name    = 'Shuffle_Ca_Slow_Short_Delay_Virus';
 DataSetList(6).params  = params; 
+DataSetList(6).ActiveNeuronIndex = ~nonActiveNeuronIndex;
 save([TempDatDir DataSetList(6).name '.mat'], 'nDataSet');
 
 save([TempDatDir 'DataListShuffle.mat'], 'DataSetList');
+
+Comparison_V1_0_1;

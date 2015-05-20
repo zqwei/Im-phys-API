@@ -25,6 +25,7 @@ function CaImaging    = spikeTimeToImaging(spikeTimes, timeSeriesData, params, r
     n           = params(3);
     tau_decay   = params(4);
     tau_rise    = params(5);
+    intNoise    = params(6);
 
     Ca                        = zeros(length(spikeTimes), length(timeSeriesData));
     
@@ -41,6 +42,8 @@ function CaImaging    = spikeTimeToImaging(spikeTimes, timeSeriesData, params, r
             Ca(nTrial,:)      = Ca(nTrial,:) + exp(-Delta_t/tau_decay).*(1-exp(-Delta_t/tau_rise));
         end
     end
+    
+    Ca                        = Ca + randn(size(Ca))*intNoise;
     
     CaImaging                 = Fm* Ca.^n ./ (K^n + Ca.^n);
 %     CaImaging                 = (randn(size(CaImaging))*0.1+1).*CaImaging;
