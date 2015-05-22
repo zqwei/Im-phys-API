@@ -43,7 +43,6 @@ function CaImaging    = spikeTimeToImaging(spikeTimes, timeSeriesData, params, r
         end
     end
     
-    Ca                        = Ca + randn(size(Ca))*intNoise;
-    
+    Ca                        = Ca + randn(size(Ca))*intNoise;    
+    Ca(Ca<0)                  = 0;    
     CaImaging                 = Fm* Ca.^n ./ (K^n + Ca.^n);
-%     CaImaging                 = (randn(size(CaImaging))*0.1+1).*CaImaging;

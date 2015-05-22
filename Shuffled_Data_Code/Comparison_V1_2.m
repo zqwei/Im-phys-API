@@ -82,6 +82,8 @@ for nData             = 1:length(DataSetList)
     setPrint(m*8, m*6, [PlotDir 'Single_Units_Hist/SingleUnitsHist_' DataSetList(nData).name ], 'pdf')
 end
 
+
+nFactor = 1/7;
 for nData             = 2:length(DataSetList)
     load([TempDatDir DataSetList(nData).name '.mat'])
     plotHistActivityPopWithNonActiveNeurons(nDataSet(DataSetList(nData).ActiveNeuronIndex), DataSetList(nData).params, barSeries{nData}, nFactor, xlabels{nData},strrep(DataSetList(nData).name,'_',' ')); 

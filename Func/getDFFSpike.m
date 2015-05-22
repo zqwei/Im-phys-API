@@ -20,7 +20,7 @@ function nDataSet = getDFFSpike(spikeDataSet, params)
     nDataSet           = spikeDataSet;
                             
     timePoints         = timePointTrialPeriod(params.polein, params.poleout, params.timeSeries);
-    constFMean         = 0;
+    constFMean         = 1.0;
     
     for nData          = 1:length(spikeDataSet)
         allTrial_correct                         = [nDataSet(nData).unit_yes_trial; nDataSet(nData).unit_no_trial];

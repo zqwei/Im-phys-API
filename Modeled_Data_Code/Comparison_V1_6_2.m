@@ -19,15 +19,15 @@ numTestTrials       = 200;
 numTrainingTrials   = numTrials - numTestTrials;
 ROCThres            = 0.7;
 
-load ([TempDatDir 'DataListShuffle.mat']);
+load ([TempDatDir 'DataListModeled.mat']);
 addNoise         = [1 0 0 0 0 0];
 
-if ~exist([PlotDir '/CollectedUnitsDecodability'],'dir')
-    mkdir([PlotDir '/CollectedUnitsDecodability'])
+if ~exist([PlotDir '/CollectedModelUnitsDecodability'],'dir')
+    mkdir([PlotDir '/CollectedModelUnitsDecodability'])
 end
 
 
-for nData             = [1 3 6]%1:length(DataSetList)
+for nData             = 1:length(DataSetList)
     load([TempDatDir DataSetList(nData).name '.mat'])
     oldDataSet               = nDataSet;
     maxRandPickUnits         = 15;
@@ -35,7 +35,7 @@ for nData             = [1 3 6]%1:length(DataSetList)
     figure;
     hold on
     for numRandPickUnits      = 1:maxRandPickUnits;
-        selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';% & [DataSetList(nData).cellinfo(:).cellType] == 1;
+        selectedNeuronalIndex = [DataSetList(nData).cellinfo(:).cellType] == 1;
         selectedNeuronalIndex = selectedHighROCneurons(oldDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);
         nDataSet              = oldDataSet(selectedNeuronalIndex);
         decodability          = zeros(numFold, size(nDataSet(1).unit_yes_trial,2));
@@ -59,17 +59,17 @@ for nData             = [1 3 6]%1:length(DataSetList)
         end
         decodabilityAll(numRandPickUnits, :) = mean(decodability,1);
     end
-    imagesc(DataSetList(nData).params.timeSeries, (1:maxRandPickUnits)*3, decodabilityAll,[0.5 1]);
+    imagesc(DataSetList(nData).params.timeSeries, (1:maxRandPickUnits)*10, decodabilityAll,[0.5 1]);
     axis xy;
     xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
-    ylim([3 maxRandPickUnits*3])
+    ylim([10 maxRandPickUnits*10])
     gridxy ([DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0],[], 'Color','k','Linestyle','--','linewid', 0.5)
     box off;
     hold off;
     xlabel('Time (s)');
     ylabel('# units');
     colorbar
-    setPrint(8, 6, [PlotDir 'CollectedUnitsDecodability/CollectedUnitsDecodabilityDiffNumberUnitsFixedROCThres_' DataSetList(nData).name], 'pdf')
+    setPrint(8, 6, [PlotDir 'CollectedModelUnitsDecodability/CollectedUnitsDecodabilityDiffNumberUnitsFixedROCThres_' DataSetList(nData).name], 'pdf')
 end
 
 close all;

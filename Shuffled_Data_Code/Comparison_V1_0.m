@@ -116,7 +116,7 @@ nDataSet               = getSpikeData(SpikingDataDir, SpikeFileList, params.minN
 nDataSet               = getDFFSpike(nDataSet, params);
 DataSetList(1).name    = 'Shuffle_Spikes';
 DataSetList(1).params  = params; 
-DataSetList(2).ActiveNeuronIndex = true(length(nDataSet),1);
+DataSetList(1).ActiveNeuronIndex = true(length(nDataSet),1);
 save([TempDatDir DataSetList(1).name '.mat'], 'nDataSet');
 
 % % Fake Ca

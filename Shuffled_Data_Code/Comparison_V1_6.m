@@ -18,7 +18,7 @@ numTrials           = 500;
 numTestTrials       = 200;
 numTrainingTrials   = numTrials - numTestTrials;
 numRandPickUnits    = 100;
-ROCThres            = 0.6;
+ROCThres            = 0.5;
 
 load ([TempDatDir 'DataListShuffle.mat']);
 addNoise         = [1 0 0 0 0 0];

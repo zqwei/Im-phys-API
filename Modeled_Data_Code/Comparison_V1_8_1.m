@@ -9,8 +9,8 @@ setDir;
 load ([TempDatDir 'DataListModeled.mat']);
 addNoise         = [1 0 0 0 0 0];
 
-if ~exist([PlotDir '/Collected_ModelUnits_Decodability_Epoch'],'dir')
-    mkdir([PlotDir '/Collected_ModelUnits_Decodability_Epoch'])
+if ~exist([PlotDir '/CollectedModelUnitsDecodabilityEpoch'],'dir')
+    mkdir([PlotDir '/CollectedModelUnitsDecodabilityEpoch'])
 end
 
 numRandPickUnits    = 100;
@@ -27,7 +27,8 @@ numFold               = 30;
 
 for nData             = 1:length(DataSetList)
     load([TempDatDir DataSetList(nData).name '.mat'])   
-    nDataSet     = nDataSet(selectedNeuronalIndex);
+    selectedNeuronalIndex = [DataSetList(nData).cellinfo(:).cellType] == 1;
+    selectedNeuronalIndex = selectedHighROCneurons(nDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);
     figure;
     timePoints   = timePointTrialPeriod(DataSetList(nData).params.polein, DataSetList(nData).params.poleout, DataSetList(nData).params.timeSeries);
     numPeriods   = length(timePoints) - 1;
@@ -49,7 +50,7 @@ for nData             = 1:length(DataSetList)
     hold off;
     ylabel('Decodability')
     xlabel('Time (s)')
-    setPrint(8, 6, [PlotDir 'Collected_ModelUnits_Decodability_Epoch/Collected_Units_Decodability_EpochLDA1AllAccFixedNumUnits_' DataSetList(nData).name], 'pdf')
+    setPrint(8, 6, [PlotDir 'CollectedModelUnitsDecodabilityEpoch/Collected_Units_Decodability_EpochLDA1AllAccFixedNumUnits_' DataSetList(nData).name], 'pdf')
 end
 
 close all

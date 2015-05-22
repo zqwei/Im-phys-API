@@ -22,7 +22,7 @@ function nDataSet = getFakeCaImagingData(spikeDataSet, params)
                             
     timePoints         = timePointTrialPeriod(params.polein, params.poleout, params.timeSeries);
     timeSeriesData     = params.timeSeries;
-    constFMean         = 0; %2
+    constFMean         = 0.1; %2
     intNoise           = params.intNoise;
     constNoise         = params.extNoise;
     
