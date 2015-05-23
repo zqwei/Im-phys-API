@@ -1,0 +1,505 @@
+% Version Control History
+% 
+% date: 2015 - 01 - 23 
+% created by: Ziqiang Wei
+% commented by: 
+
+
+\documentclass[12pt, oneside]{nature}
+%\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+%\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
+%%\geometry{landscape}                		% Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    		        % Activate to begin paragraphs with an empty line rather than an indent					
+%\usepackage{amssymb}
+\usepackage{amsmath}
+
+\bibliographystyle{naturemag}
+\title{Trade off between decodability of stimulus and precision of temporal dynamics 
+in different recording methods}
+\author{Ziqiang Wei, Tsai-Wen Chen, Nuo Li, Karel Svoboda, Shaul Druckmann}
+\date{}
+
+\begin{document}
+\maketitle
+\begin{affiliations}
+ \item Janelia Research Campus, HHMI, Ashburn, VA 20147
+ \item Department of Neuroscience, the Johns Hopkins University, Baltimore, MD 21205
+\end{affiliations}
+
+\newpage
+
+\begin{abstract}
+\end{abstract}
+
+\newpage
+
+% \section*{Results}
+
+\section*{ALM neurons show the similarity choice-specific activity but 
+distinguishable temporal dynamics across datasets using different recording techniques}
+
+Mice were trained to discriminate the location of a stimulus onto their
+whiskers, held it in the memory, and finally made a licking right or
+left response according to their tactile perception of the after a delay.
+
+ALM neurons exhibit the choice-specific activity
+in the studies using electrophysiological recordings
+
+(Guo et al., 2014). For example, 
+
+
+These results are based on the single unit analysis methods: Figure 1-3
+
+\noindent ALM neurons show the similarity choice-specific activity 
+across datasets using different recording techniques (Figure 1).
+Most of the neurons shows a selectivity of choice for at least 
+one epoch (sample, delay, or response) of the task, while a 
+fraction of the neurons reveal a change of the selectivity.
+
+\noindent Firing activity in the spiking-neuron dataset displays a 
+steep change in time; those in two GCaMP6f datasets vary fast 
+but gradually in time; while that in the GCaMP6s dataset shows 
+a slow and gradual transition(Figure 1). The same thing holds true for the
+selectivity indices (Supplementary Figure 1).
+
+\noindent Firing activities of neurons in the GCaMP6s dataset for 
+different trial type maintain highly distinguishable for a longer 
+period of time in a task than those in the other three datasets (Figure 1).
+
+\noindent To quantitively illustrate these observations, we measured changes
+of the firing activity and selectivities across task epochs. 
+
+\noindent For each dataset, the difference of the firing activity distributions 
+for different trial types is limited (Figure 2), however, that could be obvious 
+across the different epochs. In general, the distributions become wider and 
+flatter in time, which may result from that more neurons exhibit a distinguishable 
+firing activity in different trial types (Figure 1A). 
+
+\noindent Across datasets, neurons in GCaMP6s dataset display a wider 
+distribution of their activity in all four epochs than the other three datasets. 
+
+\noindent Moreover, these distributions (Figure 2) are nearly identical for the 
+two GCaMP6f datasets, which indicates little effect of delay durations of the task 
+to recordings.
+
+\noindent Consistently among all datasets, the distribution of ROC indices (Figure 3)
+become wider and flatter against time, indicating the number of neurons 
+with strong selectivity of choice increases as a function of time.
+
+\noindent The distribution of spiking-neuron dataset is wider and more heavy-tailed 
+than that of GCaMP6s dataset from sample to response; both of them are wider than 
+those of two GCaMP6f datasets; the distributions of two GCaMP6f datasets are nearly 
+identical, despite the lengths of delays.
+
+\noindent The heavy-tailed distribution of spiking-neuron dataset,
+comparing to three Ca++ imaging datasets, could result from
+its activity distribution (Poisson distribution vs Gaussian distribution).
+see also the sparseness of LDA decoder for licking-right
+trials (Supplementary Figure S3), which also indicates a
+sparse coding for spiking-neuron dataset, while
+dense coding for three Ca++ imaging datasets.
+
+\section*{Distinct characteristics among different Ca++ imaging datasets
+can be viewed as a trade-off between decoding accuracy of stimulus
+and precision of temporal dynamics of the network}
+
+\noindent In three Ca++ imaging datasets, we see that the selectivity
+remains high while the dynamics goes slow in GCaMP6s datasets; 
+the selectivity changes rapidly and displays more temporal dynamics
+in GCaMP6f datasets. We thus want to explore whether there is a trade-off 
+between decoding accuracy of stimulus (using a slow, but high
+SNR indicator like GCaMP6s)
+and precision of temporal dynamics of the network (using a fast, but low
+SNR indicator like GCaMP6f): Figure 4-6
+
+\noindent First, we test whether there is any difference of decodabilities of trial
+type and epochs in Ca++ imaging datasets using slow and fast temporal dynamics.
+
+\noindent Decodability of trial type fast saturates to nearly one for spiking-neuron and 
+GCaMP6s datasets, however, it ramps slowly for two GCaMP6f datasets. (Figure 4A)
+
+\noindent Decodability of trial type decreases dramatically as randomly removing a fraction of neurons 
+in the pool of collected neurons in GCaMP6f dataset, but that is less influenced in
+spiking-neuron dataset and GCaMP6s dataset (Figure 4B). For spiking-neuron dataset,
+this results from that neurons in this dataset employ the sparse coding (Supplementary
+Figure 3); \%KO would thus have little influence, unless a key neuron is kicked out.
+For Ca++ imaging datasets, neurons of which use a denser LDA decoder, this difference
+stems mainly from the ROC distributions of collected neurons (Figure 3B vs Figures 3CD).
+
+\noindent There are main two factors that can account for the distinct ROC distributions. First,
+the GCaMP6f dataset has a larger amount of private noise (we will return to this in Figure 6A).
+Second, the GCaMP6s dataset has a slower temporal dynamics, which allows the ROC maintains
+distinguishable for a longer time (we will test this hypothesis later in Figure 5).
+
+\noindent Decodability of epochs (Figure 4C) has steep changes at the moment of next 
+epoch in the spiking-neuron dataset, and GCaMP6f datasets, while that is 
+obviously delayed in the GCaMP6s dataset. This could result from the slow 
+temporal dynamics of GCaMP6s indicator, which smooths out the transient
+change in time.
+
+\noindent The change of trial-type decodability at \%KOs and the delay of 
+decoding epoch can therefore be viewed as two signatures to differentiate 
+spiking-neuron, GCaMP6s and GCaMP6f datasets.
+
+\noindent Secondly, the change of decodability of stimulus could exclusively results from the
+SNRs of the different Ca++ imaging indicators, in the case of which there would
+be no trade-off between between decoding accuracy of stimulus
+and precision of temporal dynamics of the network. We then further exam whether
+change of decodability of stimulus also comes from the slowness of temporal dynamics,
+and in which degree such a transient change in time is smoothed out in each Ca++ imaging dataset.
+By doing this, we study the dynamics of instantaneous change of LDA direction 
+(for licking-right trials) and that of PCA direction (for maximum variance direction). 
+We found:
+
+\noindent Instantaneous LDA decoders display a strong similarity within 
+epochs, but weak similarity across epochs for all four datasets. Nevertheless,
+that in GCaMP6s dataset also shows a strong similarity across epochs (from sample to response),
+which could result from the slow dynamics of GCaMP6s indicator (Figure 5A).
+
+\noindent Instantaneous PCA decoders (Figure 5B) display a strong similarity 
+exclusively within a single epochs for all four datasets, indicating
+we can use PCA direction as a reference to explore the slowness
+of temporal dynamics in encoding trial type.
+
+\noindent Figure 5C shows that instantaneous LDA decoder (x-axis direction) 
+has a strong similarity with instantaneous PCA decoder (y-axis direction) at 
+the current time, while that has a strong similarity with instantaneous PCA 
+decoder at the past time for all three Ca++ imaging datasets, which indicating 
+a smoothing effect exists in Ca++ imaging datasets.  
+
+\noindent Importantly, this time lag spans about 3.0 sec for GCaMP6s datasets, 
+but is less than 0.5 sec for both GCaMP6f datasets.
+
+\noindent All the results in Figures 4A,C -5 hold true for single sessions
+in each datasets (Supplementary Figures 2, 4-8).
+
+\noindent We last want to explore how neuronal variability is distributed for
+temporal dynamics, stimulus and their interactions, in which way,
+we can quantitively study whether there is a trade-off between 
+variability of temporal dynamics and that of stimulus across Ca++ imaging
+datasets.
+
+\noindent First, a large fraction of the neuronal variability across all datasets
+comes from the neuronal private noise (21\% for spiking-neuron dataset; 
+15\% for GCaMP6s dataset; 35\% for GCaMP6f dataset).
+
+\noindent Second, The majority of the variability of spiking-neuron dataset comes from the
+temporal dynamics, which is captured by the first two components; that of
+GCaMP6s dataset is dominated by the stimulus-driven variability, which is
+captured by the first component; that of GCaMP6f dataset is dominated by 
+the temporal dynamics, which is captured by the first two components.
+
+\noindent Ca++ imaging recordings would thus display a
+trade-off between decodability of trial type 
+and temporal dynamics.
+
+\section*{Neuronal mechanism accounts for difference among the datasets
+using different recording techniques}
+\noindent ZW: we may need more discussion about modeling Ca++ imaging dataset
+from spiking neurons.
+
+\noindent Figure 7: schematic diagram of model
+
+\noindent Figure 8: model prediction
+
+
+% \section*{Discussion}
+
+
+\begin{methods}
+\subsection{Neuronal recordings in the tactile discrimination task}
+% ZW: I will write a brief version of this session as what I know about
+%     the experiment and recording methods
+% ZW: NL and TC will work on this subsection in detail
+Experimental scheme (A brief version of this)
+Emphasize maybe only on the difference from Guo et al., 2013 Neuron;
+and that from Guo et al., 2014 Plos One
+Spike dataset (Nuo Li); 
+Ca++ imaging dataset (Tsai-Wen Chen): 
+% ZW: TC added one more section `GCaMP6s' data with long delay
+short delay using GCaMP6f, 
+short delay using GCaMP6s, 
+long delay using GCaMP6f
+
+\subsection{Preprocessing}
+The raw input to analyses of Ca++ imaging datasets
+was the time-serial fluorescence of neuronal activity, $F(t)$. 
+These fluorescence signals
+were converted into $\Delta F/F$, namely the neuronal 
+firing activity measured by Ca++ imagings, as
+
+\begin{equation*}
+  r(t) = (F(t)-<F(t)>_t)/(<F(t)_t>+c)
+\end{equation*}
+where $<F(t)>_t$ is mean firing activity of each registered
+neuron, and a small constant $c$ prevents division by zero.
+
+In the single-unit analysis of all datasets, we removed the recording units
+with the number of correct trials less than 30 in either trial type condition (i.e.
+licking right or left). We then applied the single neuron data analyses, like
+PSTH, firing-activity distribution, ROC-index distribution and two-sample
+z-score analysis of selectivity, to such datasets. The simultaneous recording
+datasets were then determined according to the analyses of firing-activity
+distribution and ROC-index.
+
+
+
+\subsection{Neuronal model -- generation of Ca++ imaging data from spikes}
+% ZW: following Spike_Ca_model codes by T-WC on 2014 - 09 - 26
+In light of the simultaneously recording of the 
+
+\subsection{Choice index analysis of single neuron} 
+
+\subsection{Population analysis}
+Two types 
+
+\subsection{Sparseness of the optimal linear decoder}
+We measured the sparseness of the 
+
+\subsection{De-mixed PCA analysis}
+
+\end{methods}
+
+%\newpage
+%
+%\begin{thebibliography}{1}
+%\bibitem{} 
+%\end{thebibliography}
+%
+%\newpage
+%
+%\begin{addendum}
+%	\item [Acknowledgements] 
+%	\item [Author contributions] K.S. and S.D. conceived of the project. N.L., T.-W.C. and K.S. developed the animal experiment and recoding methods. N.L. collected the spiking data. T.-W.C. collected the GCaMP6s and GCaMP6f data. T.-W.C. and K.S. developed the experimental scheme of simultaneous recording of spikes and Ca++ imaging signal in \textbf{Figure 7}. T.-W.C. collected the data in \textbf{Figure 7}. Z.W. and S.D. developed analysis methods of neuronal data. Z.W. and T.-W.C. developed neuronal model of Ca++ imaging generation from spiking data. Z.W. performed the analysis and modeling, and contributed to both codes.
+%	\item[Competing Interests] The authors declare that they have no
+%	competing financial interests.
+%	\item[Correspondence] Correspondence and requests for materials
+%	should be addressed to ~(email: ).
+%\end{addendum}
+
+\newpage
+
+\section*{Figure legends}
+\subsection{Figure 1: ALM neurons show the similarity choice-specific activity 
+across datasets using different recording techniques.} 
+(\textbf{A}) Left panel: normalized neuronal activity of all the neurons in
+the spiking-neuron dataset ($n=595$) during a stimulus location discrimination 
+task (Guo et al., 2014); Right panel: Exemplary neurons; blue lines
+and shadows are for the average and sem of firing activity in licking-right trials; 
+red lines and shadows are for the average and sem of firing activity 
+in licking-left trials. (\textbf{B-D}) The same plots as \textbf{A}, expect the data 
+were collected using Ca++ imaging methods where the indicators were GCaMP6s 
+($n=307$), GCaMP6f ($n=114$), and GCaMP6f 
+($n=263$), respectively; the delay durations were 1.4 sec, 1.4 sec and 3.0 sec, 
+respectively. Time zeros of all trials are aligned to the moment of response cue. 
+In all datasets, the neurons exhibit similar heterogeneous activity patterns in a task,
+e.g. most of the neurons shows a selectivity of choice for at least one epoch
+(sample, delay, or response) of the task, while a fraction of the neurons reveal
+a change of the selectivity (which is transient in the spike-neuron dataset, and is
+fast but gradual in two GCaMP6s dataset, and is quite slow in the GCaMP6s dataset;
+see also \textbf{Supplementary Figure 1} for a detailed demonstration of selectivity
+indices against time for neurons in each dataset).
+Generally, firing activity in the spiking-neuron dataset displays a 
+steep change in time; those in two GCaMP6f datasets vary fast but gradually in
+time; while that in the GCaMP6s dataset shows a slow and gradual transition.
+On the other hand, firing activities of neurons in the GCaMP6s dataset for 
+different trial type maintain highly distinguishable for a longer period of time in a task 
+than those in the other three datasets.
+
+\subsection{Figure 2: Distribution of neuronal activities at different epochs of a task.}
+Distributions of neuronal activities at four epochs of a task (pre-sample,
+sample, delay and response) for four datasets (\textbf{A}: spiking-neuron
+dataset; \textbf{B}: GCaMP6s dataset with delay duration of 1.4 sec; 
+\textbf{C}: GCaMP6f dataset with delay duration of 1.4 sec; 
+\textbf{D}: GCaMP6s dataset with delay duration of 3.0 sec); 
+blue bars and fitting lines for licking-right
+trials; red bars and fitting lines for licking-left trials; Poisson distribution is fitted
+for neurons in the spiking dataset; Gaussian distributions are fitted for those in the other three datasets. 
+For each dataset, the difference of
+the distributions for different trial types is limited, however, that could be obvious across
+the different epochs. In general, the distributions become wider and flatter in
+time, which may result from that more neurons exhibit a distinguishable firing
+activity in different trial types. Specifically, neurons in GCaMP6s dataset display
+a wider distribution of their activity in all four epochs than the other three datasets.
+Moreover, these distributions are nearly identical for the two
+GCaMP6f datasets, which indicates little effect of delay durations of the task to recordings.
+
+\subsection{Figure 3: Single neuron choice probability index distribution indicates stronger
+selectivity of trial type in spiking-neuron and GCaMP6s datasets.}
+Distributions of ROC indices for licking-right trials at different epochs of a task
+(pre-sample, sample, delay and response) for four datasets (\textbf{A}: spiking-neuron
+dataset; \textbf{B}: GCaMP6s dataset with delay duration of 1.4 sec; 
+\textbf{C}: GCaMP6f dataset with delay duration of 1.4 sec; 
+\textbf{D}: GCaMP6s dataset with delay duration of 3.0 sec); Gaussian distributions are applied
+to fit for all four datasets. Consistently among all datasets, the distribution of ROC indices
+become wider and flatter against time, indicating the number of neurons with strong
+selectivity of choice increases as a function of time. The distribution of spiking-neuron dataset
+is wider and more heavy-tailed than that of GCaMP6s dataset from sample to response;
+%(another view of this heavy-tailed distribution can be indicated from the spareness of LDA
+% coefficients, Supplementary Figure 3); 
+both of them are wider than those of two GCaMP6f datasets; the distributions of two GCaMP6f datasets
+are nearly identical, despite the lengths of delays.
+
+\subsection{Figure 4: Decodability of trial types and that of task epochs can be viewed as signatures
+of datasets.}
+(\textbf{A}) Decodability of trial types (LDA decoder) increases as a function of time from sample to response for 
+collected neurons in four datasets (from left to right: spiking-neuron dataset, 
+GCaMP6s dataset with delay duration of 1.4 sec,
+GCaMP6f dataset with delay duration of 1.4 sec, and GCaMP6f dataset with delay duration of 3.0 sec;
+the same plots for each simultaneously recording session are shown in \textbf{Supplementary Figure 2}).
+Decodability fast saturates to nearly one for spiking-neuron and GCaMP6s datasets, however, it ramps
+slowly for two GCaMP6f datasets. 
+(\textbf{B}) Decodability decreases as randomly removing a fraction of neurons (a.k.a. \%KO) in 
+the pool of collected neurons for each dataset
+(from left to right: spiking-neuron dataset, 
+GCaMP6s dataset with delay duration of 1.4 sec,
+and GCaMP6f dataset with delay duration of 3.0 sec),
+which also changes as a function of time. \%KO has a considerable influence on GCaMP6f dataset, while
+a very limited effect on the other two. 
+(\textbf{C}) Decodability of epochs in a trial varies a function of time of collect neurons
+for each dataset
+(from left to right: spiking-neuron dataset, 
+GCaMP6s dataset with delay duration of 1.4 sec,
+GCaMP6f dataset with delay duration of 1.4 sec, 
+and GCaMP6f dataset with delay duration of 3.0 sec;
+the same plots for each simultaneously recording session are shown in \textbf{Supplementary Figure 4}). 
+Decodability of epochs has steep changes at the moment of next epoch
+in the spiking-neuron dataset, and GCaMP6f datasets, while that 
+is obviously delayed in the GCaMP6s dataset.
+The change of trial-type decodability at \%KOs and 
+the delay of decoding epoch can therefore be viewed as two signatures
+to differentiate spiking-neuron, GCaMP6s and GCaMP6f datasets.
+
+\subsection{Figure 5: Instantaneous change of LDA direction is lagged to that of PCA direction
+in Ca++ image datasets.}
+(\textbf{A}) Instantaneous LDA decoders (for licking-right trials) display a strong similarity within 
+epochs, but weak similarity across epochs for all four datasets (from top to bottom:
+spiking-neuron dataset, 
+GCaMP6s dataset with delay duration of 1.4 sec,
+GCaMP6f dataset with delay duration of 1.4 sec, and GCaMP6f dataset with delay duration of 3.0 sec;
+the same plots for each simultaneously recording session are shown in \textbf{Supplementary Figure 6}).
+Notably, that in GCaMP6s dataset also shows a strong similarity across epochs (from sample to response).
+(\textbf{B}) Instantaneous PCA decoders (for maximum variance direction) display a strong similarity 
+exclusively within a single epochs for all four datasets (from top to bottom:
+spiking-neuron dataset, 
+GCaMP6s dataset with delay duration of 1.4 sec,
+GCaMP6f dataset with delay duration of 1.4 sec, and GCaMP6f dataset with delay duration of 3.0 sec;
+the same plots for each simultaneously recording session are shown in \textbf{Supplementary Figure 7}).
+(\textbf{C}) Similarity of instantaneous LDA decoder (x-axis direction) and instantaneous PCA decoder
+(y-axis direction) changes as a function of time(from top to bottom:
+spiking-neuron dataset, 
+GCaMP6s dataset with delay duration of 1.4 sec,
+GCaMP6f dataset with delay duration of 1.4 sec, and GCaMP6f dataset with delay duration of 3.0 sec;
+the same plots for each simultaneously recording session are shown in \textbf{Supplementary Figure 8}).
+ Spiking-neuron dataset only reveals
+strong similarity exclusively within a single epoch, while all three Ca++ imaging dataset
+show delayed similarities, i.e. instantaneous change of LDA direction is lagged to that of PCA direction.
+Notably, this time lag spans about 3.0 sec for GCaMP6s datasets, but is less than 0.5 sec for both
+GCaMP6f datasets. 
+Importantly, All results in \textbf{Figures A-C} hold true for single sessions (\textbf{Supplementary Figure 6-8}).
+
+\subsection{Figure 6: Ca++ imaging recordings display a
+trade-off between decodability of trial type and temporal dynamics.} 
+dPCA analysis on collected neurons in three datasets (from left to right:
+spiking-neuron dataset, 
+GCaMP6s dataset with delay duration of 1.4 sec,
+and GCaMP6f dataset with delay duration of 3.0 sec
+): 15 components are applied to account for variability of
+stimulus (Stim), temporal dynamics (Time), and their interaction term (Inter).
+(\textbf{A}) Percentage of different variabilities captured by different component
+(bar plots); the pie plots show the percentage of different variabilities for the
+real data. The majority of the variability of spiking-neuron dataset comes from the
+temporal dynamics, which is captured by the first two components; that of
+GCaMP6s dataset is dominated by the stimulus-driven variability, which is
+captured by the first component; that of GCaMP6f dataset is dominated by 
+the temporal dynamics, which is captured by the first two components.
+Ca++ imaging recordings would thus display a
+trade-off between decodability of trial type 
+and temporal dynamics.
+ (\textbf{B}) The dynamics of the components capturing the maximum
+variabilities of interaction term (top), stimulus (middle), and temporal dynamics (bottom).
+
+\subsection{Supplementary Figure 1: Selectivity indices (two-sample
+z-score) of licking right trials for four datasets.}
+(\textbf{A}) spiking-neuron dataset; 
+(\textbf{B}) GCaMP6s dataset with delay duration of 1.4 sec;
+(\textbf{C}) GCaMP6f dataset with delay duration of 1.4 sec;
+(\textbf{D}) GCaMP6f dataset with delay duration of 3.0 sec.
+ 
+
+\subsection{Supplementary Figure 2: Decodability of trial types (LDA decoder) increases 
+as a function of time from sample to response for 
+simultaneously recording sessions in four datasets.} 
+(\textbf{A}) spiking-neuron dataset; 
+(\textbf{B}) GCaMP6s dataset with delay duration of 1.4 sec;
+(\textbf{C}) GCaMP6f dataset with delay duration of 1.4 sec;
+(\textbf{D}) GCaMP6f dataset with delay duration of 3.0 sec.
+
+\subsection{Supplementary Figure 3: Kurtosis of LDA decoder
+for licking-right trials changes as a function of time
+for collected neurons in four datasets.} 
+(\textbf{A}) spiking-neuron dataset; 
+(\textbf{B}) GCaMP6s dataset with delay duration of 1.4 sec;
+(\textbf{C}) GCaMP6f dataset with delay duration of 1.4 sec;
+(\textbf{D}) GCaMP6f dataset with delay duration of 3.0 sec.
+Comparing the three Ca++ imaging datasets,
+spiking-neuron dataset shows an extremely high kurtosis
+of LDA decoders in time, indicating that neurons in
+spiking-neuron dataset (Ca++ imaging datasets, respectively)
+tends to use sparse coding (dense coding, respectively)
+of the stimulus. That could result from that the
+activity distribution of spiking-neuron dataset
+is more heavy-tailed than that of Ca++ imaging 
+dataset (Poisson distribution vs Gaussian distribution). One can thus expect to see decodability
+is less influenced by \%KO neurons in spiking-neuron dataset
+than that in Ca++ imaging datasets.
+
+\subsection{Supplementary Figure 4: Decodability of epochs in a trial varies a function 
+of time for simultaneously recording sessions in each dataset using single LDA decoder
+for four epochs.} 
+(\textbf{A}) spiking-neuron dataset; 
+(\textbf{B}) GCaMP6s dataset with delay duration of 1.4 sec;
+(\textbf{C}) GCaMP6f dataset with delay duration of 1.4 sec;
+(\textbf{D}) GCaMP6f dataset with delay duration of 3.0 sec.
+
+\subsection{Supplementary Figure 5: .Decodability of epochs in a trial varies a function 
+of time for simultaneously recording sessions in each dataset using three LDA decoders,
+each of which decodes the adjacent epochs.} 
+(\textbf{A}) spiking-neuron dataset; 
+(\textbf{B}) GCaMP6s dataset with delay duration of 1.4 sec;
+(\textbf{C}) GCaMP6f dataset with delay duration of 1.4 sec;
+(\textbf{D}) GCaMP6f dataset with delay duration of 3.0 sec.
+Comparing to the three Ca++ imaging datasets, neurons in spiking-neuron
+dataset display a discontinuity and transient change of selectivity in time; while
+both GCaMP6f datasets reveal a faster change of selectivity than 
+the GCaMP6s dataset in time.
+
+\subsection{Supplementary Figure 6: Instantaneous LDA decoders (for licking-right trials) 
+display a strong similarity within epochs for all simultaneously recording sessions in four datasets.} 
+(\textbf{A}) spiking-neuron dataset; 
+(\textbf{B}) GCaMP6s dataset with delay duration of 1.4 sec;
+(\textbf{C}) GCaMP6f dataset with delay duration of 1.4 sec;
+(\textbf{D}) GCaMP6f dataset with delay duration of 3.0 sec.
+
+\subsection{Supplementary Figure 7: Instantaneous PCA decoders 
+(for maximum variance direction) display a strong similarity 
+exclusively within single epochs for all simultaneously recording sessions
+in four datasets.} 
+(\textbf{A}) spiking-neuron dataset; 
+(\textbf{B}) GCaMP6s dataset with delay duration of 1.4 sec;
+(\textbf{C}) GCaMP6f dataset with delay duration of 1.4 sec;
+(\textbf{D}) GCaMP6f dataset with delay duration of 3.0 sec.
+
+\subsection{Supplementary Figure 8: Similarity of instantaneous LDA decoder 
+(x-axis direction) and instantaneous PCA decoder
+(y-axis direction) changes as a function of time 
+for all simultaneously recording sessions
+in four datasets.} 
+(from top to bottom:
+(\textbf{A}) spiking-neuron dataset; 
+(\textbf{B}) GCaMP6s dataset with delay duration of 1.4 sec;
+(\textbf{C}) GCaMP6f dataset with delay duration of 1.4 sec;
+(\textbf{D}) GCaMP6f dataset with delay duration of 3.0 sec.
+
+
+\end{document}  
