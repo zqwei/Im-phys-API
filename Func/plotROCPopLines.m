@@ -12,7 +12,7 @@
 % weiz@janelia.hhmi.org
 % 
 
-function plotROCPopAccLines(nDataSet, params)
+function plotROCPopLines(nDataSet, params)
 
     timePoints          = timePointTrialPeriod(params.polein, params.poleout, params.timeSeries);     
     numPlots            = length(nDataSet);
@@ -24,7 +24,7 @@ function plotROCPopAccLines(nDataSet, params)
     histXout            = 0:0.02:1;
     histFreq            = zeros(length(histXout),length(timePoints) -1);
     
-    for nPeriods        = 1:length(timePoints) -1
+    for nPeriods        = length(timePoints) -1 : -1 : 1
         nPeriodData     = dataInPeriods(nDataSet, timePoints, nPeriods);     
         areaInt         = zeros(numPlots, 1);
         for nPlot       = 1:numPlots
@@ -36,15 +36,15 @@ function plotROCPopAccLines(nDataSet, params)
         end
         % barHistWithDist(areaInt, 'Normal', 'ROC', 0:0.05:1, 'k');
         histFreq(:,nPeriods) = hist(areaInt, histXout);
-        histFreq(:,nPeriods) = cumsum(histFreq(:,nPeriods))/sum(histFreq(:,nPeriods));
+        histFreq(:,nPeriods) = histFreq(:,nPeriods)/sum(histFreq(:,nPeriods));
     end
     
     plot(histXout, histFreq,'-');
-    ylabel('% Accumulated Units')
+    ylabel('% Units')
     xlabel('Area under ROC');
     xlim([0 1])
-    ylim([0 1])
-    legend({'pre-sample','sample','delay','response'},'location','southeast')
+    ylim([0 0.2])
+    legend({'pre-sample','sample','delay','response'},'location','northeast')
     legend('boxoff')
     box off
 end

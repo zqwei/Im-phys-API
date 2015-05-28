@@ -8,20 +8,20 @@
 % 4.1 Single neuron choice ROC curve, across trial periods
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Comparison_V1_4
-% 
-% sampleSize            = 16;
+
+% sampleSize            = 64;
 % m                     = ceil(sqrt(sampleSize));
-% numUnits              = 200;
+% numUnits              = 100;
 % sampleSeq             = randperm(numUnits);
 % sampleSeq             = sampleSeq(1:sampleSize);
 % 
-% load ('TempDat/DataList.mat');
-% dist                  = {'Poisson', 'Normal', 'Normal', 'Normal'};
+% load ([TempDatDir 'DataListShuffle.mat']);
+% % dist                  = {'Poisson', 'Normal', 'Normal', 'Normal'};
 % 
 % for nData             = 1:length(DataSetList)
-%     load(['TempDat/' DataSetList(nData).name '.mat'])
+%     load([TempDatDir DataSetList(nData).name '.mat'])
 %     plotROCExampleUnits(nDataSet, sampleSeq, DataSetList(nData).params); 
-%     setPrint(m*4, m*3, ['Plot/Single_Units_ROC_' DataSetList(nData).name], 'png')
+%     setPrint(m*4, m*3, [PlotDir 'Single_Units_ROC_' DataSetList(nData).name], 'pdf')
 % end
 
 
@@ -76,6 +76,14 @@ for nData             = 2:length(DataSetList)
     plotROCPopAccLines(nDataSet(DataSetList(nData).ActiveNeuronIndex), DataSetList(nData).params); 
 %     title(strrep(DataSetList(nData).name, '_', ' '))
     setPrint(8, 6, [PlotDir 'Single_Units_ROC/SingleActUnitsROC_' DataSetList(nData).name], 'pdf')
+end
+
+
+for nData             = 1:length(DataSetList)
+    load([TempDatDir DataSetList(nData).name '.mat'])
+    plotROCPopLines(nDataSet(DataSetList(nData).ActiveNeuronIndex), DataSetList(nData).params); 
+%     title(strrep(DataSetList(nData).name, '_', ' '))
+    setPrint(8, 6, [PlotDir 'Single_Units_ROC/SingleActUnitsROCNoAcc_' DataSetList(nData).name], 'pdf')
 end
 
 close all

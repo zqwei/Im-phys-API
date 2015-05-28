@@ -20,4 +20,11 @@ for nData             = 1:length(DataSetList)
     setPrint(8, 6, [PlotDir 'SingleModel_Units_ROC/Single_Units_ROC_' DataSetList(nData).name], 'pdf')
 end
 
+for nData             = 1:length(DataSetList)
+    load([TempDatDir DataSetList(nData).name '.mat'])
+    plotROCPopLines(nDataSet, DataSetList(nData).params); 
+%     title(strrep(DataSetList(nData).name, '_', ' '))
+    setPrint(8, 6, [PlotDir 'SingleModel_Units_ROC/SingleActUnitsROCNoAcc_' DataSetList(nData).name], 'pdf')
+end
+
 close all
