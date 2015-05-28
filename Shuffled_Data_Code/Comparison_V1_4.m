@@ -86,6 +86,14 @@ for nData             = 1:length(DataSetList)
     setPrint(8, 6, [PlotDir 'Single_Units_ROC/SingleActUnitsROCNoAcc_' DataSetList(nData).name], 'pdf')
 end
 
+
+for nData             = 1:length(DataSetList)
+    load([TempDatDir DataSetList(nData).name '.mat'])
+    plotPVALUEPopLines(nDataSet(DataSetList(nData).ActiveNeuronIndex), DataSetList(nData).params); 
+%     title(strrep(DataSetList(nData).name, '_', ' '))
+    setPrint(8, 6, [PlotDir 'Single_Units_ROC/SingleActUnitsPVALUENoAcc_' DataSetList(nData).name], 'pdf')
+end
+
 close all
 
 
