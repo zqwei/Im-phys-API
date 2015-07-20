@@ -24,6 +24,6 @@ end
 
 
 function coeff        = coeff1stPCA(nSessionData)
-    coeff             = pca(nSessionData);
-    coeff             = coeff(:,1)./norm(coeff(:,1));
+    coeff             = pca(nSessionData,'numComponents',1);
+    coeff             = coeff/norm(coeff);%coeff(:,1)./norm(coeff(:,1));
 end

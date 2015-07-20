@@ -76,7 +76,7 @@ if ~exist([PlotDir '/Collected_Units_Decodability'],'dir')
     mkdir([PlotDir '/Collected_Units_Decodability'])
 end
 
-for nData             = fileToAnalysis
+for nData             = 1 %fileToAnalysis
     load([TempDatDir DataSetList(nData).name '.mat'])
     figure;
     

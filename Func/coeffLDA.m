@@ -12,14 +12,13 @@
 % weiz@janelia.hhmi.org
 % 
 
-function coeffs       = coeffLDA(nSessionData, trainingTargets, testTargets)
+function coeffs       = coeffLDA(nSessionData, totTargets)
     
     T                 = size(nSessionData, 3);
 
     coeffs            = arrayfun(@(tIndex) coeffClassify(...
-                                           squeeze(nSessionData(1:length(testTargets),:,tIndex)), ...
-                                           squeeze(nSessionData(length(testTargets)+1:end,:,tIndex)), ...
-                                           trainingTargets), 1:T, 'UniformOutput', false);
+                                           squeeze(nSessionData(:,:,tIndex)), ...
+                                           totTargets), 1:T, 'UniformOutput', false);
                                        
     coeffs            = cell2mat(coeffs);
     
@@ -27,9 +26,8 @@ end
 
 
 function coeff        = coeffClassify(varargin)
-    
-    [~,~,~,~,coeff]   = classify(varargin{:});
-    coeff             = coeff(1,2).linear;
+
+    obj               = fitcdiscr(varargin{:},'discrimType','pseudoLinear');
+    coeff             = obj.Coeffs(1,2).Linear;
     coeff             = coeff./norm(coeff);
-    
 end

@@ -1,0 +1,9 @@
+1. aligh_tracer_script (align tracer with GCaMP image)
+
+2. ROI selection based on ROI
+
+3. save ROI into para mat file
+
+4. run analysis_yes_no_behav (generate alltrial.mat file)
+
+4. run measure_roi (make neuropil mask, run through all data, and save back to para)

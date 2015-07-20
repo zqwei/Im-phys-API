@@ -118,59 +118,59 @@ minUnitsSession        = 3;
 nDataSet               = getSpikeData(SpikingDataDir, SpikeFileList, params.minNumTrialToAnalysis, params.timeSeries, params.binsize);
 SpikeDataSet           = nDataSet;
 [nDataSet3D, nDataSet] = getSimultaneousSpikeData(nDataSet, params, minRate, perMinRate, ROCThres, minUnitsSession); %#ok<ASGLU>
-DataSetList(1).name    = 'Spikes';
+DataSetList(1).name    = 'Simultaneous_Spikes';
 DataSetList(1).params  = params; 
 save([TempDatDir DataSetList(1).name '.mat'], 'nDataSet', 'nDataSet3D');
 
 
 
-minRate                = 5;
-perMinRate             = 0.4;
-ROCThres               = 0.7;
-minUnitsSession        = 3;
-
-% short Ca fast
-params.poleout         =  -1.4;
-nDataSet               = getCaImagingData(CaImagingShortDelayFastDir, CaImagingShortDelayFastFileList, params.minNumTrialToAnalysis, params);
-[nDataSet3D, nDataSet] = getSimultaneousCaimagingData(nDataSet, params, ROCThres, minUnitsSession); %#ok<ASGLU>
-DataSetList(2).name    = 'Ca_Fast_Short_Delay';
-DataSetList(2).params  = params; 
-save([TempDatDir DataSetList(2).name '.mat'], 'nDataSet', 'nDataSet3D');
-
-% short Ca slow
-params.poleout         =  -1.4;
-nDataSet               = getCaImagingData(CaImagingShortDelaySlowDir, CaImagingShortDelaySlowFileList, params.minNumTrialToAnalysis, params);
-[nDataSet3D, nDataSet] = getSimultaneousCaimagingData(nDataSet, params, ROCThres, minUnitsSession); %#ok<ASGLU>
-DataSetList(3).name    = 'Ca_Slow_Short_Delay';
-DataSetList(3).params  = params; 
-save([TempDatDir DataSetList(3).name '.mat'], 'nDataSet', 'nDataSet3D');
-
-% long Ca fast
-params.polein          =  -4.2;
-params.poleout         =  -3.0;
-minTimeToAnalysis      =  round(-4.7 * params.frameRate);
-maxTimeToAnalysis      =  round(2.0 * params.frameRate);
-params.timeWindowIndexRange  = minTimeToAnalysis : maxTimeToAnalysis;
-params.timeSeries      = params.timeWindowIndexRange * params.binsize;
-nDataSet               = getCaImagingData(CaImagingLongDelayFastDir, CaImagingLongDelayFastFileList, params.minNumTrialToAnalysis, params);
-[nDataSet3D, nDataSet] = getSimultaneousCaimagingData(nDataSet, params, ROCThres, minUnitsSession); %#ok<ASGLU>
-DataSetList(4).name    = 'Ca_Fast_Long_Delay';
-DataSetList(4).params  = params; 
-save([TempDatDir DataSetList(4).name '.mat'], 'nDataSet', 'nDataSet3D');
-
-% long Ca slow
-nDataSet               = getCaImagingData(CaImagingLongDelaySlowDir, CaImagingLongDelaySlowFileList, params.minNumTrialToAnalysis, params);
-[nDataSet3D, nDataSet] = getSimultaneousCaimagingData(nDataSet, params, ROCThres, minUnitsSession);
-DataSetList(5).name    = 'Ca_Slow_Long_Delay';
-DataSetList(5).params  = params; 
-save([TempDatDir DataSetList(5).name '.mat'], 'nDataSet', 'nDataSet3D');
-
-% % Fake Ca
-% nDataSet               = getFakeCaImagingData(SpikingDataDir, SpikeFileList, params.minNumTrialToAnalysis, params);
-% [nDataSet3D, nDataSet] = getSimultaneousFakeCaData(nDataSet, SpikeDataSet, params, minRate, perMinRate, ROCThres, minUnitsSession); %#ok<ASGLU>
-% DataSetList(2).name    = 'Fake_Ca';
+% minRate                = 5;
+% perMinRate             = 0.4;
+% ROCThres               = 0.7;
+% minUnitsSession        = 3;
+% 
+% % short Ca fast
+% params.poleout         =  -1.4;
+% nDataSet               = getCaImagingData(CaImagingShortDelayFastDir, CaImagingShortDelayFastFileList, params.minNumTrialToAnalysis, params);
+% [nDataSet3D, nDataSet] = getSimultaneousCaimagingData(nDataSet, params, ROCThres, minUnitsSession); %#ok<ASGLU>
+% DataSetList(2).name    = 'Ca_Fast_Short_Delay';
 % DataSetList(2).params  = params; 
 % save([TempDatDir DataSetList(2).name '.mat'], 'nDataSet', 'nDataSet3D');
+% 
+% % short Ca slow
+% params.poleout         =  -1.4;
+% nDataSet               = getCaImagingData(CaImagingShortDelaySlowDir, CaImagingShortDelaySlowFileList, params.minNumTrialToAnalysis, params);
+% [nDataSet3D, nDataSet] = getSimultaneousCaimagingData(nDataSet, params, ROCThres, minUnitsSession); %#ok<ASGLU>
+% DataSetList(3).name    = 'Ca_Slow_Short_Delay';
+% DataSetList(3).params  = params; 
+% save([TempDatDir DataSetList(3).name '.mat'], 'nDataSet', 'nDataSet3D');
+% 
+% % long Ca fast
+% params.polein          =  -4.2;
+% params.poleout         =  -3.0;
+% minTimeToAnalysis      =  round(-4.7 * params.frameRate);
+% maxTimeToAnalysis      =  round(2.0 * params.frameRate);
+% params.timeWindowIndexRange  = minTimeToAnalysis : maxTimeToAnalysis;
+% params.timeSeries      = params.timeWindowIndexRange * params.binsize;
+% nDataSet               = getCaImagingData(CaImagingLongDelayFastDir, CaImagingLongDelayFastFileList, params.minNumTrialToAnalysis, params);
+% [nDataSet3D, nDataSet] = getSimultaneousCaimagingData(nDataSet, params, ROCThres, minUnitsSession); %#ok<ASGLU>
+% DataSetList(4).name    = 'Ca_Fast_Long_Delay';
+% DataSetList(4).params  = params; 
+% save([TempDatDir DataSetList(4).name '.mat'], 'nDataSet', 'nDataSet3D');
+% 
+% % long Ca slow
+% nDataSet               = getCaImagingData(CaImagingLongDelaySlowDir, CaImagingLongDelaySlowFileList, params.minNumTrialToAnalysis, params);
+% [nDataSet3D, nDataSet] = getSimultaneousCaimagingData(nDataSet, params, ROCThres, minUnitsSession);
+% DataSetList(5).name    = 'Ca_Slow_Long_Delay';
+% DataSetList(5).params  = params; 
+% save([TempDatDir DataSetList(5).name '.mat'], 'nDataSet', 'nDataSet3D');
+% 
+% % % Fake Ca
+% % nDataSet               = getFakeCaImagingData(SpikingDataDir, SpikeFileList, params.minNumTrialToAnalysis, params);
+% % [nDataSet3D, nDataSet] = getSimultaneousFakeCaData(nDataSet, SpikeDataSet, params, minRate, perMinRate, ROCThres, minUnitsSession); %#ok<ASGLU>
+% % DataSetList(2).name    = 'Fake_Ca';
+% % DataSetList(2).params  = params; 
+% % save([TempDatDir DataSetList(2).name '.mat'], 'nDataSet', 'nDataSet3D');
 % 
 
 save([TempDatDir 'DataList.mat'], 'DataSetList');

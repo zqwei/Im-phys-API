@@ -7,8 +7,8 @@
 % Selected the spiking cells with high ROC and firing threshold
 
 function selectedNeuronalIndex = selectedHighROCneurons(nDataSet, params, ROCThres, selectedNeuronalIndex)
-    ROCDataIndex               = filterOutLowFR(nDataSet, params, ROCThres);
-    selectedNeuronalIndex       = selectedNeuronalIndex' & ROCDataIndex;
+    ROCDataIndex               = filterOutLowFR(nDataSet, params, ROCThres);    
+    selectedNeuronalIndex      = columnVec(selectedNeuronalIndex) & ROCDataIndex;
 end
 
 

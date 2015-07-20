@@ -108,48 +108,39 @@ params.n               =  2.2152;
 params.tau_decay       =  1.5471;
 params.tau_rise        =  0.0670;
 
-%
-% Raw activity
-%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Spike
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 nDataSet               = getSpikeData(SpikingDataDir, SpikeFileList, params.minNumTrialToAnalysis, params.timeSeries, params.binsize); %#ok<NASGU>
 nDataSet               = getDFFSpike(nDataSet, params);
 DataSetList(1).name    = 'Shuffle_Spikes';
 DataSetList(1).params  = params; 
-DataSetList(1).ActiveNeuronIndex = true(length(nDataSet),1);
+DataSetList(1).ActiveNeuronIndex = ~findNonActiveNeurons(nDataSet, params);
 save([TempDatDir DataSetList(1).name '.mat'], 'nDataSet');
 
-% % Fake Ca
-% nDataSet               = getFakeCaImagingData(SpikingDataDir, SpikeFileList, params.minNumTrialToAnalysis, params); %#ok<NASGU>
-% DataSetList(2).name    = 'Shuffle_Fake_Ca';
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% short Ca fast
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% params.frameRate       =  29.68/2;
+% params.binsize         =  1/params.frameRate;
+% params.polein          =  -2.6;
+% params.poleout         =  -1.4;
+% minTimeToAnalysis      =  round(-3.1 * params.frameRate);
+% maxTimeToAnalysis      =  round(2.0 * params.frameRate);
+% params.timeWindowIndexRange  = minTimeToAnalysis : maxTimeToAnalysis;
+% params.timeSeries      = params.timeWindowIndexRange * params.binsize;
+% params.minNumTrialToAnalysis =  minNumTrialToAnalysis;
+% params.expression      = 'Transgentic';
+% nDataSet               = getCaImagingData(CaImagingShortDelayFastDir, CaImagingShortDelayFastFileList, params.minNumTrialToAnalysis, params); %#ok<NASGU>
+% nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
+% DataSetList(2).name    = 'Shuffle_Ca_Fast_Short_Delay';
 % DataSetList(2).params  = params; 
+% DataSetList(2).ActiveNeuronIndex = ~nonActiveNeuronIndex;
 % save([TempDatDir DataSetList(2).name '.mat'], 'nDataSet');
 
-% Set data directory
-minRate                = 5;
-perMinRate             = 0.4;
-ROCThres               = 0.7;
-minUnitsSession        = 3;
-
-% short Ca fast
-params.frameRate       =  29.68/2;
-params.binsize         =  1/params.frameRate;
-params.polein          =  -2.6;
-params.poleout         =  -1.4;
-minTimeToAnalysis      =  round(-3.1 * params.frameRate);
-maxTimeToAnalysis      =  round(2.0 * params.frameRate);
-params.timeWindowIndexRange  = minTimeToAnalysis : maxTimeToAnalysis;
-params.timeSeries      = params.timeWindowIndexRange * params.binsize;
-params.minNumTrialToAnalysis =  minNumTrialToAnalysis;
-params.expression      = 'Transgentic';
-nDataSet               = getCaImagingData(CaImagingShortDelayFastDir, CaImagingShortDelayFastFileList, params.minNumTrialToAnalysis, params); %#ok<NASGU>
-nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
-DataSetList(2).name    = 'Shuffle_Ca_Fast_Short_Delay';
-DataSetList(2).params  = params; 
-DataSetList(2).ActiveNeuronIndex = ~nonActiveNeuronIndex;
-save([TempDatDir DataSetList(2).name '.mat'], 'nDataSet');
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % short Ca slow
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 params.frameRate       =  29.68/2;
 params.binsize         =  1/params.frameRate;
 params.polein          =  -2.6;
@@ -167,43 +158,50 @@ DataSetList(3).params  = params;
 DataSetList(3).ActiveNeuronIndex = ~nonActiveNeuronIndex;
 save([TempDatDir DataSetList(3).name '.mat'], 'nDataSet');
 
-% short Ca slow
-params.frameRate       =  29.68/2;
-params.binsize         =  1/params.frameRate;
-params.polein          =  -4.2;
-params.poleout         =  -3.0;
-minTimeToAnalysis      =  round(-4.7 * params.frameRate);
-maxTimeToAnalysis      =  round(2.0 * params.frameRate);
-params.timeWindowIndexRange  = minTimeToAnalysis : maxTimeToAnalysis;
-params.timeSeries      = params.timeWindowIndexRange * params.binsize;
-params.minNumTrialToAnalysis =  minNumTrialToAnalysis;
-params.expression      = 'Transgentic';
-nDataSet               = getCaImagingData(CaImagingLongDelayFastDir, CaImagingLongDelayFastFileList, params.minNumTrialToAnalysis, params); %#ok<NASGU>
-nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
-DataSetList(4).name    = 'Shuffle_Ca_Fast_Long_Delay';
-DataSetList(4).params  = params; 
-DataSetList(4).ActiveNeuronIndex = ~nonActiveNeuronIndex;
-save([TempDatDir DataSetList(4).name '.mat'], 'nDataSet');
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% long Ca fast
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% params.frameRate       =  29.68/2;
+% params.binsize         =  1/params.frameRate;
+% params.polein          =  -4.2;
+% params.poleout         =  -3.0;
+% minTimeToAnalysis      =  round(-4.7 * params.frameRate);
+% maxTimeToAnalysis      =  round(2.0 * params.frameRate);
+% params.timeWindowIndexRange  = minTimeToAnalysis : maxTimeToAnalysis;
+% params.timeSeries      = params.timeWindowIndexRange * params.binsize;
+% params.minNumTrialToAnalysis =  minNumTrialToAnalysis;
+% params.expression      = 'Transgentic';
+% nDataSet               = getCaImagingData(CaImagingLongDelayFastDir, CaImagingLongDelayFastFileList, params.minNumTrialToAnalysis, params); %#ok<NASGU>
+% nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
+% DataSetList(4).name    = 'Shuffle_Ca_Fast_Long_Delay';
+% DataSetList(4).params  = params; 
+% DataSetList(4).ActiveNeuronIndex = ~nonActiveNeuronIndex;
+% save([TempDatDir DataSetList(4).name '.mat'], 'nDataSet');
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % long Ca slow
-params.frameRate       =  29.68/2;
-params.binsize         =  1/params.frameRate;
-params.polein          =  -4.2;
-params.poleout         =  -3.0;
-minTimeToAnalysis      =  round(-4.7 * params.frameRate);
-maxTimeToAnalysis      =  round(2.0 * params.frameRate);
-params.timeWindowIndexRange  = minTimeToAnalysis : maxTimeToAnalysis;
-params.timeSeries      = params.timeWindowIndexRange * params.binsize;
-params.minNumTrialToAnalysis =  minNumTrialToAnalysis;
-params.expression      = 'Transgentic';
-nDataSet               = getCaImagingData(CaImagingLongDelaySlowDir, CaImagingLongDelaySlowFileList, params.minNumTrialToAnalysis, params); %#ok<NASGU>
-nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
-DataSetList(5).name    = 'Shuffle_Ca_Slow_Long_Delay';
-DataSetList(5).params  = params; 
-DataSetList(5).ActiveNeuronIndex = ~nonActiveNeuronIndex;
-save([TempDatDir DataSetList(5).name '.mat'], 'nDataSet');
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% params.frameRate       =  29.68/2;
+% params.binsize         =  1/params.frameRate;
+% params.polein          =  -4.2;
+% params.poleout         =  -3.0;
+% minTimeToAnalysis      =  round(-4.7 * params.frameRate);
+% maxTimeToAnalysis      =  round(2.0 * params.frameRate);
+% params.timeWindowIndexRange  = minTimeToAnalysis : maxTimeToAnalysis;
+% params.timeSeries      = params.timeWindowIndexRange * params.binsize;
+% params.minNumTrialToAnalysis =  minNumTrialToAnalysis;
+% params.expression      = 'Transgentic';
+% nDataSet               = getCaImagingData(CaImagingLongDelaySlowDir, CaImagingLongDelaySlowFileList, params.minNumTrialToAnalysis, params); %#ok<NASGU>
+% nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
+% DataSetList(5).name    = 'Shuffle_Ca_Slow_Long_Delay';
+% DataSetList(5).params  = params; 
+% DataSetList(5).ActiveNeuronIndex = ~nonActiveNeuronIndex;
+% save([TempDatDir DataSetList(5).name '.mat'], 'nDataSet');
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% short Ca slow virus
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 params.frameRate       =  29.68/2;
 params.binsize         =  1/params.frameRate;
 params.polein          =  -2.6;

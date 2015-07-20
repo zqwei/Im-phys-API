@@ -7,14 +7,14 @@ addpath('../Func');
 setDir;
 load ([TempDatDir 'DataList.mat']);
 addNoise         = [1 0 0 0 0 0];
-numTrials           = 2000;
-totTargets          = rand(numTrials, 1) > 0.5;
+numTrials           = 5000;
+totTargets          = [true(numTrials/2,1); false(numTrials/2,1)];%rand(numTrials, 1) > 0.5;
 
 if ~exist([PlotDir '/Collected_Units_PCA_LDA'],'dir')
     mkdir([PlotDir '/Collected_Units_PCA_LDA'])
 end
 
-for nData             = fileToAnalysis
+for nData             = 1%fileToAnalysis
     load([TempDatDir DataSetList(nData).name '.mat'])
     figure;
     hold on

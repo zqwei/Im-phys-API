@@ -1,0 +1,38 @@
+function [dff_avg,pval,select,ROI_list]=plot_task_related(fright,fleft)
+%%
+nROI=length(ROI_list);
+frameRate=1.3;
+ntgroup=13;
+
+t=range/frameRate;
+dff_avg=zeros(ntgroup,2);
+pval=zeros(1,2);
+stat={};
+signific=zeros(ntgroup,2);
+select=zeros(ntgroup,1);
+sindex=zeros(ntgroup,1);
+
+[pval(1,1)]= kruskalwallis(fright(:,idx1)',[],'off');
+[pval(1,2),table,stat{i,2}]= kruskalwallis(fleft(:,idx2)',[],'off');
+
+    dff_avg(:,i,1)=rawf2df_f(median(falign(:,idx1),2),1:2);    
+    dff_avg(:,i,2)=rawf2df_f(median(falign(:,idx2),2),1:2);
+    dff_align=rawf2df_f(falign,1);
+    for k=1:ntgroup
+        p=ranksum(dff_align(k,idx1),dff_align(k,idx2));
+        select(k,i)=p<0.01;
+        
+        sindex(k,i)=(dff_avg(k,i,1)-dff_avg(k,i,2))/(abs(dff_avg(k,i,1))+abs(dff_avg(k,i,2)));
+    end
+        
+end
+
+%%
+if plotflag
+idx=find(sum((pval<0.001),2)>0);
+figure;subplot(1,2,1);imagesc(dff_avg(:,idx,1)');set(gca,'clim',[0,1]);
+subplot(1,2,2);imagesc(dff_avg(:,idx,2)');set(gca,'clim',[0,1]);
+
+figure;imagesc(select(:,idx)'.*sindex(:,idx)');set(gca,'clim',[-1,1]);
+end
+select=select.*sindex;

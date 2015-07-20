@@ -20,7 +20,7 @@ fileList            = {SpikeFileList; CaImagingShortDelayFastFileList; CaImaging
                        CaImagingLongDelayFastFileList; CaImagingLongDelaySlowFileList; CaImagingShortDelaySlowVirusFileList};
 
 
-for nData           = 1:length(fileList)
+for nData           = [1 3 6]%1:length(fileList)
     load([TempDatDir DataSetList(nData).name '.mat']);
     DataSetList(nData).cellinfo  = repmat(struct('fileName',1, 'nUnit', 1, ...
                                 'AP_axis',1, 'ML_axis', 1, 'depth', 1,...
