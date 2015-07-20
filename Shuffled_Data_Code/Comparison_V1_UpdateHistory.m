@@ -82,6 +82,12 @@
 %
 % Comparison_V1_0_8: Generate Ca++ raw data (not df/f, no remove of neuropil)
 %
+% Comparison_V2_0  : Update Comparison_V1_0 with Comparison_V1_0_1;
+%                    Add function to obtain the active units in spiking
+%                    datasets (using minFiringRate for each epoches as a
+%                    filter: 5 Hz in this case); mini-number of analysis
+%                    file is set to 
+% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 1.  Raw activity of all neurons sorted in different ways
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
