@@ -86,7 +86,8 @@
 %                    Add function to obtain the active units in spiking
 %                    datasets (using minFiringRate for each epoches as a
 %                    filter: 5 Hz in this case); mini-number of analysis
-%                    file is set to 
+%                    file is set to 20 (otherwise, there could no valid
+%                    unit for short-delay GCaMP6s transgentic datasets)
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 1.  Raw activity of all neurons sorted in different ways

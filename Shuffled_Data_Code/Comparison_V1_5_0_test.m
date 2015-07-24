@@ -1,11 +1,11 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-6.  Collected population decision decodability over time
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-6.  Collected population decision decodability over time
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Comparison_V1_6_1
-The same amount of units in analysis
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 6.  Collected population decision decodability over time
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 6.  Collected population decision decodability over time
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Comparison_V1_6_1
+% The same amount of units in analysis
 
 
 
@@ -53,7 +53,7 @@ for nData             = [1 3 6]%1:length(DataSetList)
         randPickUnits       = randPickUnits(1:numRandPickUnits);
                 
         nSessionData        = shuffleSessionData(nDataSet(randPickUnits), totTargets, numTestTrials);
-        decodability(nFold,:) = decodabilityLDA(nSessionData +randn(size(nSessionData))*1e-3/sqrt(numTrials)* addNoise(nData), trainingTargets, testTargets);
+        decodability(nFold,:) = decodabilityLDA(nSessionData, totTargets, 2); %decodabilityLDA(nSessionData +randn(size(nSessionData))*1e-3/sqrt(numTrials)* addNoise(nData), trainingTargets, testTargets);
     end
     hold on
     plot(DataSetList(nData).params.timeSeries, mean(decodability,1), 'k', 'linewid',1);
@@ -64,7 +64,7 @@ for nData             = [1 3 6]%1:length(DataSetList)
     hold off;
     xlabel('Time (s)');
     ylabel('Decodability');
-    setPrint(4, 3, [PlotDir 'CollectedUnitsDecodability/CollectedUnitsDecodabilityFixedNumberUnits_' DataSetList(nData).name], 'pdf')
+%     setPrint(4, 3, [PlotDir 'CollectedUnitsDecodability/CollectedUnitsDecodabilityFixedNumberUnits_' DataSetList(nData).name], 'pdf')
 end
 
-close all;
+% close all;

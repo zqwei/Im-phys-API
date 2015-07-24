@@ -55,12 +55,12 @@ nSessionData = shuffleSessionData(nDataSet, totTargets, numTrials);
 % nSessionData = normalizationDim(nSessionData, 2);
 % coeffs       = coeffLDA([nSessionData; nSessionData], totTargets, totTargets);
 coeffs       = coeffLDA(nSessionData, totTargets);
-imagesc(DataSetList(nData).params.timeSeries, DataSetList(nData).params.timeSeries, coeffs'*coeffs);
-xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
-ylim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
+imagesc(params.timeSeries, params.timeSeries, coeffs'*coeffs);
+xlim([min(params.timeSeries) max(params.timeSeries)]);
+ylim([min(params.timeSeries) max(params.timeSeries)]);
 caxis([-1 1]);
 axis xy;
-gridxy ([DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0],[DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0], 'Color','k','Linestyle','--','linewid', 0.5);
+gridxy ([params.polein, params.poleout, 0],[params.polein, params.poleout, 0], 'Color','k','Linestyle','--','linewid', 0.5);
 box off;
 hold off;
 xlabel('Time (s)')

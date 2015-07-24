@@ -1,5 +1,5 @@
 % 
-% Comparison based on single unit acitivity
+% Comparison based on Simultaneously recording data
 % 
 % -------------------------------------------------------------------------
 % version 1.0
@@ -54,9 +54,6 @@
 % Comparison_V1_0_2: distribution of First Sig. P Val. Time
 %
 % Comparison_V1_0_2 is later deployed to "Preprocessing Data Code"
-%
-% Comparison_V1_0_3: generate data from shuffled dataset code (based on 
-%                    Comparison_V1_0 && Comparison_V1_0_1)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % - 1.  Raw activity of all neurons sorted in different ways
@@ -135,4 +132,46 @@
 % 12. GPFA
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Comparison_V1_12
+
+%%
+% -------------------------------------------------------------------------
+% version 2.0
+%
+% Comparison list
+%
+% 1. Decodability of trial type over time
+% 2. Decodability of epochs over time
+% 3. LDA-PCA correlation as indication of network dynamics
+% 4. Other analysis methods
+%
+% -------------------------------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 0.  Generate raw activity of all neurons sorted in different ways
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Comparison_V2_0  : generate data from shuffled dataset code (based on 
+%                    Comparison_V1_0 && Comparison_V1_0_1) based on
+%                    shuffled data set from "Shuffle code"
+%                    Comparison_V2_0.m; only very high ROC units are kept
+%                    to reduce the number of units in each session (this is
+%                    one trick to aviod overfitting)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 1.  Decodability of trial type over time
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Comparison_V2_1
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 2.  Decodability of epochs over time
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Comparison_V2_2
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 3.  LDA-PCA correlation as indication of network dynamics
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Comparison_V2_3
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 4.  Other analysis methods
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Comparison_V2_4
 %
