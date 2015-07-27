@@ -18,7 +18,7 @@ numTrials           = 500;
 numTestTrials       = 200;
 numTrainingTrials   = numTrials - numTestTrials;
 numRandPickUnits    = 100;
-ROCThres            = 0.5;
+ROCThres            = 0.7;
 
 load ([TempDatDir 'DataListShuffle.mat']);
 addNoise         = [1 0 0 0 0 0];
@@ -45,15 +45,15 @@ for nData             = [1 3 6]%1:length(DataSetList)
         testTargets         = testTargets(randperm(numTestTrials));
         totTargets          = [testTargets; trainingTargets];
 
-        trainingDecisions   = trainingTargets(randperm(numTrainingTrials));
-        testDecisions       = testTargets(randperm(numTestTrials));
-        totDecisions        = [testDecisions; trainingDecisions];
+%         trainingDecisions   = trainingTargets(randperm(numTrainingTrials));
+%         testDecisions       = testTargets(randperm(numTestTrials));
+%         totDecisions        = [testDecisions; trainingDecisions];
         
         randPickUnits       = randperm(length(nDataSet));
         randPickUnits       = randPickUnits(1:numRandPickUnits);
                 
         nSessionData        = shuffleSessionData(nDataSet(randPickUnits), totTargets, numTestTrials);
-        decodability(nFold,:) = decodabilityLDA(nSessionData, totTargets, 2); %decodabilityLDA(nSessionData +randn(size(nSessionData))*1e-3/sqrt(numTrials)* addNoise(nData), trainingTargets, testTargets);
+        decodability(nFold,:) = decodabilityLDA(nSessionData, trainingTargets, testTargets); %decodabilityLDA(nSessionData +randn(size(nSessionData))*1e-3/sqrt(numTrials)* addNoise(nData), trainingTargets, testTargets);
     end
     hold on
     plot(DataSetList(nData).params.timeSeries, mean(decodability,1), 'k', 'linewid',1);
