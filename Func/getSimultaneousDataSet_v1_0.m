@@ -14,7 +14,7 @@
 % 
 
 
-function [nDataSet3D, nDataSet] = getSimultaneousDataSetOld(newDataSet, minUnitsSession)
+function [nDataSet3D, nDataSet] = getSimultaneousDataSet_v1_0(newDataSet, minUnitsSession)
 
     h                   = waitbar(0,'Initializing data analysis...');
     waitbar(0, h,'Low firing rate units are filtered out...');

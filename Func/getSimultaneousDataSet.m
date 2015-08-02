@@ -1,7 +1,7 @@
 % 
 % obtain the spike dataset from a list of files
 % 
-% version 1.0
+% version 2.0
 %
 % Comparison list
 %
@@ -34,7 +34,7 @@ function [nDataSet3D, nDataSet] = getSimultaneousDataSet(newDataSet, minUnitsSes
         numUnits        = length(tSpikeDataSet.nUnit);
         numYesTrial     = length(tSpikeDataSet.unit_yes_trial_index);
         numNoTrial      = length(tSpikeDataSet.unit_no_trial_index);
-        if ~nodata && min(numYesTrial,numNoTrial)>minNumTrial && numUnits<min(numYesTrial,numNoTrial)-5
+        if ~nodata && min(numYesTrial,numNoTrial)>minNumTrial % && numUnits<min(numYesTrial,numNoTrial)-5
             nDataSet3D  = [nDataSet3D; tSpikeDataSet]; %#ok<AGROW>
             nDataSet    = [nDataSet; nSessionData]; %#ok<AGROW>
         end

@@ -25,20 +25,29 @@ perMinRate             = 0.4; % percentage of min Rate in an entire trial
 % In the following analysis of simultaneous recorded datasets, we only use
 % a subset of strong selective neurons (a trick to decrease the number of
 % neurons in each session)
-ROCThres               = 0.80; 
+ROCThres               = 0.50; 
 
 %%% 
 % Case 1:
 % Taking the fact that there could be different numbers of trials in for 
 % units in the same ephys session
 
+%%%
+% Plot trials
+
+% nData                  = 1;
+% load([TempDatDir DataListShuffle(nData).name '.mat']);
+% plotSimultaneousSpikeData(nDataSet(DataSetList(nData).ActiveNeuronIndex),...
+%     DataSetList(nData).params, minRate, perMinRate, ROCThres, minUnitsSession)
+
 for nData                  = 1;
     load([TempDatDir DataListShuffle(nData).name '.mat']);
-    [nDataSet3D, nDataSet] = getSimultaneousSpikeData(nDataSet(...
-                             DataSetList(nData).ActiveNeuronIndex),...
-                             DataSetList(nData).params, minRate, ...
-                             perMinRate, ROCThres, minUnitsSession);  
-    save([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet', 'nDataSet3D');
+    [nDataSet, DataSetList(nData).kickOutIndex] = ...
+                            getSimultaneousSpikeData(nDataSet, ...
+                            DataSetList(nData),...
+                            minRate, perMinRate, ROCThres, ...
+                            minUnitsSession); 
+    save([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet');
 end
 
 %%% 
@@ -48,14 +57,14 @@ end
 
 for nData                  = 2:length(DataSetList)-1
     load([TempDatDir DataListShuffle(nData).name '.mat']);
-    [nDataSet3D, nDataSet] = getSimultaneousCaimagingData(nDataSet(...
-                             DataSetList(nData).ActiveNeuronIndex), ...
-                             DataSetList(nData).params, ROCThres, ...
-                             minUnitsSession);  
-    save([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet', 'nDataSet3D');    
+    [nDataSet, DataSetList(nData).kickOutIndex] = ...
+                            getSimultaneousCaimagingData(nDataSet, ...
+                            DataSetList(nData), ...
+                            ROCThres, minUnitsSession);  
+    save([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet');    
 end
 
-save([TempDatDir 'DataList.mat'], 'DataSetList');
+save([TempDatDir 'DataListSimultaneous.mat'], 'DataSetList');
 
 
 

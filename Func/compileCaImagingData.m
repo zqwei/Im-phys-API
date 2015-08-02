@@ -23,4 +23,5 @@ function CaImagingDataSet    = compileCaImagingData(CaImagingDir, CaImagingFileL
         CaImagingDataSet(nfile).ROI_list    = ROI_list;
         CaImagingDataSet(nfile).trial       = trial;
         CaImagingDataSet(nfile).depth       = depth;
+        CaImagingDataSet(nfile).nimage      = nimage;
     end

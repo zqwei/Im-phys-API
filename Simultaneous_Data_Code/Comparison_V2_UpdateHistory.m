@@ -151,9 +151,8 @@
 % Comparison_V2_0  : generate data from shuffled dataset code (based on 
 %                    Comparison_V1_0 && Comparison_V1_0_1) based on
 %                    shuffled data set from "Shuffle code"
-%                    Comparison_V2_0.m; only very high ROC units are kept
-%                    to reduce the number of units in each session (this is
-%                    one trick to aviod overfitting)
+%                    Comparison_V2_0.m; only very high ROC (0.5) units are 
+%                    kept to reduce the number of units in each session
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 1.  Decodability of trial type over time

@@ -165,6 +165,7 @@ for nData           = 1:length(fileList)
     DataSetList(nData).cellinfo  = repmat(struct('fileName',1, 'nUnit', 1, ...
                                 'AP_axis',1, 'ML_axis', 1, 'depth', 1,...
                                 'expression','none', 'cellType',-1),length(nDataSet), 1);
+    DataSetList(nData).ROCIndex  = ROCPop(nDataSet, DataSetList(nData).params);
     for nUnit  = 1:length(nDataSet)
         nFileList                                     = fileList{nData};
         DataSetList(nData).cellinfo(nUnit).fileName   = nFileList(nDataSet(nUnit).sessionIndex).name;

@@ -1,9 +1,11 @@
 % 
 % obtain the spike dataset from a list of files
 % 
-% version 1.0
+% version 2.0
 %
 % Comparison list
+%
+% Based on plotSimultaneousSpikeData
 %
 % Output:
 % SpikeDataSet     --- yDim x 1 cells (yDims number of neurons) 
@@ -15,112 +17,139 @@
 
 
 
-function [nDataSet3D, nDataSet] = getSimultaneousSpikeData(nDataSet, params, minRate, perMinRate, ROCThres, minUnitsSession)
-    newDataSet             = filterOutLowFR(nDataSet, params, minRate, perMinRate, ROCThres);
-    [nDataSet3D, nDataSet] = getSimultaneousDataSet(newDataSet, minUnitsSession);    
-% % 
-% %     h                   = waitbar(0,'Initializing data analysis...');
-%     
-%     newDataSet          = filterOutLowFR(nDataSet, params, minRate, perMinRate, ROCThres);
-%     
-%     waitbar(0, h,'Low firing rate units are filtered out...');
-%     
-%     sessionIndex        = [newDataSet(:).sessionIndex];
-%     [sessionVec, ~, IC] = unique(sessionIndex);     
-%     valid_session       = hist(IC,length(sessionVec)) >= minUnitsSession;
-%     sessionVec          = sessionVec(valid_session);
-%     numSession          = length(sessionVec);   
-% %     SpikeDataSet        = repmat(struct('sessionIndex',1, 'nUnit', 1, ...
-% %                                 'unit_yes_trial', 1, 'unit_no_trial', 1,...
-% %                                 'unit_yes_trial_index', 1, 'unit_no_trial_index', 1),numSession, 1);
-%     
-%     
-%     tSession         = 1;
-%     for nSession     = 1:numSession        
-%         nSessionData           = newDataSet(sessionIndex == sessionVec(nSession));
-%         [tSpikeDataSet, nodata] = findInterSect(nSessionData);
-%         if ~nodata
-%             SpikeDataSet(tSession) = tSpikeDataSet; %#ok<AGROW>
-%             tSession               = tSession + 1;
-%         end
-%         waitbar(nSession/numSession, h, sprintf('%d of %d files have been finished...',nSession, numSession));
-%     end
-%     
-%     close (h)
-end
-
+function [nDataSet3D, kickOutIndexAll] = getSimultaneousSpikeData(...
+                                    nDataSet, DataSetList, minRate, perMinRate, ...
+                                    ROCThres, minUnitsSession)
     
-
-function HighFRDataSet = filterOutLowFR(nDataSet, params, minRate, perMinRate, ROCThres)
+    ROCIndex          = DataSetList.ROCIndex;
+    ActiveNeuronIndex = DataSetList.ActiveNeuronIndex;                        
+                                
+    %%%
+    % Set minimal ratio between number of trial and number of unit
+    %%%
+    trialUnitRatio     = 2.5;
+    minNumTrial        = 20;
     
+    %%%
+    % Find high active units, where the probability of spike is > perMinRate
+    %%%
     HighFRDataSetIndex = arrayfun(@(x) mean(mean([x.unit_yes_trial; x.unit_no_trial])>minRate)>perMinRate, ...
-                         nDataSet, 'Uniformoutput', false);
+                         nDataSet, 'Uniformoutput', false);                                
     HighFRDataSetIndex = cell2mat(HighFRDataSetIndex);
     
-    ROCIndex           = ROCPop(nDataSet, params);
-    ROCIndex           = ROCIndex > ROCThres;
-    ROCDataIndex       = sum(ROCIndex(:,2:end),2)>0;
+    %%%
+    % Find high selective units, where the probability of ROC is > ROCThres
+    %%%
+    ROCDataIndex       = sum(ROCIndex(:,2:end) > ROCThres,2)>0;
+    kickOutIndexAll    = find(~(ActiveNeuronIndex & HighFRDataSetIndex & ROCDataIndex));
+    keptIndexAll       = find(ActiveNeuronIndex & HighFRDataSetIndex & ROCDataIndex);
+    newDataSet         = nDataSet(ActiveNeuronIndex & HighFRDataSetIndex & ROCDataIndex);
+    unitROCIndex       = ROCIndex(keptIndexAll, :);
     
-    HighFRDataSet      = nDataSet(HighFRDataSetIndex & ROCDataIndex);
+    sessionIndex            = unique([newDataSet.sessionIndex]);
+    nDataSet3D              = [];
+    kickOutIndex            = [];
+    
+    for nSession            = 1:length(sessionIndex)
+        sessionUnitIndex    = find([newDataSet.sessionIndex] == sessionIndex(nSession));
+        
+%         if sessionIndex(nSession)  == 75; keyboard; end
+        
+        if length(sessionUnitIndex) < minUnitsSession
+            kickOutIndex    = [kickOutIndex; columnVec(sessionUnitIndex)]; %#ok<AGROW>
+        else
+            trialUnitMat    = zeros(32, 600);
+            for nUnit       = 1:length(sessionUnitIndex)
+                trialUnitMat(newDataSet(sessionUnitIndex(nUnit)).nUnit, ...
+                            newDataSet(sessionUnitIndex(nUnit)).unit_yes_trial_index)...
+                            = 1;
+                trialUnitMat(newDataSet(sessionUnitIndex(nUnit)).nUnit, ...
+                            newDataSet(sessionUnitIndex(nUnit)).unit_no_trial_index)...
+                            = -1;
+            end
+            trialIndex      = sum(trialUnitMat~=0, 1) >= minUnitsSession;
+            unitIndex       = sum(trialUnitMat(:, trialIndex)==1, 2)> minNumTrial...
+                            & sum(trialUnitMat(:, trialIndex)==-1, 2)> minNumTrial;
+            subUnitIndex    = ismember([newDataSet(sessionUnitIndex).nUnit], find(unitIndex));
+            kickOutIndex    = [kickOutIndex; columnVec(sessionUnitIndex(~subUnitIndex))]; %#ok<AGROW>
+            sessionUnitIndex = sessionUnitIndex(subUnitIndex);
+            if sum(unitIndex) < minUnitsSession
+                kickOutIndex   = [kickOutIndex; columnVec(sessionUnitIndex)]; %#ok<AGROW>
+            else
+                
+                trialIndex     = sum(trialUnitMat(unitIndex, :)~=0, 1) == sum(unitIndex);
+                
+                if sum(trialIndex & sum(trialUnitMat,1)<0) > sum(unitIndex) * trialUnitRatio ...
+                    && sum(trialIndex & sum(trialUnitMat,1)>0) > sum(unitIndex) * trialUnitRatio
+                    % Keep the whole section in DataSet3D
+                    nDataSet3D  = [nDataSet3D, ...
+                                convert2DataSet3D(newDataSet(sessionUnitIndex),...
+                                unitROCIndex(sessionUnitIndex, :), find(trialIndex))]; %#ok<AGROW>
+                else % keep one unit out
+                    newTrialUnitMat     = trialUnitMat(unitIndex, :);
+                    kickUnit            = 0;
+                    numTrialAfterKick   = 0;
+                    trialIndexAfterKick = false(1, size(newTrialUnitMat, 2));
+                    for nKickUnit       = 1:size(newTrialUnitMat)
+                        subTrialUnitMat = newTrialUnitMat;
+                        subTrialUnitMat(nKickUnit, :) = [];
+                        trialIndex      = sum(subTrialUnitMat~=0, 1) == size(subTrialUnitMat, 1);
+                        
+                        if numTrialAfterKick < sum(trialIndex)
+                            numTrialAfterKick   = sum(trialIndex);
+                            kickUnit            = nKickUnit;
+                            trialIndexAfterKick = trialIndex;
+                        end
+                    end
+                    
+                    if kickUnit         == 0
+                        kickOutIndex   = [kickOutIndex; columnVec(sessionUnitIndex)]; %#ok<AGROW>
+                    else
+                        subTrialUnitMat = newTrialUnitMat;
+                        subTrialUnitMat(kickUnit, :) = [];
+                        kickOutUnitIndex = sessionUnitIndex;
+                        kickOutUnitIndex(kickUnit)   = [];
+                        
+                        if sum(trialIndexAfterKick & sum(subTrialUnitMat,1)<0) > size(subTrialUnitMat, 1) * trialUnitRatio ...
+                            && sum(trialIndexAfterKick & sum(subTrialUnitMat,1)>0) > size(subTrialUnitMat, 1) * trialUnitRatio
+                            kickOutIndex   = [kickOutIndex; sessionUnitIndex(kickUnit)]; %#ok<AGROW>
+                            % Keep the kick-one-out section in DataSet3D
+                            nDataSet3D  = [nDataSet3D, ...
+                                        convert2DataSet3D(newDataSet(kickOutUnitIndex),...
+                                        unitROCIndex(kickOutUnitIndex, :), find(trialIndexAfterKick))]; %#ok<AGROW>
+                        else
+                            kickOutIndex   = [kickOutIndex; columnVec(sessionUnitIndex)]; %#ok<AGROW>
+                        end
+                    end
+                    
+                end
+            end
+        end
+    end
+    
+    kickOutIndexAll = [columnVec(kickOutIndexAll); ...
+                        columnVec(keptIndexAll(kickOutIndex))];
     
 end
 
-% function ROCIndex       = ROCPop(nDataSet, params)
-% 
-%     timePoints          = timePointTrialPeriod(params.polein, params.poleout, params.timeSeries);     
-%     numPlots            = length(nDataSet);
-%     ROCIndex            = zeros(numPlots, length(timePoints)-1);
-%     nBins               = 10;
-%     for nPeriods        = length(timePoints) -1 : -1 : 1
-%         nPeriodData     = dataInPeriods(nDataSet, timePoints, nPeriods);     
-%         for nPlot       = 1:numPlots
-%             nRocTData        = [nPeriodData(nPlot).unit_yes_trial; nPeriodData(nPlot).unit_no_trial];
-%             nRocOData        = [ones(size(nPeriodData(nPlot).unit_yes_trial)); zeros(size(nPeriodData(nPlot).unit_no_trial))];
-%             [tp, fp]         = RocFunc(nRocTData, nRocOData, nBins);
-%             areaInt          = intXY([tp, 1], [fp, 1]);
-%             ROCIndex(nPlot, nPeriods) = max(areaInt, 1 - areaInt);
-%         end
-%     end
-%     
-% end
-% 
-% 
-% function areaInt       = intXY(vec_x, vec_y)    
-%     areaInt            = sum((vec_y(1:end-1)+vec_y(2:end)).*(vec_x(2:end)-vec_x(1:end-1))/2);    
-% end
 
+function nDataSet3D  = convert2DataSet3D(nDataSet, unitROCIndex, trialIndex)
 
-% function [nInterSectData, nodata, interSectVec]   = findInterSect(nSessionData)
-%     numUnit            = length(nSessionData);
-%     
-%     interSectVec.unit_yes_trial_index     = intersect(nSessionData(1).unit_yes_trial_index, ...
-%                                                   nSessionData(2).unit_yes_trial_index);
-% 
-%     interSectVec.unit_no_trial_index      = intersect(nSessionData(1).unit_no_trial_index, ...
-%                                                   nSessionData(2).unit_no_trial_index);
-%                                               
-%     for nInterSect     = 3:numUnit
-%         interSectVec.unit_yes_trial_index = intersect(interSectVec.unit_yes_trial_index, ...
-%                                                       nSessionData(nInterSect).unit_yes_trial_index);        
-%         interSectVec.unit_no_trial_index  = intersect(interSectVec.unit_no_trial_index, ...
-%                                                       nSessionData(nInterSect).unit_no_trial_index);         
-%     end
-%     
-%     nInterSectData.sessionIndex           = nSessionData(1).sessionIndex;
-%     nInterSectData.nUnit                  = [nSessionData(:).nUnit];    
-%     nInterSectData.unit_yes_trial_index   = interSectVec.unit_yes_trial_index;
-%     nInterSectData.unit_no_trial_index    = interSectVec.unit_no_trial_index;
-%     if isempty(nInterSectData.unit_yes_trial_index) || isempty(nInterSectData.unit_no_trial_index)
-%         nodata = true;
-%     else
-%         nodata = false;
-%     end
-%     
-%     for nUnit          = 1:numUnit
-%         nInterSectData.unit_yes_trial(nUnit, :, :) = nSessionData(nUnit).unit_yes_trial(...
-%                                                      ismember(nSessionData(nUnit).unit_yes_trial_index, nInterSectData.unit_yes_trial_index), :);
-%         nInterSectData.unit_no_trial(nUnit, :, :)  = nSessionData(nUnit).unit_no_trial(...
-%                                                      ismember(nSessionData(nUnit).unit_no_trial_index, nInterSectData.unit_no_trial_index), :);
-%     end
-%     
-% end
+%     disp(nDataSet(1).sessionIndex)
+
+    nDataSet3D.sessionIndex                = nDataSet(1).sessionIndex;
+    nDataSet3D.nUnit                       = [nDataSet.nUnit];
+    nDataSet3D.unitROCIndex                = unitROCIndex;
+    nDataSet3D.unit_yes_trial_index        = nDataSet(1).unit_yes_trial_index...
+                                            (ismember(nDataSet(1).unit_yes_trial_index, trialIndex));
+    nDataSet3D.unit_no_trial_index         = nDataSet(1).unit_no_trial_index...
+                                            (ismember(nDataSet(1).unit_no_trial_index, trialIndex));
+    
+    for nUnit        = 1: length(nDataSet)
+        nDataSet3D.unit_yes_trial(nUnit, :, :) = nDataSet(nUnit).unit_yes_trial...
+                                                (ismember(nDataSet(nUnit).unit_yes_trial_index, trialIndex), :);
+        nDataSet3D.unit_no_trial(nUnit, :, :)  = nDataSet(nUnit).unit_no_trial...
+                                                (ismember(nDataSet(nUnit).unit_no_trial_index, trialIndex), :);
+    end
+
+end
