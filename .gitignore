@@ -8,3 +8,4 @@ Text/*.html
 Text/Plot
 Text/*.gdoc
 Text/.Rhistory
+.DS_Store
