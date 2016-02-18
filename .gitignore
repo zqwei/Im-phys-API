@@ -1,9 +1,9 @@
 # ignore .mat files, anywhere in the tree
 
-#*.mat
 TempDat/
-Simultaneous_Data_Code/*.mat
-Simultaneous_Data_Code/mat_results/*.mat
-Simultaneous_Data_Code/mat_results/
 Plot/
-Plot_Backup/
+KSLab_Files/
+Slides/
+Text/*.html
+Text/Plot
+Text/*.gdoc

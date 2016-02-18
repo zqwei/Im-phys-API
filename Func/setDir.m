@@ -16,6 +16,8 @@ warning('off', 'all')
 
 % function setDir
 
+addpath('/Users/Dalin/Documents/My_Research/Empirical_Data_Analysis_Code/cbrewer/')
+
 SpikingDataDir              = '../../../Data_In_Use/Dataset_Comparison/ElectrophysiologyData/';
 CaImagingDataDir            = '../../../Data_In_Use/Dataset_Comparison/ImagingData/';
 CaImagingShortDelayFastDir  = [CaImagingDataDir 'delay1f4t/'];
@@ -39,7 +41,14 @@ if ~exist(TempDatDir, 'dir')
     mkdir(TempDatDir)
 end
 
-PlotDir                      = '../Plot/';
+
+isNotebook                     = false;
+
+if ~isNotebook
+    PlotDir                      = '../Plot/';
+else
+    PlotDir                      = '~/Google Drive/Dataset comparison/Plot/';
+end
 
 if ~exist(PlotDir, 'dir')
     mkdir(PlotDir)

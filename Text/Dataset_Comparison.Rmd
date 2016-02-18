@@ -1,0 +1,170 @@
+---
+title: Trade-off between decodability of stimulus and precision of temporal dynamics
+  in different recording methods
+# author: "Ziqiang Wei"
+# date: '`r Sys.Date()`'
+output:
+  html_document:
+    toc: no
+    toc_float:
+      collapsed: no
+      smooth_scroll: no
+    css: "pdfprint.css"
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results='asis')
+```
+
+
+# Methods
+
+## Experimental design and data collection
+### Fig 1a -- Experimental scheme
+Mouse was trained to performed a tactile discrimination task.
+
+<center><img src='Plot/task_scheme.svg', width='400px' /></center>
+
+## Data analysis methods -- Dataset Comparison List
+1. Single unit comparison across different datasets
+    - Fraction of cell types (dynamical neurons; task-selective neurons)
+    - Roc and z-score    
+2. Spike to Ca++ model
+    - Firing rate vs Ca++ profile
+    - Forward model parameters vs Ca++ profile    
+3. Population codes
+    - LDA for trial type
+    - LDA for epoch
+    - PCA -- EV for time, stimulus, and interaction in leading PCs
+    - Other (GPFA???)
+    
+---
+
+# Results
+## Single unit comparison across different datasets -- Calcium imaging datasets exhibit degrees of loss of heterogeneity in neuronal activity profiles.
+- Figure 1 -- experimental scheme (Figure 1a); a variability of activity profiles using different recording techniques (Figure 1b); a variability of cell type (Figure 1c,d)
+- Figure 2 -- a variability of selectivity as a function of time (which is related directly to population code analysis, like LDA and PCA)
+
+
+### Figure 1b -- Normalized neuronal activity exhibits distinguishable neural dynamics using different recordings techniques.
+We defined nomarlized neuronal activity (activity profile) in each dataset as: $R_{norm} = \frac{R - R_{min}}{R_{max} - R_{min}}$, where $R$ is firing rate in spiking data and is change of fluorescence $\Delta F/F$ in calcium imaging datasets, respectively. For most statistical analyses, activity profile should lead quantitatively to the identical conclusion to those from raw data. One would thus expect no distinction in activity profiles across datasets, providing that ALM neurons at population level carry the same information regardless of recording techniques. We thus examined the similarity of activity profiles at population level across different datasets. We found that across population, activity profile in spiking dataset displays a sharp and transient increase of neuronal activity, which then decays fast a baseline level, while those in calcium imaging datasets exhibit a smooth increase, which persists for a notable period of time (GP4.12: ~1300ms; GP4.3:~600ms), then gradually decays. It is worth noting that spiking dataset shows a simultaneous elevation of activity profiles for a large fraction of neurons at the beginning of each task epoch (see also Extended Data Figure 1 in __Li et al., 2015, Nature__), while calcium imaging exhibits gradual changes. These difference could come from sampling different subpopulations of ALM neurons (where underlying activity profiles are different), or result simply from degrees of variability in a feedforward transform from spiking rate to fluorescence change (Spike-to-Calcium model, where underlying activity profiles could be similar), which we will examine later in analyses.
+<style> table,td,tr,th {border:none!important} </style>
+
+```{r}
+source('Dataset_Comparison_Funcs.R')
+ImageDir <- 'Plot/SingleUnitsImagescWithSort/SingleUnitsImagescRasterOnly_'
+includeHtmlMD(ImageDir)
+```
+
+### Figure 1c -- Fraction of dynamical-selective neuron decreases a function of calcium indicator.
+As a movement preparatory area, there are a great fraction of neurons (~1/6) in ALM showing highly dynamical selectivities, i.e. neuronal selectivity of trial types (left or right lick) varies from one epoch to the other, from electrophysiology recordings (__Guo et al., 2014, Neuron; Li et al., 2015, Nature__). We however found that such a fraction decreases dramatically in calcium imaging recordings as a function of calcium indicator. Two possibilities could account for such an observation: (I) the neuron being sampled are different from area to area and from animal to animal (e.g. a large fraction of non-selective neuron is being recorded in calcium imaging, which in turn results in a decrease of the fraction of dynamical neurons, even the total number of them remains the same); (II) the loss of dynamical selectivity stems from an underlying dynamics from spike to calcium signal. Given __Hypothesis I__, one would expect that the recording location could statistically affect the fraction of neuronal types (i.e. non-selective neuron, homogeneous-selective neuron, and dynamical-selective neuron), even they were processed in the same condition. We thus examined __Hypothesis I__ by sampling neurons in the same dataset according to their depths, anterior-to-posterior and medial-to-lateral locations, and animal tags, and found that the fraction of neuronal type is independent of sampling methods ([__Supplementary Figure 1__](Dataset_Comparison_SuppFig01.html)).
+```{r}
+source('Dataset_Comparison_Funcs.R')
+ImageDir <- 'Plot/SingleUnitsTscore/SingleUnitsTscore_'
+includeHtmlMD(ImageDir)
+```
+
+### Figure 1d -- Fraction of mixed-selective neuron decreases a function of Calcium indicator
+<!-- This figure needs to be modified -->
+
+### Figure 2a -- (ROC)
+```{r}
+source('Dataset_Comparison_Funcs.R')
+ImageDir <- 'Plot/SingleUnitsROC/SingleActUnitsROC_'
+includeHtmlMD(ImageDir, fileType = 'pdf')
+```
+
+### Figure 2b -- (z-score)
+```{r}
+source('Dataset_Comparison_Funcs.R')
+ImageDir <- 'Plot/SingleUnitsROC/SingleActUnitsROC_'
+includeHtmlMD(ImageDir, fileType = 'pdf')
+```
+
+## Spike to Calcium model can explain the observed difference across datasets -- Loss of heterogeneity of neuronal activity profiles can stem from a feedforward integration of spikes.
+Spike to Calcium model:
+$$[Ca++](t)=\Sigma_{t_{spike}}\exp(-\frac{t-t_{spike}}{\tau_d})[1-\exp(-\frac{t-t_{spike}}{\tau_r})]\Phi(t-t_{spike})$$
+$$F(t) = F_{\max}\frac{[Ca++]^n}{[Ca++]^n+K^n}$$
+
+
+
+### Figure 3a -- Simultaneous recording and Spike to Calcium model
+
+Simultaneous recording -- (one figure?) Maybe move description to methods?
+
+
+
+where set $t_{spike}$ is spike times of a recorded spike train; $\tau_d$ is the decaying time constant of a calcium indicator; $\tau_r$ is the rising time constant of a spike-triggered 
+
+### Figure 3b -- Baseline spiking rate can result in differences in fluorescence data, even the activity profiles are identical
+
+### Figure 3c -- Variability of parameters in Spike-to-Calcium can explain also explain variation of activity profiles from spike to calcium imaging datasets
+
+
+
+### Figure 3d Normalized neuronal activity
+
+#### Supplementary Figure 4a -- calcium to spike model (linear model)
+
+#### Supplementary Figure 4b -- calcium to spike model (non-linear model)
+
+### Figure 4b -- Fraction of dynamical-selective neuron decreases a function of decaying time constant of calcium indicator
+
+#### Supplementary Figure 5a -- calcium to spike model (linear model)
+
+#### Supplementary Figure 5b -- calcium to spike model (non-linear model)
+
+### Figure 4c -- Fraction of mixed-selective neuron decreases a function of decaying time constant of calcium indicator
+
+#### Supplementary Figure 6a -- calcium to spike model (linear model)
+
+#### Supplementary Figure 6b -- calcium to spike model (non-linear model)
+
+### Figure 4d -- ROC
+
+#### Supplementary Figure 7a -- calcium to spike model (linear model)
+
+#### Supplementary Figure 7b -- calcium to spike model (non-linear model)
+
+### Figure 4e -- z-score
+
+#### Supplementary Figure 8a -- calcium to spike model (linear model)
+
+#### Supplementary Figure 8b -- calcium to spike model (non-linear model)
+
+## Population comparison across datasets -- Trade-off between decodability of stimulus and precision of temporal dynamics in different recording methods can be explained by Spike-to-Calcium model
+
+### Figure 5a -- Trial type information is delayed but enhanced as a function of decaying time constant of calcium indicator
+
+#### Figure 5a-1 -- Datasets comparison
+
+#### Figure 5a-2 -- Spike-to-Calcium model prediction
+
+#### Supplementary Figure 5a-1 -- calcium to spike model (linear model)
+
+#### Supplementary Figure 5a-2 -- calcium to spike model (non-linear model)
+
+### Figure 5b -- Epoch information is delayed as a function of decaying time constant of calcium indicator
+
+#### Figure 5b-1 -- Datasets comparison
+
+#### Figure 5b-2 -- Spike-to-Calcium model prediction
+
+#### Supplementary Figure 5b-1 -- calcium to spike model (linear model)
+
+#### Supplementary Figure 5b-2 -- calcium to spike model (non-linear model)
+
+### Figure 6 -- A trade-off between temporal and stimulus information as a function of decaying time constant of calcium indicator
+
+#### Figure 6a -- Datasets comparison
+
+#### Figure 6b -- Spike-to-Calcium model prediction
+
+#### Supplementary Figure 6a --Trade-off holds true at different depths
+
+#### Supplementary Figure 6b -- Trade-off holds true at different AP-ML locations
+
+#### Supplementary Figure 6c -- Trade-off holds true across different animals
+
+#### Supplementary Figure 7a -- calcium to spike model (linear model)
+
+#### Supplementary Figure 7b -- calcium to spike model (non-linear model)

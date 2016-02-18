@@ -1,0 +1,23 @@
+```{r, echo=FALSE}
+figIndex <- 2
+```
+
+---
+title: `r paste("Supplementary Figure ", figIndex, sep='')`
+author: "Ziqiang Wei"
+date: '`r Sys.Date()`'
+output:
+  html_document:
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results='asis')
+```
+
+## Fraction of mixed-selective neurons is distributed similarly at different locations
+
+#### Supplementary Figure 2a -- Fraction of mixed-selective neurons is distributes similarly at different depths
+
+#### Supplementary Figure 2b -- Fraction of mixed-selective neurons is distributes similarly at different AP-ML locations
+
+#### Supplementary Figure 2c -- Fraction of mixed-selective neurons is distributes similarly across different animals

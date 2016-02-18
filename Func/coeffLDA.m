@@ -10,41 +10,25 @@
 % based on paper:
 %
 % Guo et al., Biostatistics, 2007
+% 
+% no cross validation
 %
 % -------------------------------------------------------------------------
 % Ziqiang Wei
 % weiz@janelia.hhmi.org
 % 
 
-function [coeffVal, gammaVal, deltaVal, correctRate] = ....
-                                        coeffLDA(nSessionData, totTargets)
+function coeffMat            = coeffLDA(nSessionData, totTargets)
     
     T                        = size(nSessionData, 3);
-    coeffLength              = size(nSessionData, 2);
-
-    coeffGammaDeltaErrs      = arrayfun(@(tIndex) coeffClassify(...
+    coeffMat                 = arrayfun(@(tIndex) coeffClassify(...
                                            squeeze(nSessionData(:,:,tIndex)), ...
                                            totTargets), 1:T, 'UniformOutput', false);
-                                       
-    coeffGammaDeltaErrs      = cell2mat(coeffGammaDeltaErrs);
-    
-    coeffVal                 = coeffGammaDeltaErrs(1:coeffLength, :);
-    gammaVal                 = coeffGammaDeltaErrs(coeffLength + 1, :);
-    deltaVal                 = coeffGammaDeltaErrs(coeffLength + 2, :);
-    correctRate              = coeffGammaDeltaErrs(coeffLength + 3, :);
-
-% %%% Test codes:
-%     for tIndex               = 63
-%         disp(tIndex)
-%         coeffGammaDeltaErrs      = coeffClassify(...
-%                                            squeeze(nSessionData(:,:,tIndex)), ...
-%                                            totTargets);
-%     end
-    
+    coeffMat                 = cell2mat(coeffMat);
 end
 
 
-function coeffGammaDeltaErr  = coeffClassify(nSessionData, totTargets)
+function coeffMat            = coeffClassify(nSessionData, totTargets)
     
     
     % choice of parameters follows 'min-min' rul in Guo's paper
@@ -53,42 +37,10 @@ function coeffGammaDeltaErr  = coeffClassify(nSessionData, totTargets)
     zeroVarUnits           = var(nSessionData, 1) < 1e-5;
     coeffLength            = size(nSessionData, 2);
     nSessionData           = nSessionData(:, ~zeroVarUnits);
-    
-    Mdl                    = fitcdiscr(nSessionData, totTargets, ...
-                                'DiscrimType', 'pseudoLinear',... 
-                                'SaveMemory', 'on', 'FillCoeffs','off');
-    disp(Mdl.MinGamma)
-                        
-    if size(nSessionData,1) < size(nSessionData,2)                   
-        [err, gamma, delta, ~] = cvshrink(Mdl, 'NumGamma', 30, ...
-                                'NumDelta', 30, 'Verbose', 0);                         
-        % min-min error rule
-        minerr                 = min(min(err));
-        [p, q]                 = find(err == minerr);
-        idx                    = sub2ind(size(delta), p, q);    
-        gammaDeltaSet          = [gamma(p) delta(idx)];
-        gammaDeltaSet          = gammaDeltaSet(gammaDeltaSet(:, 2)...
-                                    == max(gammaDeltaSet(:, 2)),:);
-        gammaDeltaSet          = gammaDeltaSet(gammaDeltaSet(:, 1)...
-                                    == min(gammaDeltaSet(:, 1)),:);
-    else
-        [err, gamma, ~]        = cvshrink(Mdl, 'NumGamma', 30, ...
-                                'Verbose', 0);                         
-        % min-min error rule
-        minerr                 = min(min(err));
-        gammaDeltaSet          = gamma(err == minerr);
-        gammaDeltaSet          = gammaDeltaSet(gammaDeltaSet(:, 1)...
-                                    == min(gammaDeltaSet(:, 1)),:);
-        gammaDeltaSet          = [gammaDeltaSet(1), 0];
-    end
-        
-    obj                        = fitcdiscr(nSessionData, totTargets, ...
-                                    'DiscrimType', 'pseudoLinear',...         
-                                    'Delta', gammaDeltaSet(2), ...
-                                    'Gamma', gammaDeltaSet(1));
-    
-    cvmodel                = crossval(obj, 'KFold', 10);
-    
+           
+    obj                    = fitcdiscr(nSessionData, totTargets, ...
+                                    'DiscrimType', 'pseudoLinear');
+   
     coeff                  = obj.Coeffs(1,2).Linear;
     if norm(coeff)         > 0
         coeff              = coeff./norm(coeff);
@@ -100,7 +52,6 @@ function coeffGammaDeltaErr  = coeffClassify(nSessionData, totTargets)
         coeff(~zeroVarUnits) = coeffOld;
     end
     
-    coeffGammaDeltaErr     = [coeff; gammaDeltaSet(1); gammaDeltaSet(2); ...
-                            1 - kfoldLoss(cvmodel)];
+    coeffMat               = coeff;
         
 end

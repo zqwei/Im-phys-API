@@ -13,8 +13,10 @@ function setPrint(width, height, fname, printType)
             print('-dpng',[fname '.png'])
         case 'PDF'
             print('-dpdf',[fname '.pdf'])
-        case 'TIF'
+        case {'TIF', 'TIFF'}
             print('-dtiff','-r300',[fname '.tif'])
+        case {'SVG'}
+            print('-dsvg',[fname '.svg'])            
     end
     
     

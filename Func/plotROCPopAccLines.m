@@ -17,7 +17,7 @@ function plotROCPopAccLines(nDataSet, params)
     timePoints          = timePointTrialPeriod(params.polein, params.poleout, params.timeSeries);     
     numPlots            = length(nDataSet);
     % barColor            = {'b', 'r', 'k', 'g'};
-    m                   = ceil(sqrt(length(timePoints)-1));
+    % m                   = ceil(sqrt(length(timePoints)-1));
     nBins               = 10;
     figure;
     
@@ -39,7 +39,7 @@ function plotROCPopAccLines(nDataSet, params)
         histFreq(:,nPeriods) = cumsum(histFreq(:,nPeriods))/sum(histFreq(:,nPeriods));
     end
     
-    plot(histXout, histFreq,'-');
+    plot(histXout, histFreq,'-', 'linewid', 2.0);
     ylabel('% Accumulated Units')
     xlabel('Area under ROC');
     xlim([0 1])

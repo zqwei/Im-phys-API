@@ -39,7 +39,7 @@ function plotROCPopLines(nDataSet, params)
         histFreq(:,nPeriods) = histFreq(:,nPeriods)/sum(histFreq(:,nPeriods));
     end
     
-    plot(histXout, histFreq,'-');
+    plot(histXout, histFreq,'-', 'linewid', 2.0);
     ylabel('% Units')
     xlabel('Area under ROC');
     xlim([0 1])

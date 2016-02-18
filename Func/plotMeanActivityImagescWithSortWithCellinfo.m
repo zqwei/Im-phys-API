@@ -101,6 +101,7 @@ function plotMeanActivityImagescWithSortWithCellinfo (nDataSet, params, maxValue
     xTickLabel                    = arrayfun(@(x) num2str(x), xTicks,'Uniform',false);
     xTickLabel(mod(xTicks,2)==1)  = {''};
     set(ax, 'XTick', [xTicks xTicks+constShift], 'XTickLabel', [xTickLabel, xTickLabel]);
+    set(ax, 'YTick', [1 length(nDataSet)])
     axis([minTime, tMaxTime, 1, length(similaritySort)]);
     
     xlabel('Time (s)')
