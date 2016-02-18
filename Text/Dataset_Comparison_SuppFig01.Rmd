@@ -21,7 +21,7 @@ Here, we examined __Hypothesis I__ by sampling neurons in the same dataset accor
 <!-- Add statistical test, p-value, maybe sharable r code -->
 <style> table,td,tr,th {border:none!important} </style>
 ```{r}
-ImageDir <- 'Plot/SingleUnitsTscore/SingleUnitsTscoreDepth_'
+ImageDir <- 'SingleUnitsTscore/SingleUnitsTscoreDepth_'
 source('Dataset_Comparison_Funcs.R')
 includeHtmlMD(ImageDir)
 ```
@@ -31,7 +31,7 @@ includeHtmlMD(ImageDir)
 ```{r}
 apmlDatasets <- 'SShuffleConfounding_Ca_Slow_Long_Delay'
 apmlDatasetsName <- 'Transgenic: GP4.3 (Long delay)'
-ImageDir <- 'Plot/ConfoundingFactorTscore/SingleUnitsTscoreAPML_'
+ImageDir <- 'ConfoundingFactorTscore/SingleUnitsTscoreAPML_'
 source('Dataset_Comparison_Funcs.R')
 includeHtmlMD(ImageDir, Datasets = apmlDatasets, DatasetsName=apmlDatasetsName)
 ```
@@ -41,7 +41,7 @@ includeHtmlMD(ImageDir, Datasets = apmlDatasets, DatasetsName=apmlDatasetsName)
 ```{r}
 anmDatasets = c('ShuffleConfounding_Spikes', 'ShuffleConfounding_Ca_Slow_Short_Delay_Virus')
 anmDatasetsName = c('Spike', 'AAV: GP4.12')
-ImageDir = 'Plot/ConfoundingFactorTscore/SingleUnitsTscoreANM_'
+ImageDir = 'ConfoundingFactorTscore/SingleUnitsTscoreANM_'
 source('Dataset_Comparison_Funcs.R')
 includeHtmlMD(ImageDir, Datasets = anmDatasets, DatasetsName=anmDatasetsName)
 ```

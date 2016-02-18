@@ -23,12 +23,13 @@ for nData      = 1:length(DataSetList)-1
     load([TempDatDir 'LogPValueTscore_' DataSetList(nData).name '.mat'], 'logPValue', 'logPValueEpoch')
     unitGroup = plotTtestLogPSpikeEpoch (logPValueEpoch);
     sizeGroup = histcounts(unitGroup, 0:3);
-    figure;
+    figure('Visible', 'off');
     groupNames      = {'Non.', 'Homo.', 'Dynamical'};
     pie(sizeGroup, groupNames)
 %     title('Distribution of cell types')
     colormap(cmap)
-    setPrint(6, 4.5, [PlotDir 'SingleUnitsTscore/SingleUnitsTscore_' DataSetList(nData).name], 'pdf')
+    set(gca, 'TickDir', 'out')
+    setPrint(6, 4.5, [PlotDir 'SingleUnitsTscore/SingleUnitsTscore_' DataSetList(nData).name], 'svg')
     
     depth                        = [DataSetList(nData).cellinfo(:).depth];    
     depthStart                   = 100;
@@ -59,7 +60,7 @@ for nData      = 1:length(DataSetList)-1
     
     groupPerCounts = bsxfun(@rdivide, groupCounts, sum(groupCounts, 2));
     
-    figure;
+    figure('Visible', 'off');
     subplot(1, 2, 1)
     barh(uniqueDepth, groupPerCounts, 'stack', 'edgecolor', 'none');
 %     caxis([0 3])
@@ -77,7 +78,7 @@ for nData      = 1:length(DataSetList)-1
     ylabel('Depth (um)')
     ylim([0 950])
     set(gca, 'yTick', 0:300:900)
-    
+    set(gca, 'TickDir', 'out')
     setPrint(8*2, 6, [PlotDir 'SingleUnitsTscore/SingleUnitsTscoreDepth_' DataSetList(nData).name], 'svg')
 end
 

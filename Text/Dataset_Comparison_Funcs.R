@@ -1,15 +1,15 @@
 htmlMD <- function(images, header, width="100%"){
-  htmlMD <- paste("<table style='width:", width, "'><tr>", sep = '')
+  htmlMD <- paste0("<table style='width:", width, "'><tr>")
   if(length(header)>1 || nchar(header)>0){
     for (h in header){
-      htmlMD <- paste(htmlMD, "<th><center>", h,"</center></th>", sep = '')
+      htmlMD <- paste0(htmlMD, "<th><center>", h,"</center></th>")
     }
-    htmlMD <- paste(htmlMD, "</tr><tr>", sep = '')
+    htmlMD <- paste0(htmlMD, "</tr><tr>")
   }
   for (image in images){
-    htmlMD <- paste(htmlMD, "<td><img src=", image," /></td>", sep = '')
+    htmlMD <- paste0(htmlMD, "<td><img src=", image," /></td>")
   }
-  htmlMD <- paste(htmlMD, "</tr></table>", sep = '')
+  htmlMD <- paste0(htmlMD, "</tr></table>")
   cat(htmlMD)
 }
 
@@ -19,19 +19,20 @@ tmpDatasetsName <- c('Spike', 'AAV: GP4.12', 'Transgenic: GP4.3')
 
 
 includeHtmlMD <- function(ImageDir, Datasets = tmpDatasets, DatasetsName=tmpDatasetsName, fileType = 'svg'){
+  ImageDir <- paste0('../Plot/', ImageDir)
   DataFiles <- Datasets
   for (nData in 1:length(DataFiles)){
     if (fileType == "pdf"){
-      tmpFileNmae <- paste(ImageDir, DataFiles[nData], '.', fileType, sep = '')
-      tmpSvgFile <- paste(ImageDir, DataFiles[nData], '.svg', sep = '')
+      tmpFileNmae <- paste0(ImageDir, DataFiles[nData], '.', fileType)
+      tmpSvgFile <- paste0(ImageDir, DataFiles[nData], '.svg')
       if(file.exists(tmpFileNmae)){
         system(paste('pdf2svg', tmpFileNmae, tmpSvgFile))
         system(paste('rm', tmpFileNmae))
       }
-      DataFiles[nData] <- paste(ImageDir, DataFiles[nData], '.svg', sep = '')
+      DataFiles[nData] <- paste0(ImageDir, DataFiles[nData], '.svg')
     } # convert pdf to svg, which gives a better results
     else{
-      DataFiles[nData] <- paste(ImageDir, DataFiles[nData], '.', fileType, sep = '')
+      DataFiles[nData] <- paste0(ImageDir, DataFiles[nData], '.', fileType)
     }
       
   }

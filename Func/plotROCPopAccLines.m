@@ -19,7 +19,7 @@ function plotROCPopAccLines(nDataSet, params)
     % barColor            = {'b', 'r', 'k', 'g'};
     % m                   = ceil(sqrt(length(timePoints)-1));
     nBins               = 10;
-    figure;
+    figure('Visible', 'off');
     
     histXout            = 0:0.02:1;
     histFreq            = zeros(length(histXout),length(timePoints) -1);

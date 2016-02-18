@@ -51,7 +51,7 @@ We defined nomarlized neuronal activity (activity profile) in each dataset as: $
 
 ```{r}
 source('Dataset_Comparison_Funcs.R')
-ImageDir <- 'Plot/SingleUnitsImagescWithSort/SingleUnitsImagescRasterOnly_'
+ImageDir <- 'SingleUnitsImagescWithSort/SingleUnitsImagescRasterOnly_'
 includeHtmlMD(ImageDir)
 ```
 
@@ -59,7 +59,7 @@ includeHtmlMD(ImageDir)
 As a movement preparatory area, there are a great fraction of neurons (~1/6) in ALM showing highly dynamical selectivities, i.e. neuronal selectivity of trial types (left or right lick) varies from one epoch to the other, from electrophysiology recordings (__Guo et al., 2014, Neuron; Li et al., 2015, Nature__). We however found that such a fraction decreases dramatically in calcium imaging recordings as a function of calcium indicator. Two possibilities could account for such an observation: (I) the neuron being sampled are different from area to area and from animal to animal (e.g. a large fraction of non-selective neuron is being recorded in calcium imaging, which in turn results in a decrease of the fraction of dynamical neurons, even the total number of them remains the same); (II) the loss of dynamical selectivity stems from an underlying dynamics from spike to calcium signal. Given __Hypothesis I__, one would expect that the recording location could statistically affect the fraction of neuronal types (i.e. non-selective neuron, homogeneous-selective neuron, and dynamical-selective neuron), even they were processed in the same condition. We thus examined __Hypothesis I__ by sampling neurons in the same dataset according to their depths, anterior-to-posterior and medial-to-lateral locations, and animal tags, and found that the fraction of neuronal type is independent of sampling methods ([__Supplementary Figure 1__](Dataset_Comparison_SuppFig01.html)).
 ```{r}
 source('Dataset_Comparison_Funcs.R')
-ImageDir <- 'Plot/SingleUnitsTscore/SingleUnitsTscore_'
+ImageDir <- 'SingleUnitsTscore/SingleUnitsTscore_'
 includeHtmlMD(ImageDir)
 ```
 
@@ -69,15 +69,15 @@ includeHtmlMD(ImageDir)
 ### Figure 2a -- (ROC)
 ```{r}
 source('Dataset_Comparison_Funcs.R')
-ImageDir <- 'Plot/SingleUnitsROC/SingleActUnitsROC_'
-includeHtmlMD(ImageDir, fileType = 'pdf')
+ImageDir <- 'SingleUnitsROC/SingleActUnitsROC_'
+includeHtmlMD(ImageDir, fileType = 'svg')
 ```
 
 ### Figure 2b -- (z-score)
 ```{r}
 source('Dataset_Comparison_Funcs.R')
-ImageDir <- 'Plot/SingleUnitsROC/SingleActUnitsROC_'
-includeHtmlMD(ImageDir, fileType = 'pdf')
+ImageDir <- 'SingleUnitsROC/SingleActUnitsROC_'
+includeHtmlMD(ImageDir, fileType = 'svg')
 ```
 
 ## Spike to Calcium model can explain the observed difference across datasets -- Loss of heterogeneity of neuronal activity profiles can stem from a feedforward integration of spikes.
