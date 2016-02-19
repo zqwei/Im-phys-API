@@ -5,3 +5,6 @@ KSLab_Files/
 Slides/
 Text/.Rhistory
 .DS_Store
+Plot/
+Text/*.html
+Text/Plot/
