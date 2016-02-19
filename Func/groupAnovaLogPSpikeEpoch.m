@@ -1,6 +1,8 @@
 %
 % groupAnovaLogPSpikeEpoch.m
 % 
+% this is the same as getAnovaLogPSpike.m
+% 
 %
 % Spiking dataset
 %

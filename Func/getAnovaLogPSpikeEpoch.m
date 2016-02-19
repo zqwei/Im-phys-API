@@ -14,10 +14,10 @@
 % weiz@janelia.hhmi.org
 % 
 
-function unitGroup = getAnovaLogPSpikeEpoch (logPValue, logPValueEpoch, params)
+function unitGroup = getAnovaLogPSpikeEpoch (logPValueEpoch)
 
     thresLogP     = -log(0.05);
-    numUnit       = size(logPValue, 1);
+    numUnit       = size(logPValueEpoch, 1);
     unitGroup     = nan(numUnit, 1);
 
     gAP           = sum(logPValueEpoch(:, 1, :) > thresLogP, 3) > 0;
