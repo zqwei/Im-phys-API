@@ -1,11 +1,7 @@
 # ignore .mat files, anywhere in the tree
 
 TempDat/
-Plot/
 KSLab_Files/
 Slides/
-Text/*.html
-Text/Plot
-Text/*.gdoc
 Text/.Rhistory
 .DS_Store
