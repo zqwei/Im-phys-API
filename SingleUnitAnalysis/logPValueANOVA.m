@@ -14,6 +14,8 @@ if ~exist([PlotDir 'SingleUnitsAnova'],'dir')
     mkdir([PlotDir 'SingleUnitsAnova'])
 end
 
+cmap = cbrewer('qual', 'Set2', 10, 'cubic');
+
 for nData      = 1:length(DataSetList)-1
 %     load([TempDatDir DataSetList(nData).name '.mat'])
 %     sigma                         = 0.10 / DataSetList(1).params.binsize; % 200 ms
@@ -27,8 +29,16 @@ for nData      = 1:length(DataSetList)-1
 %     logPValueEpoch= getLogPValueSpikeEpoch(nDataSet, DataSetList(nData).params);
 %     save([TempDatDir 'LogPValue_' DataSetList(nData).name '.mat'], 'logPValueEpoch', '-append')
     load([TempDatDir 'LogPValue_' DataSetList(nData).name '.mat'], 'logPValue', 'logPValueEpoch')
-    unitGroup = plotAnovaLogPSpikeEpoch (logPValue, logPValueEpoch, DataSetList(nData).params);
-    setPrint(10, 6*4, [PlotDir 'SingleUnitsAnova/SingleUnitsAnova_' DataSetList(nData).name], 'tiff')
+    unitGroup = getAnovaLogPSpikeEpoch(logPValueEpoch);
+    plotAnovaLogPSpikeEpoch (logPValue, unitGroup, DataSetList(nData).params);    
+    setPrint(10, 6*3, [PlotDir 'SingleUnitsAnova/SingleUnitsAnovaDynamic_' DataSetList(nData).name], 'svg')
+    figure
+    groupNames      = {'Pole', 'Lick', 'Reward', 'PL', 'PR', 'LR', 'PLR', 'Non-Selective'};
+    sizeGroup      = histcounts(unitGroup, 1:9);
+    pie(sizeGroup, groupNames)
+%     title('Distribution of cell types')
+    colormap(cmap)
+    setPrint(8, 6, [PlotDir 'SingleUnitsAnova/SingleUnitsAnova_' DataSetList(nData).name], 'svg')
     % plotAnovaLogPSpikeExampleNeurons (logPValue, DataSetList(nData), nDataSet, filterInUse);
     % % setPrint(20, 12*4, [PlotDir 'SingleUnitsAnovaExampleNeuron_' DataSetList(nData).name], 'tiff')
     
@@ -74,9 +84,10 @@ for nData      = 1:length(DataSetList)-1
     ylabel('Depth (um)')
     ylim([0 950])
     set(gca, 'yTick', 0:300:900)
+    colormap(cmap)
     
     subplot(1, 2, 2)
-    bar(uniqueDepth, sum(groupCounts,2))
+    barh(uniqueDepth, sum(groupCounts,2),'k')
     ylabel('# cells')
     xlabel('Depth (um)')
     xlim([0 950])

@@ -29,7 +29,7 @@ for nData      = 1:length(DataSetList)-1
 %     title('Distribution of cell types')
     colormap(cmap)
     set(gca, 'TickDir', 'out')
-    setPrint(6, 4.5, [PlotDir 'SingleUnitsTscore/SingleUnitsTscore_' DataSetList(nData).name], 'svg')
+    setPrint(8, 6, [PlotDir 'SingleUnitsTscore/SingleUnitsTscore_' DataSetList(nData).name], 'svg')
     
     depth                        = [DataSetList(nData).cellinfo(:).depth];    
     depthStart                   = 100;

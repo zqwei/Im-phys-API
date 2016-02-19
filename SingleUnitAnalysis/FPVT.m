@@ -169,7 +169,7 @@ for nData                     = 1:length(DataSetList)-1
     set(gca, 'xTick', 0:300:900)
     
     
-    setPrint(8*2, 6, [PlotDir 'SingleUnitsFPVT/SingleUnitsFPVTDepth_' DataSetList(nData).name], 'pdf')
+    setPrint(8*2, 6, [PlotDir 'SingleUnitsFPVT/SingleUnitsFPVTDepth_' DataSetList(nData).name], 'svg')
 end
 
 close all

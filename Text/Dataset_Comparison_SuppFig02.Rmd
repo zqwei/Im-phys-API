@@ -14,9 +14,21 @@ output:
 knitr::opts_chunk$set(echo = FALSE, results='asis')
 ```
 
+
+```{r}
+source('Dataset_Comparison_Funcs.R')
+ImageDir <- 'SingleUnitsAnova/SingleUnitsAnovaDynamic_'
+includeHtmlMD(ImageDir)
+```
+
 ## Fraction of mixed-selective neurons is distributed similarly at different locations
 
 #### Supplementary Figure 2a -- Fraction of mixed-selective neurons is distributes similarly at different depths
+```{r}
+source('Dataset_Comparison_Funcs.R')
+ImageDir <- 'SingleUnitsAnova/SingleUnitsAnovaDepth_'
+includeHtmlMD(ImageDir)
+```
 
 #### Supplementary Figure 2b -- Fraction of mixed-selective neurons is distributes similarly at different AP-ML locations
 

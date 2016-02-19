@@ -12,6 +12,10 @@
 % 
 
 warning('off', 'all')
+set(0, 'defaultfigureVisible','off')
+set(0, 'defaultaxesTickDir', 'out')
+set(0, 'defaultaxesLineWidth', 1.0)
+
 % addpath('./Func')
 
 % function setDir

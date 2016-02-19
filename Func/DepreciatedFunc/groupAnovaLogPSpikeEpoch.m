@@ -1,8 +1,6 @@
 %
 % groupAnovaLogPSpikeEpoch.m
 % 
-% this is the same as getAnovaLogPSpike.m
-% 
 %
 % Spiking dataset
 %
@@ -10,6 +8,8 @@
 % Output:
 %
 % version 1.0
+%
+% This is the same as getAnovaLogPSpike.m and will be depreciated
 %
 % -------------------------------------------------------------------------
 % Ziqiang Wei

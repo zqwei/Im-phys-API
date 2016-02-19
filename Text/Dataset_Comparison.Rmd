@@ -64,7 +64,11 @@ includeHtmlMD(ImageDir)
 ```
 
 ### Figure 1d -- Fraction of mixed-selective neuron decreases a function of Calcium indicator
-<!-- This figure needs to be modified -->
+```{r}
+source('Dataset_Comparison_Funcs.R')
+ImageDir <- 'SingleUnitsAnova/SingleUnitsAnova_'
+includeHtmlMD(ImageDir)
+```
 
 ### Figure 2a -- (ROC)
 ```{r}
