@@ -14,14 +14,10 @@ if ~exist([PlotDir 'ConfoundingFactorTscore'],'dir')
     mkdir([PlotDir 'ConfoundingFactorTscore'])
 end
 
+cmap = cbrewer('qual', 'Set1', 3, 'cubic');
 
 DataSetToAnalysis = [1 5 6];
 
-% for nData      = DataSetToAnalysis
-%     load([TempDatDir DataSetList(nData).name '.mat'])
-%     logPValueEpoch= getLogPValueTscoreSpikeEpoch(nDataSet, DataSetList(nData).params);
-%     save([TempDatDir 'LogPValueTscore_' DataSetList(nData).name '.mat'], 'logPValueEpoch')
-% end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % All area vs area of spiking recording
@@ -31,21 +27,21 @@ nData          = 5;
 load([TempDatDir 'LogPValueTscore_' DataSetList(nData).name '.mat'], 'logPValueEpoch')
 unitGroup      = plotTtestLogPSpikeEpoch (logPValueEpoch);
 figure;
-subplot(1, 2, 1)
 sizeGroup      = histcounts(unitGroup, 0:3);
-groupNames     = {'Non.', 'Homo.', 'Dynamicial'};
-pie(sizeGroup, groupNames)
-title('Population')
+pie(sizeGroup)
+colormap(cmap)
+disp(sum(sizeGroup))
+setPrint(8, 6, [PlotDir 'ConfoundingFactorTscore/SingleUnitsTscoreAPML_Pop_' DataSetList(nData).name], 'svg')
 
+figure;
 APLoc          = [DataSetList(nData).cellinfo.AP_axis];
 MLLoc          = [DataSetList(nData).cellinfo.ML_axis];
-subplot(1, 2, 2)
 sizeGroup      = histcounts(unitGroup(APLoc>2400 & APLoc<2600 & MLLoc>1100 & MLLoc<1900), 0:3);
 groupNames     = {'Non.', 'Homo.', 'Dynamicial'};
-pie(sizeGroup, groupNames)
-title('Subpopulation')
-
-setPrint(8*2, 6, [PlotDir 'ConfoundingFactorTscore/SingleUnitsTscoreAPML_' DataSetList(nData).name], 'pdf')
+pie(sizeGroup)
+colormap(cmap)
+disp(sum(sizeGroup))
+setPrint(8, 6, [PlotDir 'ConfoundingFactorTscore/SingleUnitsTscoreAPML_Sub_' DataSetList(nData).name], 'svg')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Comparison across animals
@@ -71,6 +67,7 @@ for nData      = DataSetToAnalysis
     figure
     subplot(1, 2, 1)
     barh(groupPerCounts, 'stack', 'edgecolor', 'none');
+    colormap(cmap)
 %     caxis([1 8])
     xlim([0 1])
     box off
@@ -79,12 +76,12 @@ for nData      = DataSetToAnalysis
     set(gca, 'yTickLabel', {})
 
     subplot(1, 2, 2)
-    barh(sum(groupCounts,2))
+    barh(sum(groupCounts,2), 'k')
     xlabel('# cells')
     ylabel('Animal index')
     set(gca, 'yTickLabel', {})
     
-    setPrint(8*2, 6, [PlotDir 'ConfoundingFactorTscore/SingleUnitsTscoreANM_' DataSetList(nData).name], 'pdf')
+    setPrint(8*2, 6, [PlotDir 'ConfoundingFactorTscore/SingleUnitsTscoreANM_' DataSetList(nData).name], 'svg')
     
 end
 

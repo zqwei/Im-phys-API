@@ -14,13 +14,9 @@ if ~exist([PlotDir 'ConfoundingFactorAnova'],'dir')
     mkdir([PlotDir 'ConfoundingFactorAnova'])
 end
 
-DataSetToAnalysis = [1 5 6];
+cmap = cbrewer('qual', 'Set1', 10, 'cubic');
 
-% for nData      = DataSetToAnalysis
-%     load([TempDatDir DataSetList(nData).name '.mat'])
-%     logPValueEpoch= getLogPValueSpikeEpoch(nDataSet, DataSetList(nData).params);
-%     save([TempDatDir 'LogPValue_' DataSetList(nData).name '.mat'], 'logPValueEpoch')
-% end
+DataSetToAnalysis = [1 5 6];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % All area vs area of spiking recording
@@ -29,23 +25,26 @@ DataSetToAnalysis = [1 5 6];
 
 nData          = 5;
 load([TempDatDir 'LogPValue_' DataSetList(nData).name '.mat'], 'logPValueEpoch')
-unitGroup      = groupAnovaLogPSpikeEpoch (logPValueEpoch);
+unitGroup      = getAnovaLogPSpikeEpoch (logPValueEpoch);
 figure;
-subplot(1, 2, 1)
 sizeGroup      = histcounts(unitGroup, 1:9);
-groupNames     = {'Pole', 'Lick', 'Reward', 'PL', 'PR', 'LR', 'PLR', 'Non-Selective'};
-pie(sizeGroup, groupNames)
-title('Population')
+h = pie(sizeGroup);
+h = findobj(h, 'Type', 'patch');
+for nh = 1:length(h)
+    set(h(nh), 'FaceColor', cmap(nh, :));
+end
+setPrint(8, 6, [PlotDir 'ConfoundingFactorAnova/SingleUnitsAnovaAPML_Pop_' DataSetList(nData).name], 'svg')
 
 APLoc          = [DataSetList(nData).cellinfo.AP_axis];
 MLLoc          = [DataSetList(nData).cellinfo.ML_axis];
-subplot(1, 2, 2)
+figure;
 sizeGroup      = histcounts(unitGroup(APLoc>2400 & APLoc<2600 & MLLoc>1100 & MLLoc<1900), 1:9);
-groupNames     = {'Pole', 'Lick', 'Reward', 'PL', 'PR', 'LR', 'PLR', 'Non-Selective'};
-pie(sizeGroup, groupNames)
-title('Subpopulation')
-
-setPrint(8*2, 6, [PlotDir 'ConfoundingFactorAnova/SingleUnitsAnovaAPML_' DataSetList(nData).name], 'pdf')
+h = pie(sizeGroup);
+h = findobj(h, 'Type', 'patch');
+for nh = 1:length(h)
+    set(h(nh), 'FaceColor', cmap(nh, :));
+end
+setPrint(8, 6, [PlotDir 'ConfoundingFactorAnova/SingleUnitsAnovaAPML_Sub_' DataSetList(nData).name], 'svg')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Comparison across animals
@@ -56,7 +55,7 @@ for nData      = DataSetToAnalysis
     numGroup    = 7;
     groupCounts = zeros(anmIndex(end), numGroup);
     load([TempDatDir 'LogPValue_' DataSetList(nData).name '.mat'], 'logPValueEpoch')
-    unitGroup   = groupAnovaLogPSpikeEpoch (logPValueEpoch);
+    unitGroup   = getAnovaLogPSpikeEpoch (logPValueEpoch);
     for nAnm    = 1:anmIndex(end)
         if sum(anmIndex == nAnm) > 50
             for nGroup = 1:numGroup
@@ -77,14 +76,15 @@ for nData      = DataSetToAnalysis
     xlabel('% cell type')
     ylabel('Animal index')
     set(gca, 'yTickLabel', {})
+    colormap(cmap(1:8, :))
 
     subplot(1, 2, 2)
-    bar(sum(groupCounts,2))
-    ylabel('# cells')
-    xlabel('Animal index')
-    set(gca, 'xTickLabel', {})
+    barh(sum(groupCounts,2), 'k')
+    xlabel('# cells')
+    ylabel('Animal index')
+    set(gca, 'yTickLabel', {})
     
-    setPrint(8*2, 6, [PlotDir 'ConfoundingFactorAnova/SingleUnitsAnovaANM_' DataSetList(nData).name], 'pdf')
+    setPrint(8*2, 6, [PlotDir 'ConfoundingFactorAnova/SingleUnitsAnovaANM_' DataSetList(nData).name], 'svg')
     
 end
 

@@ -9,12 +9,11 @@ output:
     toc_float:
       collapsed: no
       smooth_scroll: no
-    css: "pdfprint.css"
+    css: "screen.css"
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, results='asis')
 ```
-
 
 # Methods
 
@@ -60,14 +59,14 @@ As a movement preparatory area, there are a great fraction of neurons (~1/6) in 
 ```{r}
 source('Dataset_Comparison_Funcs.R')
 ImageDir <- 'SingleUnitsTscore/SingleUnitsTscore_'
-includeHtmlMD(ImageDir)
+includePieMD(ImageDir)
 ```
 
 ### Figure 1d -- Fraction of mixed-selective neuron decreases a function of Calcium indicator
 ```{r}
 source('Dataset_Comparison_Funcs.R')
 ImageDir <- 'SingleUnitsAnova/SingleUnitsAnova_'
-includeHtmlMD(ImageDir)
+includePieMD(ImageDir)
 ```
 
 ### Figure 2a -- (ROC)
@@ -80,8 +79,8 @@ includeHtmlMD(ImageDir, fileType = 'svg')
 ### Figure 2b -- (z-score)
 ```{r}
 source('Dataset_Comparison_Funcs.R')
-ImageDir <- 'SingleUnitsROC/SingleActUnitsROC_'
-includeHtmlMD(ImageDir, fileType = 'svg')
+ImageDir <- 'SingleUnitsFPVT/SingleUnitsZScore_'
+includeColorbarMD(ImageDir, fileType = 'svg')
 ```
 
 ## Spike to Calcium model can explain the observed difference across datasets -- Loss of heterogeneity of neuronal activity profiles can stem from a feedforward integration of spikes.

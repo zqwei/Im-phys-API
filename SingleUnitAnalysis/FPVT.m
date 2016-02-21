@@ -59,6 +59,7 @@ for nData                     = 1:length(DataSetList)-1
     hold off;
     xlim([DataSetList(nData).params.timeSeries(1) DataSetList(nData).params.timeSeries(end)])
     ylim([1 numUnits])
+    set(gca, 'YTick', [1 numUnits])
     colormap(h, french(128,2))
 %     colorbar;
     caxis([-5 5])
@@ -66,7 +67,7 @@ for nData                     = 1:length(DataSetList)-1
     xlabel('Time (s)')
     ylabel('Neuron Index')
     box off;
-    setPrint(8, 6, [PlotDir 'SingleUnitsFPVT/SingleUnitsZScore_' DataSetList(nData).name], 'pdf')
+    setPrint(8, 6, [PlotDir 'SingleUnitsFPVT/SingleUnitsZScore_' DataSetList(nData).name], 'svg')
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % dependence analysis
@@ -155,6 +156,7 @@ for nData                     = 1:length(DataSetList)-1
     xlim([DataSetList(nData).params.timeSeries(1) DataSetList(nData).params.timeSeries(end)])
     ylim([0 950])
     set(gca, 'yTick', 0:300:900)
+    colormap gray
     colorbar
     xlabel('First Sig. p Val. Time (s)')
     ylabel('Depth (um)')
@@ -162,14 +164,18 @@ for nData                     = 1:length(DataSetList)-1
     box off
     
     subplot(1, 2, 2)
-    bar(uniqueDepth, numCells)
-    ylabel('# cells')
-    xlabel('Depth (um)')
-    xlim([0 950])
-    set(gca, 'xTick', 0:300:900)
+    barh(uniqueDepth, numCells, 'k')
+    xlabel('# cells')
+    ylabel('Depth (um)')
+%     xlim([0 950])
+    set(gca, 'yTick', 0:300:900)
     
     
     setPrint(8*2, 6, [PlotDir 'SingleUnitsFPVT/SingleUnitsFPVTDepth_' DataSetList(nData).name], 'svg')
 end
+
+
+setColorbar(french(128,2), -5, 5, '-log(P)', [PlotDir 'SingleUnitsFPVT/SingleUnitsZScore_'])
+
 
 close all

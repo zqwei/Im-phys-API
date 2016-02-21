@@ -26,17 +26,18 @@ source('Dataset_Comparison_Funcs.R')
 includeHtmlMD(ImageDir)
 ```
 
-### Supplementary Figure 1b -- Fraction of dynamical-selective neurons is distributed similarly at different AP-ML locations
+### Supplementary Figure `r figIndex`b -- Fraction of dynamical-selective neurons is distributed similarly at different AP-ML locations
+We analyzed using Transgenic: GP4.3 (Long delay) (whole population: 3071, sub-population: 1104)
 <!-- Add statistical test, p-value, maybe sharable r code; statistical table like number of neurons in each condition -->
 ```{r}
-apmlDatasets <- 'SShuffleConfounding_Ca_Slow_Long_Delay'
-apmlDatasetsName <- 'Transgenic: GP4.3 (Long delay)'
+apmlDatasets <- c('Pop_SShuffleConfounding_Ca_Slow_Long_Delay', 'Sub_SShuffleConfounding_Ca_Slow_Long_Delay')
+apmlDatasetsName <- c('Whole population', 'Sub-population')
 ImageDir <- 'ConfoundingFactorTscore/SingleUnitsTscoreAPML_'
 source('Dataset_Comparison_Funcs.R')
 includeHtmlMD(ImageDir, Datasets = apmlDatasets, DatasetsName=apmlDatasetsName)
 ```
 
-### Supplementary Figure 1c -- Fraction of dynamical-selective neurons is distributed similarly across different animals
+### Supplementary Figure `r figIndex`c -- Fraction of dynamical-selective neurons is distributed similarly across different animals
 <!-- Add statistical test, p-value, maybe sharable r code; statistical table like number of neurons in each condition -->
 ```{r}
 anmDatasets = c('ShuffleConfounding_Spikes', 'ShuffleConfounding_Ca_Slow_Short_Delay_Virus')

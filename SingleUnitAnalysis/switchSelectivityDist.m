@@ -14,7 +14,7 @@ if ~exist([PlotDir 'SingleUnitsTscore'],'dir')
     mkdir([PlotDir 'SingleUnitsTscore'])
 end
 
-cmap = cbrewer('qual', 'Set2', 3, 'cubic');
+cmap = cbrewer('qual', 'Set1', 3, 'cubic');
 
 for nData      = 1:length(DataSetList)-1
 %     load([TempDatDir DataSetList(nData).name '.mat'])
@@ -25,7 +25,8 @@ for nData      = 1:length(DataSetList)-1
     sizeGroup = histcounts(unitGroup, 0:3);
     figure('Visible', 'off');
     groupNames      = {'Non.', 'Homo.', 'Dynamical'};
-    pie(sizeGroup, groupNames)
+%     pie(sizeGroup, groupNames)
+    pie(sizeGroup)
 %     title('Distribution of cell types')
     colormap(cmap)
     set(gca, 'TickDir', 'out')
@@ -82,4 +83,14 @@ for nData      = 1:length(DataSetList)-1
     setPrint(8*2, 6, [PlotDir 'SingleUnitsTscore/SingleUnitsTscoreDepth_' DataSetList(nData).name], 'svg')
 end
 
+figure;
+hold on
+for nColor = 1:length(groupNames)
+    plot(0, nColor, 's', 'color', cmap(nColor,:), 'MarkerFaceColor',cmap(nColor,:),'MarkerSize', 8)
+    text(1, nColor, groupNames{nColor})
+end
+xlim([0 10])
+hold off
+axis off
+setPrint(3, 2, [PlotDir 'SingleUnitsTscore/SingleUnitsTscore_Label'])
 close all

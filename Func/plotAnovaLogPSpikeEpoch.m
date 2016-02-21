@@ -25,12 +25,13 @@
 function unitGroup = plotAnovaLogPSpikeEpoch (logPValue, unitGroup, params)
 
     figure;
-    cmap = cbrewer('qual', 'Set2', 10, 'cubic'); 
+    cmap = cbrewer('qual', 'Set1', 10, 'cubic');
+    cmap = cmap(1:8, :);
     
     [sortedIndex, unitIndex] = sort(unitGroup, 'ascend');
-    groupTitle     = {  '-log(P) for pole location', ...
-                        '-log(P) for lick direction', ...
-                        '-log(P) for reward'};
+%     groupTitle     = {  '-log(P) for pole location', ...
+%                         '-log(P) for lick direction', ...
+%                         '-log(P) for reward'};
     
     sortLogPValue  = logPValue(unitIndex, :, :);
     sortLogPValue  = sortLogPValue(sortedIndex < 8, :, :);
@@ -40,6 +41,7 @@ function unitGroup = plotAnovaLogPSpikeEpoch (logPValue, unitGroup, params)
         subplot(3, 10, (nGroup-1)*10 + 1)
         imagesc(sortedIndex(sortedIndex<8));
         caxis([1 8])
+%         text(-1, 0, groupTitle{nGroup}, 'rotation', 90);
         axis xy
         axis off
         colormap(cmap)
@@ -51,17 +53,17 @@ function unitGroup = plotAnovaLogPSpikeEpoch (logPValue, unitGroup, params)
         caxis([0 4])
         gridxy ([params.polein, params.poleout, 0],[], 'Color','k','Linestyle','--','linewid', 1.0)
         hold off;
-        colorbar
+%         colorbar
         xlim([params.timeSeries(1) params.timeSeries(end)]);
         ylim([1 numUnit])
         xlabel('Time (s)');
         ylabel('Neuronal index')
         set(gca, 'YTick', [1 numUnit])
         set(gca, 'TickDir', 'out')
-        title(groupTitle{nGroup});
         colormap gray
+%         setColorbarSize(groupTitle{nGroup})
         freezeColors
-
+        %title();
         
     end
     

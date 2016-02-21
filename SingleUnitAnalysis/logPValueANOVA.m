@@ -14,7 +14,7 @@ if ~exist([PlotDir 'SingleUnitsAnova'],'dir')
     mkdir([PlotDir 'SingleUnitsAnova'])
 end
 
-cmap = cbrewer('qual', 'Set2', 10, 'cubic');
+cmap = cbrewer('qual', 'Set1', 10, 'cubic');
 
 for nData      = 1:length(DataSetList)-1
 %     load([TempDatDir DataSetList(nData).name '.mat'])
@@ -33,11 +33,16 @@ for nData      = 1:length(DataSetList)-1
     plotAnovaLogPSpikeEpoch (logPValue, unitGroup, DataSetList(nData).params);    
     setPrint(10, 6*3, [PlotDir 'SingleUnitsAnova/SingleUnitsAnovaDynamic_' DataSetList(nData).name], 'svg')
     figure
-    groupNames      = {'Pole', 'Lick', 'Reward', 'PL', 'PR', 'LR', 'PLR', 'Non-Selective'};
+    groupNames      = {'Pole', 'Lick', 'Reward', 'PL', 'PR', 'LR', 'PLR', 'Non.'};
     sizeGroup      = histcounts(unitGroup, 1:9);
-    pie(sizeGroup, groupNames)
+%     pie(sizeGroup, groupNames)
+    h = pie(sizeGroup);
+    h = findobj(h, 'Type', 'patch');
+    for nh = 1:length(h)
+        set(h(nh), 'FaceColor', cmap(nh, :));
+    end
 %     title('Distribution of cell types')
-    colormap(cmap)
+%     colormap(cmap)
     setPrint(8, 6, [PlotDir 'SingleUnitsAnova/SingleUnitsAnova_' DataSetList(nData).name], 'svg')
     % plotAnovaLogPSpikeExampleNeurons (logPValue, DataSetList(nData), nDataSet, filterInUse);
     % % setPrint(20, 12*4, [PlotDir 'SingleUnitsAnovaExampleNeuron_' DataSetList(nData).name], 'tiff')
@@ -84,14 +89,14 @@ for nData      = 1:length(DataSetList)-1
     ylabel('Depth (um)')
     ylim([0 950])
     set(gca, 'yTick', 0:300:900)
-    colormap(cmap)
+    colormap(cmap(1:8, :))
     
     subplot(1, 2, 2)
     barh(uniqueDepth, sum(groupCounts,2),'k')
-    ylabel('# cells')
-    xlabel('Depth (um)')
-    xlim([0 950])
-    set(gca, 'xTick', 0:300:900)
+    xlabel('# cells')
+    ylabel('Depth (um)')
+%     xlim([0 950])
+    set(gca, 'yTick', 0:300:900)
     
 %     if length(uniqueDepth) > 1
 %         barh(1:length(uniqueDepth), groupPerCounts, 'stack', 'edgecolor', 'none');
@@ -117,5 +122,32 @@ for nData      = 1:length(DataSetList)-1
     
     setPrint(8*2, 6, [PlotDir 'SingleUnitsAnova/SingleUnitsAnovaDepth_' DataSetList(nData).name], 'svg')
 end
+
+figure;
+hold on
+for nColor = 1:length(groupNames)
+    plot(0, nColor, 's', 'color', cmap(nColor,:), 'MarkerFaceColor',cmap(nColor,:),'MarkerSize', 8)
+    text(1, nColor, groupNames{nColor})
+end
+xlim([0 10])
+hold off
+axis off
+setPrint(3, 4, [PlotDir 'SingleUnitsAnova/SingleUnitsAnova_Label'])
+
+
+groupTitle     = {  '-log(P) for pole location', ...
+                    '-log(P) for lick direction', ...
+                    '-log(P) for reward'};
+                
+figure;
+for nGroup = 1:length(groupTitle)
+    subplot (3, 1, nGroup)
+    axis off
+    colormap(gray);
+    caxis([0 4]);
+    setColorbarOnlySize(groupTitle(nGroup))
+end
+                
+setPrint(4, 6*3, [PlotDir 'SingleUnitsAnova/SingleUnitsAnovaDynamic_Colorbar'])
 
 close all
