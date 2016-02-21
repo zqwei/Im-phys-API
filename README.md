@@ -1,6 +1,25 @@
 ### Versions
 
 #### Future Version
+-   Add example neurons to different cell types -- dynamical neuron
+-   Add example neurons to different cell types -- mixed neuron
+-   Add example neurons to modeled data -- from dynamical neuron to homogeneous neuron
+-   Add example neurons to modeled data -- from mixed neuron to demixed neuron
+
+#### Version 2015 - 12 - 12
+-   Explained variance analysis of PCs
+-   Cell type distribution analysis -- dynamical neuron
+-   Cell type distribution analysis -- mixed neuron (pole, lick, response)
+-   Confounding factors analyses
+    -   cell type distribution
+    -   Explained variance of PCs 
+-   Modeled calcium imaging data analyses (All analyses being listed)
+-   Simultaneous data vs shuffled data
+-   remove dPCA
+-   remove GPFA
+-   remove LDA-PCA and PCA-PCA
+
+#### Version 2015 - 05 - 11
 -   Add *Generated Ca++ imaging dataset*
 -   Comparing in which degree the distinction among different dataset can be
     explained from *Generated Ca++ imaging dataset*
