@@ -1,11 +1,11 @@
 ### Versions
 
-Future Version
+#### Future Version
 -   Add *Generated Ca++ imaging dataset*
 -   Comparing in which degree the distinction among different dataset can be
     explained from *Generated Ca++ imaging dataset*
 
-Version 2015 - 02 - 11
+#### Version 2015 - 02 - 11
 -   Remove -- Figure 6
 -   Figures -- Dimensionality reduction based analysis for collected data
     -   Figure 6A: Redo dPCA using 5 components
@@ -22,7 +22,7 @@ Version 2015 - 02 - 11
     -   Similarity matrix
     -   dPCA
 
-Version 2015 - 02 - 06
+#### Version 2015 - 02 - 06
 
 -   Analysis W/O *Generated Ca++ imaging dataset* (a few questions W/ generation
     equation needs solving)
