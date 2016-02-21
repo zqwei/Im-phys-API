@@ -3,10 +3,16 @@
 #### Future Version
 -   Add example neurons to different cell types -- dynamical neuron
 -   Add example neurons to different cell types -- mixed neuron
--   Add example neurons to modeled data -- from dynamical neuron to homogeneous neuron
--   Add example neurons to modeled data -- from mixed neuron to demixed neuron
+-   Add text in Text folder
+-   Add statistical test for confounding factor analysis
+-   Add calcium to spike datasets
 
-#### Version 2015 - 12 - 12
+#### Version 2016 - 02 - 01
+-   Add example neurons in model -- from dynamical neuron to homogeneous neuron
+-   Add example neurons in model -- from mixed neuron to demixed neuron
+-   Changes of percentage plots (from dynamical to others; from mixed to others)
+
+#### Version 2015 - 12 - 12 (Discussion with KS)
 -   Explained variance analysis of PCs
 -   Cell type distribution analysis -- dynamical neuron
 -   Cell type distribution analysis -- mixed neuron (pole, lick, response)
@@ -24,7 +30,7 @@
 -   Comparing in which degree the distinction among different dataset can be
     explained from *Generated Ca++ imaging dataset*
 
-#### Version 2015 - 02 - 11
+#### Version 2015 - 02 - 11 (Discussion with KS)
 -   Remove -- Figure 6
 -   Figures -- Dimensionality reduction based analysis for collected data
     -   Figure 6A: Redo dPCA using 5 components
