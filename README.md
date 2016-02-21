@@ -212,11 +212,6 @@ Future Version
 
     -   \+(KS, SD, ZW): GPFA code from *B. Yu*
 
-### Structure of directories
-
--   Plots -- figures
-
--   Text -- manuscripts, slides etc.
 
 ### Analysis code
 
@@ -225,11 +220,3 @@ identity upon requests.
 
 Please email ZW (*weiz (at) janelia (dot) hhmi (dot) org*) for access to
 analysis code git.
-
-### Contribution/comments guidelines
-
--   Text -- Leave the comments in *Latex* file beginning with initials like ZW,
-    SD, NL, TC, KS
-
--   Figure -- Leave the comments in **Analysis list** beginning with initials
-    like ZW, SD, NL, TC, KS
