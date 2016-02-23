@@ -15,7 +15,6 @@ filterInUse                   = filterInUse / sum (filterInUse);
 if ~exist([PlotDir 'ConfoundingFactorFPVT'],'dir')
     mkdir([PlotDir 'ConfoundingFactorFPVT'])
 end
-DataSetToAnalysis = [1 5 6];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % All area vs area of spiking recording
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -50,7 +49,7 @@ setPrint(8, 6, [PlotDir 'ConfoundingFactorFPVT/SingleUnitsFPVTAPML_' DataSetList
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 cmap = cbrewer('qual', 'Set1', 10, 'cubic');
-
+DataSetToAnalysis = [1 6];
 for nData          = DataSetToAnalysis
     load([TempDatDir DataSetList(nData).name '.mat'])
     bumpStartPoint = getFPVT(nDataSet, filterInUse);

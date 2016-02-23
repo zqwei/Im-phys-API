@@ -16,9 +16,6 @@ end
 
 cmap = cbrewer('qual', 'Set1', 3, 'cubic');
 
-DataSetToAnalysis = [1 5 6];
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % All area vs area of spiking recording
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -46,7 +43,7 @@ setPrint(8, 6, [PlotDir 'ConfoundingFactorTscore/SingleUnitsTscoreAPML_Sub_' Dat
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Comparison across animals
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+DataSetToAnalysis = [1 6];
 for nData      = DataSetToAnalysis    
     [~, ~, anmIndex] = unique(cell2mat({DataSetList(nData).cellinfo.anmName}'), 'rows');
     numGroup    = 3;

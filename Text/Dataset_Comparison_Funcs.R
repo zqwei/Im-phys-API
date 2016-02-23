@@ -7,7 +7,7 @@ htmlMD <- function(images, header, width="100%"){
     htmlMD <- paste0(htmlMD, "</tr><tr>")
   }
   for (image in images){
-    htmlMD <- paste0(htmlMD, "<td><img src=", image," /></td>")
+    htmlMD <- paste0(htmlMD, "<td><center><img src=", image," /></center></td>")
   }
   htmlMD <- paste0(htmlMD, "</tr></table>")
   cat(htmlMD)
@@ -18,9 +18,9 @@ verticalMD <- function(images, header, width="100%"){
   htmlMD <- paste0("<table style='width:", width, "'>")
   for (nImage in 1:length(images)){
     if(length(header)>1 || nchar(header)>0){
-      htmlMD <- paste0(htmlMD, "<tr><th><center>", header[nImage],"</center></th></tr>")
+      htmlMD <- paste0(htmlMD, "<tr><th><center><br>", header[nImage],"</center></th></tr>")
     }
-    htmlMD <- paste0(htmlMD, "<tr><td><img src=", images[nImage]," /></td></tr>")
+    htmlMD <- paste0(htmlMD, "<tr><td><center><img src=", images[nImage]," /></center></td></tr>")
   }
   htmlMD <- paste0(htmlMD, '</table>')
   cat(htmlMD)

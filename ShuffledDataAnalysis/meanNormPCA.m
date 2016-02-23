@@ -44,7 +44,7 @@ for nData              = [1 3 4]
     end
     
     figure;
-    bar(1:numComps, PCAmargVar(:, 1:numComps)','stacked')
+    bar(1:numComps, PCAmargVar(:, 1:numComps)','stacked', 'edgecolor', 'none')
     box off
     xlim([0 numComps+0.5])
     ylim([0 0.5])

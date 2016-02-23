@@ -29,10 +29,30 @@ includeHtmlMD(ImageDir)
 ```
 
 ### Supplementary Figure `r figIndex`c --Trade-off holds true at different depths
+```{r}
+source('Dataset_Comparison_Funcs.R')
+Datasets <- c('ShuffleConfounding_Spikes', 'ShuffleConfounding_Ca_Slow_Short_Delay_Virus', 'ShuffleConfounding_Ca_Slow_Short_Delay')
+ImageDir <- 'ConfoundingFactorPCA/CollectedUnitsPCADepth_'
+includeVerticalMD(ImageDir, Datasets)
+```
 
 ### Supplementary Figure `r figIndex`d -- Trade-off holds true at different AP-ML locations
+```{r}
+apmlDatasets <- c('Pop_SShuffleConfounding_Ca_Slow_Long_Delay', 'Sub_SShuffleConfounding_Ca_Slow_Long_Delay')
+apmlDatasetsName <- c('Whole population', 'Sub-population')
+ImageDir <- 'ConfoundingFactorPCA/CollectedUnitsPCA_'
+source('Dataset_Comparison_Funcs.R')
+includeHtmlMD(ImageDir, Datasets = apmlDatasets, DatasetsName=apmlDatasetsName)
+```
 
 ### Supplementary Figure `r figIndex`e -- Trade-off holds true across different animals
+```{r}
+anmDatasets = c('ShuffleConfounding_Spikes', 'ShuffleConfounding_Ca_Slow_Short_Delay_Virus')
+anmDatasetsName = c('Spike', 'AAV: GP4.12')
+ImageDir = 'ConfoundingFactorPCA/CollectedUnitsPCAAnm_'
+source('Dataset_Comparison_Funcs.R')
+includeVerticalMD(ImageDir, Datasets = anmDatasets, DatasetsName=anmDatasetsName)
+```
 
 ### Supplementary Figure `r figIndex`f -- calcium to spike model (linear model)
 
