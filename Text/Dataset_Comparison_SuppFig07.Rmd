@@ -21,13 +21,20 @@ ImageDir <- 'CollectedUnitsPCA/CollectedSubUnitsPCA_'
 includeVerticalMD(ImageDir, fileType = 'svg')
 ```
 
-### Supplementary Figure `r figIndex`b --Trade-off holds true at different depths
+### Supplementary Figure `r figIndex`b --Trade-off holds true for normalization of raw neuronal activity
+```{r}
+source('Dataset_Comparison_Funcs.R')
+ImageDir <- 'CollectedUnitsPCA/CollectedUnitsNormPCA_'
+includeHtmlMD(ImageDir)
+```
 
-### Supplementary Figure `r figIndex`c -- Trade-off holds true at different AP-ML locations
+### Supplementary Figure `r figIndex`c --Trade-off holds true at different depths
 
-### Supplementary Figure `r figIndex`d -- Trade-off holds true across different animals
+### Supplementary Figure `r figIndex`d -- Trade-off holds true at different AP-ML locations
 
-### Supplementary Figure `r figIndex`e -- calcium to spike model (linear model)
+### Supplementary Figure `r figIndex`e -- Trade-off holds true across different animals
 
-### Supplementary Figure `r figIndex`f -- calcium to spike model (non-linear model)
+### Supplementary Figure `r figIndex`f -- calcium to spike model (linear model)
+
+### Supplementary Figure `r figIndex`g -- calcium to spike model (non-linear model)
 
