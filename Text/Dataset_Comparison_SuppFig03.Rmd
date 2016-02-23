@@ -17,14 +17,14 @@ knitr::opts_chunk$set(echo = FALSE, results='asis')
 
 ## First significant p-value time of selectivity is distributed similarly at different locations
 
-#### Supplementary Figure `r figIndex`a -- First significant p-value time of selectivity is distributes similarly at different depths
+### Supplementary Figure `r figIndex`a -- First significant p-value time of selectivity is distributes similarly at different depths
 ```{r}
 source('Dataset_Comparison_Funcs.R')
 ImageDir <- 'SingleUnitsFPVT/SingleUnitsFPVTDepth_'
 includeHtmlMD(ImageDir)
 ```
 
-#### Supplementary Figure `r figIndex`b -- First significant p-value time of selectivity is distributes similarly at different AP-ML locations
+### Supplementary Figure `r figIndex`b -- First significant p-value time of selectivity is distributes similarly at different AP-ML locations
 ```{r}
 apmlDatasets <- c('SShuffleConfounding_Ca_Slow_Long_Delay')
 apmlDatasetsName <- c('')
@@ -33,7 +33,7 @@ source('Dataset_Comparison_Funcs.R')
 includeHtmlMD(ImageDir, Datasets = apmlDatasets, DatasetsName=apmlDatasetsName)
 ```
 
-#### Supplementary Figure `r figIndex`c -- First significant p-value time of selectivity is distributes similarly across different animals
+### Supplementary Figure `r figIndex`c -- First significant p-value time of selectivity is distributes similarly across different animals
 ```{r}
 anmDatasets = c('ShuffleConfounding_Spikes', 'ShuffleConfounding_Ca_Slow_Short_Delay_Virus')
 anmDatasetsName = c('Spike', 'AAV: GP4.12')

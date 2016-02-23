@@ -9,11 +9,67 @@ load ([TempDatDir 'DataListShuffle.mat']);
 combinedParams = {{1}, {2}, {[1 2]}};
 margNames      = {'Stim', 'Time', 'Inter'};
 numTrials      = 100;
-numFold        = 10;
-numComps       = 3;
-if ~exist([PlotDir 'CollectedUnitsdPCA'],'dir')
-    mkdir([PlotDir 'CollectedUnitsdPCA'])
+numFold        = 100;
+if ~exist([PlotDir 'CollectedUnitsPCA'],'dir')
+    mkdir([PlotDir 'CollectedUnitsPCA'])
 end
+
+
+numComps       = 10;
+cmap = [         0    0.4470    0.7410
+    0.8500    0.3250    0.0980
+    0.9290    0.6940    0.1250
+    0.4940    0.1840    0.5560
+    0.4660    0.6740    0.1880
+    0.3010    0.7450    0.9330
+    0.6350    0.0780    0.1840];
+
+
+for nData              = [1 3 4]
+    load([TempDatDir DataSetList(nData).name '.mat']);
+    evMat              = zeros(numFold, length(combinedParams), numComps);
+    firingRates        = generateDPCAData(nDataSet, numTrials);
+    firingRatesAverage = nanmean(firingRates, ndims(firingRates));
+    pcaX               = firingRatesAverage(:,:);
+    firingRatesAverage = bsxfun(@minus, firingRatesAverage, mean(pcaX,2));
+    pcaX               = bsxfun(@minus, pcaX, mean(pcaX,2));
+    Xmargs             = dpca_marginalize(firingRatesAverage, 'combinedParams', combinedParams, 'ifFlat', 'yes');
+    totalVar           = sum(sum(pcaX.^2));
+    [~, ~, Wpca] = svd(pcaX');
+    PCAmargVar         = zeros(length(combinedParams), length(nDataSet));
+    for i=1:length(Xmargs)
+        PCAmargVar(i,:) = sum((Wpca' * Xmargs{i}).^2, 2)' / totalVar;
+    end
+    
+    figure;
+    bar(1:numComps, PCAmargVar(:, 1:numComps)','stacked')
+    box off
+    xlim([0 numComps+0.5])
+    ylim([0 0.5])
+    xlabel('Component index')
+    ylabel('frac. EV per PC')
+    colormap(cmap(1:3, :))
+    set(gca, 'xTick', 0:5:10)
+    set(gca, 'TickDir', 'out')
+    setPrint(8, 6, [PlotDir 'CollectedUnitsPCA/CollectedUnitsPCA_' DataSetList(nData).name])
+    
+end
+
+figure;
+hold on
+for nColor = 1:length(margNames)
+    plot(0, nColor, 's', 'color', cmap(nColor,:), 'MarkerFaceColor',cmap(nColor,:),'MarkerSize', 8)
+    text(1, nColor, margNames{nColor})
+end
+xlim([0 10])
+hold off
+axis off
+setPrint(3, 2, [PlotDir 'CollectedUnitsPCA/CollectedUnitsPCA_Label'])
+
+
+numComps       = 3;
+
+
 
 for nData              = [1 3 4]
     
@@ -56,7 +112,7 @@ for nData              = [1 3 4]
     xlabel('Component index')
     ylabel('frac. EV per PC')
     title('Whole population')
-    
+    set(gca, 'TickDir', 'out')
     
     
     numSubUnit         = 100;
@@ -96,7 +152,7 @@ for nData              = [1 3 4]
     xlabel('Component index')
     ylabel('frac. EV per PC')
     title(['Subpopulation n=' num2str(numSubUnit)])
-    
+    set(gca, 'TickDir', 'out')
     
     numSubUnit         = 500;
     for nFold          = 1:numFold        
@@ -135,7 +191,7 @@ for nData              = [1 3 4]
     xlabel('Component index')
     ylabel('frac. EV per PC')
     title(['Subpopulation n=' num2str(numSubUnit)])
-    
+    set(gca, 'TickDir', 'out')
     
     numSubUnit         = 1000;
     for nFold          = 1:numFold        
@@ -174,8 +230,9 @@ for nData              = [1 3 4]
     xlabel('Component index')
     ylabel('frac. EV per PC')
     title(['Subpopulation n=' num2str(numSubUnit)])
-
-    setPrint(8*4, 6, [PlotDir 'CollectedUnitsdPCA/CollectedSubUnitsPCASubAve_' DataSetList(nData).name], 'pdf')
+    set(gca, 'TickDir', 'out')
+    
+    setPrint(8*4, 6, [PlotDir 'CollectedUnitsPCA/CollectedSubUnitsPCA_' DataSetList(nData).name])
     
 end
 

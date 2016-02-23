@@ -102,39 +102,17 @@ where set $t_{spike}$ is spike times of a recorded spike train; $\tau_d$ is the 
 
 ### Figure 3c -- Variability of parameters in Spike-to-Calcium can explain also explain variation of activity profiles from spike to calcium imaging datasets
 
-
-
 ### Figure 3d Normalized neuronal activity
-
-#### Supplementary Figure 4a -- calcium to spike model (linear model)
-
-#### Supplementary Figure 4b -- calcium to spike model (non-linear model)
 
 ### Figure 4b -- Fraction of dynamical-selective neuron decreases a function of decaying time constant of calcium indicator
 
-#### Supplementary Figure 5a -- calcium to spike model (linear model)
-
-#### Supplementary Figure 5b -- calcium to spike model (non-linear model)
-
 ### Figure 4c -- Fraction of mixed-selective neuron decreases a function of decaying time constant of calcium indicator
-
-#### Supplementary Figure 6a -- calcium to spike model (linear model)
-
-#### Supplementary Figure 6b -- calcium to spike model (non-linear model)
 
 ### Figure 4d -- ROC
 
-#### Supplementary Figure 7a -- calcium to spike model (linear model)
-
-#### Supplementary Figure 7b -- calcium to spike model (non-linear model)
-
 ### Figure 4e -- z-score
 
-#### Supplementary Figure 8a -- calcium to spike model (linear model)
-
-#### Supplementary Figure 8b -- calcium to spike model (non-linear model)
-
-## Population comparison across datasets -- Trade-off between decodability of stimulus and precision of temporal dynamics in different recording methods can be explained by Spike-to-Calcium model
+## Population comparison across datasets -- Trade-off between decodability of stimulus and precision of temporal dynamics in different recording methods can be explained by Spike-to-Calcium model (Figure 5)
 
 ### Figure 5a -- Trial type information is delayed but enhanced as a function of decaying time constant of calcium indicator
 
@@ -142,32 +120,24 @@ where set $t_{spike}$ is spike times of a recorded spike train; $\tau_d$ is the 
 
 #### Figure 5a-2 -- Spike-to-Calcium model prediction
 
-#### Supplementary Figure 5a-1 -- calcium to spike model (linear model)
-
-#### Supplementary Figure 5a-2 -- calcium to spike model (non-linear model)
-
 ### Figure 5b -- Epoch information is delayed as a function of decaying time constant of calcium indicator
 
 #### Figure 5b-1 -- Datasets comparison
 
 #### Figure 5b-2 -- Spike-to-Calcium model prediction
 
-#### Supplementary Figure 5b-1 -- calcium to spike model (linear model)
+### Figure 5c -- LDA-LDA correlation
 
-#### Supplementary Figure 5b-2 -- calcium to spike model (non-linear model)
+#### Figure 5c-1 -- Datasets comparison
 
-### Figure 6 -- A trade-off between temporal and stimulus information as a function of decaying time constant of calcium indicator
+#### Figure 5c-2 -- Spike-to-Calcium model prediction
 
-#### Figure 6a -- Datasets comparison
 
-#### Figure 6b -- Spike-to-Calcium model prediction
+### Figure 5d -- A trade-off between temporal and stimulus information as a function of decaying time constant of calcium indicator
+```{r}
+source('Dataset_Comparison_Funcs.R')
+ImageDir <- 'CollectedUnitsPCA/CollectedUnitsPCA_'
+includePieMD(ImageDir, fileType = 'svg')
+```
 
-#### Supplementary Figure 6a --Trade-off holds true at different depths
-
-#### Supplementary Figure 6b -- Trade-off holds true at different AP-ML locations
-
-#### Supplementary Figure 6c -- Trade-off holds true across different animals
-
-#### Supplementary Figure 7a -- calcium to spike model (linear model)
-
-#### Supplementary Figure 7b -- calcium to spike model (non-linear model)
+#### Figure 5d-2 -- Spike-to-Calcium model prediction

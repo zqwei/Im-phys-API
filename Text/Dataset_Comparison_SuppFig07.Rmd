@@ -1,0 +1,33 @@
+```{r, echo=FALSE}
+figIndex <- 7
+```
+
+---
+title: `r paste("Supplementary Figure ", figIndex, sep='')`
+author: "Ziqiang Wei"
+date: '`r Sys.Date()`'
+output:
+  html_document:
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results='asis')
+```
+
+### Supplementary Figure `r figIndex`a --Trade-off holds true for a random choice of subpopulation
+```{r}
+source('Dataset_Comparison_Funcs.R')
+ImageDir <- 'CollectedUnitsPCA/CollectedSubUnitsPCA_'
+includeVerticalMD(ImageDir, fileType = 'svg')
+```
+
+### Supplementary Figure `r figIndex`b --Trade-off holds true at different depths
+
+### Supplementary Figure `r figIndex`c -- Trade-off holds true at different AP-ML locations
+
+### Supplementary Figure `r figIndex`d -- Trade-off holds true across different animals
+
+### Supplementary Figure `r figIndex`e -- calcium to spike model (linear model)
+
+### Supplementary Figure `r figIndex`f -- calcium to spike model (non-linear model)
+

@@ -16,6 +16,7 @@ if ~exist([PlotDir 'CollectedUnitsdPCA'],'dir')
     mkdir([PlotDir 'CollectedUnitsdPCA'])
 end
 
+cmap = cbrewer('qual', 'Set1', 3, 'cubic');
 
 for nData              = 1:length(DataSetList)-1
     load([TempDatDir DataSetList(nData).name '.mat']);
@@ -40,35 +41,35 @@ for nData              = 1:length(DataSetList)-1
     
     load([TempDatDir 'dPCA_' DataSetList(nData).name '.mat'], 'explVar')
     
-    figure;
-    subplot(1, 3, 1)
-    plot(1:numComps, [explVar.PCAcomponentVar(1:numComps)', explVar.dPCAcomponentVar'], '-o');
-    legend({'PCA', 'dPCA'})
-    box off
-    xlim([0 numComps+1])
-    set(gca,'xTick', 0:5:numComps)
-    xlabel('Component index')
-    ylabel('% EV')
-    
-    subplot(1, 3, 2)
-    bar(1:numComps, explVar.PCAmargVar(:, 1:numComps)', 'stack', 'edgecolor', 'none');
-    box off
-    legend(margNames)
-    xlim([0 numComps+1])
-    xlabel('Component index')
-    set(gca,'xTick', 0:5:numComps)
-    ylabel('% EV per PC')
-    
-    subplot(1, 3, 3)
-    bar(1:numComps, explVar.dPCAmargVar', 'stack', 'edgecolor', 'none');
-    box off
-    legend(margNames)
-    xlim([0 numComps+1])
-    xlabel('Component index')
-    set(gca,'xTick', 0:5:numComps)
-    ylabel('% EV per dPC')
-    
-    setPrint(8*3, 6, [PlotDir 'CollectedUnitsdPCA/CollectedUnitsdPCA_' DataSetList(nData).name], 'pdf')
+%     figure;
+%     subplot(1, 3, 1)
+%     plot(1:numComps, [explVar.PCAcomponentVar(1:numComps)', explVar.dPCAcomponentVar'], '-o');
+%     legend({'PCA', 'dPCA'})
+%     box off
+%     xlim([0 numComps+1])
+%     set(gca,'xTick', 0:5:numComps)
+%     xlabel('Component index')
+%     ylabel('% EV')
+%     
+%     subplot(1, 3, 2)
+%     bar(1:numComps, explVar.PCAmargVar(:, 1:numComps)', 'stack', 'edgecolor', 'none');
+%     box off
+%     legend(margNames)
+%     xlim([0 numComps+1])
+%     xlabel('Component index')
+%     set(gca,'xTick', 0:5:numComps)
+%     ylabel('% EV per PC')
+%     
+%     subplot(1, 3, 3)
+%     bar(1:numComps, explVar.dPCAmargVar', 'stack', 'edgecolor', 'none');
+%     box off
+%     legend(margNames)
+%     xlim([0 numComps+1])
+%     xlabel('Component index')
+%     set(gca,'xTick', 0:5:numComps)
+%     ylabel('% EV per dPC')
+%     
+%     setPrint(8*3, 6, [PlotDir 'CollectedUnitsdPCA/CollectedUnitsdPCA_' DataSetList(nData).name])
     
     figure
     bar(1:numComps, explVar.PCAmargVar(:, 1:numComps)', 'stack', 'edgecolor', 'none');
@@ -78,7 +79,8 @@ for nData              = 1:length(DataSetList)-1
     xlabel('Component index')
     set(gca,'xTick', 0:5:numComps)
     ylabel('% EV per PC')
-    setPrint(8, 6, [PlotDir 'CollectedUnitsdPCA/CollectedUnitsPCA_' DataSetList(nData).name], 'pdf')
+    colormap(cmap)
+    setPrint(8, 6, [PlotDir 'CollectedUnitsdPCA/CollectedUnitsPCA_' DataSetList(nData).name])
     
 end
 

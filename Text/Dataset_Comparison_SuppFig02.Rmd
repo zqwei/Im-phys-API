@@ -26,14 +26,14 @@ includeColorbarMD(ImageDir)
 3-anova analysis (AAV 4.12: ; Transgeneic: 735 neuron)
 
 
-#### Supplementary Figure `r figIndex`a -- Fraction of mixed-selective neurons is distributes similarly at different depths
+### Supplementary Figure `r figIndex`a -- Fraction of mixed-selective neurons is distributes similarly at different depths
 ```{r}
 source('Dataset_Comparison_Funcs.R')
 ImageDir <- 'SingleUnitsAnova/SingleUnitsAnovaDepth_'
 includeHtmlMD(ImageDir)
 ```
 
-#### Supplementary Figure `r figIndex`b -- Fraction of mixed-selective neurons is distributes similarly at different AP-ML locations
+### Supplementary Figure `r figIndex`b -- Fraction of mixed-selective neurons is distributes similarly at different AP-ML locations
 ```{r}
 apmlDatasets <- c('Pop_SShuffleConfounding_Ca_Slow_Long_Delay', 'Sub_SShuffleConfounding_Ca_Slow_Long_Delay')
 apmlDatasetsName <- c('Whole population', 'Sub-population')
@@ -43,7 +43,7 @@ includeHtmlMD(ImageDir, Datasets = apmlDatasets, DatasetsName=apmlDatasetsName)
 ```
 
 
-#### Supplementary Figure `r figIndex`c -- Fraction of mixed-selective neurons is distributes similarly across different animals
+### Supplementary Figure `r figIndex`c -- Fraction of mixed-selective neurons is distributes similarly across different animals
 ```{r}
 anmDatasets = c('ShuffleConfounding_Spikes', 'ShuffleConfounding_Ca_Slow_Short_Delay_Virus')
 anmDatasetsName = c('Spike', 'AAV: GP4.12')

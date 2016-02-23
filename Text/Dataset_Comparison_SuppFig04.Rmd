@@ -1,0 +1,54 @@
+```{r, echo=FALSE}
+figIndex <- 4
+```
+
+---
+title: `r paste("Supplementary Figure ", figIndex, sep='')`
+author: "Ziqiang Wei"
+date: '`r Sys.Date()`'
+output:
+  html_document:
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results='asis')
+```
+
+#### Supplementary Figure 4a -- calcium to spike model (linear model)
+
+#### Supplementary Figure 4b -- calcium to spike model (non-linear model)
+
+#### Supplementary Figure 5a -- calcium to spike model (linear model)
+
+#### Supplementary Figure 5b -- calcium to spike model (non-linear model)
+
+#### Supplementary Figure 6a -- calcium to spike model (linear model)
+
+#### Supplementary Figure 6b -- calcium to spike model (non-linear model)
+
+#### Supplementary Figure 7a -- calcium to spike model (linear model)
+
+#### Supplementary Figure 7b -- calcium to spike model (non-linear model)
+
+#### Supplementary Figure 8a -- calcium to spike model (linear model)
+
+#### Supplementary Figure 8b -- calcium to spike model (non-linear model)
+
+#### Supplementary Figure 5a-1 -- calcium to spike model (linear model)
+
+#### Supplementary Figure 5a-2 -- calcium to spike model (non-linear model)
+
+#### Supplementary Figure 5b-1 -- calcium to spike model (linear model)
+
+#### Supplementary Figure 5b-2 -- calcium to spike model (non-linear model)
+
+#### Supplementary Figure 6a --Trade-off holds true at different depths
+
+#### Supplementary Figure 6b -- Trade-off holds true at different AP-ML locations
+
+#### Supplementary Figure 6c -- Trade-off holds true across different animals
+
+#### Supplementary Figure 7a -- calcium to spike model (linear model)
+
+#### Supplementary Figure 7b -- calcium to spike model (non-linear model)
+
