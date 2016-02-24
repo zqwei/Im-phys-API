@@ -30,7 +30,7 @@ filterInUse                   = exp(-filterStep .^ 2 / (2 * sigma ^ 2));
 filterInUse                   = filterInUse / sum (filterInUse);  
 textYLabels                   = {'Firing rate (Hz)', 'DF/F', 'DF/F', 'DF/F'};
 groupNames                    = {'Pole', 'Lick', 'Reward', 'PL', 'PR', 'LR', 'PLR', 'Non.'};
-minUnits                      = [15 2 3 15];
+minUnits                      = [15 2 2 10];
 
 for nData              = [1 3 4]
     load([TempDatDir 'LogPValue_' DataSetList(nData).name '.mat'], 'logPValueEpoch')
@@ -45,11 +45,10 @@ for nData              = [1 3 4]
         nExample       = 1;
         neuronIndex    = neuronIndice(nExample);
         maxExample     = length(neuronIndice);
-        while size(nDataSet(neuronIndex).unit_no_error,1)<minUnits(nData) || size(nDataSet(neuronIndex).unit_yes_error,1)<minUnits(nData)
-            if nExample < maxExample
+        
+        while (nExample < maxExample) && (size(nDataSet(neuronIndex).unit_no_error,1)<minUnits(nData) || size(nDataSet(neuronIndex).unit_yes_error,1)<minUnits(nData))
                 nExample    = nExample + 1;
                 neuronIndex = neuronIndice(nExample);
-            end
         end
         
         subplot(2, 4, nGroup)

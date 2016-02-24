@@ -14,14 +14,24 @@ output:
 knitr::opts_chunk$set(echo = FALSE, results='asis')
 ```
 
+## Example neurons of mixed-selective neurons
+### Supplementary Figure `r figIndex`a
+First row: homogeneous neuron; second row: dynamical neuron.
+```{r}
+ImageDir <- 'SingleUnitsAnova/SingleUnitsAnovaExampleNeuron_'
+source('Dataset_Comparison_Funcs.R')
+includeVerticalMD(ImageDir)
+```
+
+
+
+## Fraction of mixed-selective neurons is distributed similarly at different locations
 
 ```{r}
 source('Dataset_Comparison_Funcs.R')
 ImageDir <- 'SingleUnitsAnova/SingleUnitsAnovaDynamic_'
 includeColorbarMD(ImageDir)
 ```
-
-## Fraction of mixed-selective neurons is distributed similarly at different locations
 
 3-anova analysis (AAV 4.12: ; Transgeneic: 735 neuron)
 
