@@ -54,7 +54,17 @@ source('Dataset_Comparison_Funcs.R')
 includeVerticalMD(ImageDir, Datasets = anmDatasets, DatasetsName=anmDatasetsName)
 ```
 
-### Supplementary Figure `r figIndex`f -- calcium to spike model (linear model)
+### Supplementary Figure `r figIndex`f -- PC traces
+```{r}
+source('Dataset_Comparison_Funcs.R')
+ImageDir <- 'CollectedUnitsPCA/CollectedUnitsPCATrace_'
+includeVerticalMD(ImageDir)
+```
 
-### Supplementary Figure `r figIndex`g -- calcium to spike model (non-linear model)
+### Supplementary Figure `r figIndex`g -- PC traces using spike to calcium model
+
+
+### Supplementary Figure `r figIndex`h -- calcium to spike model (linear model)
+
+### Supplementary Figure `r figIndex`i -- calcium to spike model (non-linear model)
 

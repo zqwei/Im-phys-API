@@ -13,11 +13,20 @@ output:
 knitr::opts_chunk$set(echo = FALSE, results='asis')
 ```
 
+## Example neurons of dynamical-selective neurons
+### Supplementary Figure `r figIndex`a
+First row: homogeneous neuron; second row: dynamical neuron.
+```{r}
+ImageDir <- 'SingleUnitsTscore/SingleUnitsTscoreExampleNeuron_'
+source('Dataset_Comparison_Funcs.R')
+includeVerticalMD(ImageDir)
+```
+
 ## Fraction of dynamical-selective neurons is distributed similarly at different locations
 <!-- Add neuronal activity as Fig. a -->
-Here, we examined __Hypothesis I__ by sampling neurons in the same dataset according to their depths (__Supplementary Figure 1a__), anterior-to-posterior and medial-to-lateral locations(__Supplementary Figure 1b__), and animal tags(__Supplementary Figure 1c__), where, for each dataset, left panel shows the fraction of neuron type (non-selective neuron, _navy_; homogeneous-selective neuron, _green_; dynamical-selective neuron, _yellow_), and right panel shows the total number of neurons in each condition.
+Here, we examined __Hypothesis I__ by sampling neurons in the same dataset according to their depths (__Supplementary Figure 1b__), anterior-to-posterior and medial-to-lateral locations (__Supplementary Figure 1c__), and animal tags (__Supplementary Figure 1d__), where, for each dataset, left panel shows the fraction of neuron type (non-selective neuron, _navy_; homogeneous-selective neuron, _green_; dynamical-selective neuron, _yellow_), and right panel shows the total number of neurons in each condition.
 
-### Supplementary Figure `r figIndex`a -- Fraction of dynamical-selective neurons is distributed similarly at different depths
+### Supplementary Figure `r figIndex`b -- Fraction of dynamical-selective neurons is distributed similarly at different depths
 <!-- Add statistical test, p-value, maybe sharable r code -->
 <style> table,td,tr,th {border:none!important} </style>
 ```{r}
@@ -26,7 +35,7 @@ source('Dataset_Comparison_Funcs.R')
 includeHtmlMD(ImageDir)
 ```
 
-### Supplementary Figure `r figIndex`b -- Fraction of dynamical-selective neurons is distributed similarly at different AP-ML locations
+### Supplementary Figure `r figIndex`c -- Fraction of dynamical-selective neurons is distributed similarly at different AP-ML locations
 We analyzed using Transgenic: GP4.3 (Long delay) (whole population: 3071, sub-population: 1104)
 <!-- Add statistical test, p-value, maybe sharable r code; statistical table like number of neurons in each condition -->
 ```{r}
@@ -37,7 +46,7 @@ source('Dataset_Comparison_Funcs.R')
 includeHtmlMD(ImageDir, Datasets = apmlDatasets, DatasetsName=apmlDatasetsName)
 ```
 
-### Supplementary Figure `r figIndex`c -- Fraction of dynamical-selective neurons is distributed similarly across different animals
+### Supplementary Figure `r figIndex`d -- Fraction of dynamical-selective neurons is distributed similarly across different animals
 <!-- Add statistical test, p-value, maybe sharable r code; statistical table like number of neurons in each condition -->
 ```{r}
 anmDatasets = c('ShuffleConfounding_Spikes', 'ShuffleConfounding_Ca_Slow_Short_Delay_Virus')
