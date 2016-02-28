@@ -14,41 +14,32 @@ output:
 knitr::opts_chunk$set(echo = FALSE, results='asis')
 ```
 
-#### Supplementary Figure 4a -- calcium to spike model (linear model)
+## Parameter space of spike-to-calcium model
 
-#### Supplementary Figure 4b -- calcium to spike model (non-linear model)
+### Supplementary Figure `r figIndex`a -- 
 
-#### Supplementary Figure 5a -- calcium to spike model (linear model)
 
-#### Supplementary Figure 5b -- calcium to spike model (non-linear model)
+## Modeled neuron from dynamical to homogeneous in model
 
-#### Supplementary Figure 6a -- calcium to spike model (linear model)
+### Supplementary Figure `r figIndex`b -- example neuron
 
-#### Supplementary Figure 6b -- calcium to spike model (non-linear model)
+### Supplementary Figure `r figIndex`c -- switching probability
 
-#### Supplementary Figure 7a -- calcium to spike model (linear model)
 
-#### Supplementary Figure 7b -- calcium to spike model (non-linear model)
+## Modeled neuron of demixed neuron in model
 
-#### Supplementary Figure 8a -- calcium to spike model (linear model)
+### Supplementary Figure `r figIndex`d -- example neuron
 
-#### Supplementary Figure 8b -- calcium to spike model (non-linear model)
+### Supplementary Figure `r figIndex`e -- switching probability
 
-#### Supplementary Figure 5a-1 -- calcium to spike model (linear model)
+## Deconvolution models
 
-#### Supplementary Figure 5a-2 -- calcium to spike model (non-linear model)
+### Supplementary Figure `r figIndex`f -- fraction of dynamical neuron
 
-#### Supplementary Figure 5b-1 -- calcium to spike model (linear model)
+### Supplementary Figure `r figIndex`g -- fraction of mixed neuron
 
-#### Supplementary Figure 5b-2 -- calcium to spike model (non-linear model)
+### Supplementary Figure `r figIndex`h -- ROC
 
-#### Supplementary Figure 6a --Trade-off holds true at different depths
+### Supplementary Figure `r figIndex`i -- z-score
 
-#### Supplementary Figure 6b -- Trade-off holds true at different AP-ML locations
-
-#### Supplementary Figure 6c -- Trade-off holds true across different animals
-
-#### Supplementary Figure 7a -- calcium to spike model (linear model)
-
-#### Supplementary Figure 7b -- calcium to spike model (non-linear model)
 

@@ -12,7 +12,7 @@ html, body { height: 100%; }
 
 body {
 	font-family: Helvetica, Arial, sans-serif;
-	font-size: 150%;
+	font-size: 10pt;
 	line-height: 1.3;
 	color: #27221a;
 	/*width: 2000px;*/
@@ -41,20 +41,19 @@ span.amp { font-family: Baskerville, "Goudy Old Style", "Palatino", "Book Antiqu
 
 h1,h2,h3,h4,h5,h6 { 
     line-height: 1.1; 
-    font-family: Baskerville, "Goudy Old Style", "Palatino", "Book Antiqua", serif;
+    /*font-family: Baskerville, "Goudy Old Style", "Palatino", "Book Antiqua", serif;*/
 }
 
-/*h2 { font-size: 22pt; }
-h3 { font-size: 20pt; }*/
-h2 { font-size: 18pt; }
-h3 { font-size: 16pt; }
-h4 { font-size: 14pt; }
+
+h2 { font-size: 12pt; }
+h3 { font-size: 12pt; }
+h4 { font-size: 12pt; }
 
 ::selection { background: #745626; }
 ::-moz-selection { background: #745626; }
 
 h1 {
-	font-size: 200%;
+	font-size: 16pt;
 	margin: 0 0 0.1em;
 	font-family: Baskerville, "Goudy Old Style", "Palatino", "Book Antiqua", serif;
 }

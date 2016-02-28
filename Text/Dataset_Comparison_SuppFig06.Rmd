@@ -1,0 +1,41 @@
+```{r, echo=FALSE}
+figIndex <- 6
+```
+
+---
+title: `r paste("Supplementary Figure ", figIndex, sep='')`
+author: "Ziqiang Wei"
+date: '`r Sys.Date()`'
+output:
+  html_document:
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results='asis')
+```
+
+
+### Supplementary Figure `r figIndex`a -- PCA function as function against time
+(spike, AAV 4.12, Transgenetic 4.3)
+
+
+### Supplementary Figure `r figIndex`b -- PCA-PCA
+(spike, AAV 4.12, Transgenetic 4.3)
+
+
+### Supplementary Figure `r figIndex`c -- LDA-PCA
+(spike, AAV 4.12, Transgenetic 4.3)
+
+### Supplementary Figure `r figIndex`a -- PCA function -- simultaneous vs shuffle
+(spike, AAV 4.12, Transgenetic 4.3)
+
+### Supplementary Figure `r figIndex`d -- LDA-LDA -- simultaneous vs shuffle
+(spike, AAV 4.12, Transgenetic 4.3)
+
+### Supplementary Figure `r figIndex`e -- PCA-LDA -- simultaneous vs shuffle
+(spike, AAV 4.12, Transgenetic 4.3)
+
+### Supplementary Figure `r figIndex`f -- PCA-PCA -- simultaneous vs shuffle
+(spike, AAV 4.12, Transgenetic 4.3)
+
+### Supplementary Figure `r figIndex`g -- LDA-LDA traces using spike to calcium model

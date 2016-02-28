@@ -9,11 +9,13 @@ output:
     toc_float:
       collapsed: no
       smooth_scroll: no
-    css: "screen.css"
+    css: "pdfprint.css"
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, results='asis')
 ```
+
+---
 
 # Methods
 
@@ -94,8 +96,6 @@ $$F(t) = F_{\max}\frac{[Ca++]^n}{[Ca++]^n+K^n}$$
 
 Simultaneous recording -- (one figure?) Maybe move description to methods?
 
-
-
 where set $t_{spike}$ is spike times of a recorded spike train; $\tau_d$ is the decaying time constant of a calcium indicator; $\tau_r$ is the rising time constant of a spike-triggered 
 
 ### Figure 3b -- Baseline spiking rate can result in differences in fluorescence data, even the activity profiles are identical
@@ -116,21 +116,11 @@ where set $t_{spike}$ is spike times of a recorded spike train; $\tau_d$ is the 
 
 ### Figure 5a -- Trial type information is delayed but enhanced as a function of decaying time constant of calcium indicator
 
-#### Figure 5a-1 -- Datasets comparison
-
-#### Figure 5a-2 -- Spike-to-Calcium model prediction
 
 ### Figure 5b -- Epoch information is delayed as a function of decaying time constant of calcium indicator
 
-#### Figure 5b-1 -- Datasets comparison
-
-#### Figure 5b-2 -- Spike-to-Calcium model prediction
 
 ### Figure 5c -- LDA-LDA correlation
-
-#### Figure 5c-1 -- Datasets comparison
-
-#### Figure 5c-2 -- Spike-to-Calcium model prediction
 
 
 ### Figure 5d -- A trade-off between temporal and stimulus information as a function of decaying time constant of calcium indicator
@@ -140,4 +130,3 @@ ImageDir <- 'CollectedUnitsPCA/CollectedUnitsPCA_'
 includePieMD(ImageDir, fileType = 'svg')
 ```
 
-#### Figure 5d-2 -- Spike-to-Calcium model prediction

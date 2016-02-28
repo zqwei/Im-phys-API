@@ -63,7 +63,6 @@ includeVerticalMD(ImageDir)
 
 ### Supplementary Figure `r figIndex`g -- PC traces using spike to calcium model
 
-
 ### Supplementary Figure `r figIndex`h -- calcium to spike model (linear model)
 
 ### Supplementary Figure `r figIndex`i -- calcium to spike model (non-linear model)

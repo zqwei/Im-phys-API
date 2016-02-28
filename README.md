@@ -5,7 +5,7 @@
 -   Add example neurons to different cell types -- mixed neuron
 -   Add text in Text folder
 -   Add statistical test for confounding factor analysis
--   Add calcium to spike datasets
+-   Add calcium to spike datasets (linear and nonlinear version??)
 
 #### Version 2016 - 02 - 01
 -   Add example neurons in model -- from dynamical neuron to homogeneous neuron
