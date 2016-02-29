@@ -5,11 +5,11 @@
 
 addpath('../Func');
 setDir;
-load ([TempDatDir 'DataListShuffle.mat']);
+load ([TempDatDir 'DataListC2SModel.mat']);
 addNoise         = [1 0 0 0];
 
-if ~exist([PlotDir '/CollectedUnitsDecodabilityEpoch'],'dir')
-    mkdir([PlotDir '/CollectedUnitsDecodabilityEpoch'])
+if ~exist([PlotDir 'C2SModel'],'dir')
+    mkdir([PlotDir 'C2SModel'])
 end
 
 cmap = [         0    0.4470    0.7410
@@ -29,7 +29,7 @@ totTargets          = [testTargets; trainingTargets];
 ROCThres            = 0.5;
 numFold             = 30;
 
-for nData           = [1 3 4]
+for nData           = 1:length(DataSetList)
     load([TempDatDir DataSetList(nData).name '.mat'])   
     selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';
     selectedNeuronalIndex = selectedHighROCneurons(nDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);
@@ -66,14 +66,14 @@ for nData           = [1 3 4]
     xlabel('Time (s)')
     colormap(cmap(1:4, :));
     
-    setPrint(8, 6, [PlotDir 'CollectedUnitsDecodabilityEpoch/CollectedUnitsDecodabilityEpoch_0_5_' DataSetList(nData).name])
+    setPrint(8, 6, [PlotDir 'C2SModel/CollectedUnitsDecodabilityEpoch_0_5_' DataSetList(nData).name])
 end
 
 
 ROCThres            = 0.7;
 numFold             = 30;
 
-for nData           = [1 3 4]
+for nData           = 1:length(DataSetList)
     load([TempDatDir DataSetList(nData).name '.mat'])   
     selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';
     selectedNeuronalIndex = selectedHighROCneurons(nDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);
@@ -110,20 +110,7 @@ for nData           = [1 3 4]
     xlabel('Time (s)')
     colormap(cmap(1:4, :));
     
-    setPrint(8, 6, [PlotDir 'CollectedUnitsDecodabilityEpoch/CollectedUnitsDecodabilityEpoch_0_7_' DataSetList(nData).name])
+    setPrint(8, 6, [PlotDir 'C2SModel/CollectedUnitsDecodabilityEpoch_0_7_' DataSetList(nData).name])
 end
-
-margNames = {'Pre-sample', 'Sample', 'Delay', 'Response'};
-figure;
-hold on
-for nColor = 1:length(margNames)
-    plot(0, nColor, 's', 'color', cmap(nColor,:), 'MarkerFaceColor',cmap(nColor,:),'MarkerSize', 8)
-    text(1, nColor, margNames{nColor})
-end
-xlim([0 10])
-hold off
-axis off
-setPrint(3, 2, [PlotDir 'CollectedUnitsDecodabilityEpoch/CollectedUnitsDecodabilityEpoch_0_7_Label'])
-setPrint(3, 2, [PlotDir 'CollectedUnitsDecodabilityEpoch/CollectedUnitsDecodabilityEpoch_0_5_Label'])
 
 close all
