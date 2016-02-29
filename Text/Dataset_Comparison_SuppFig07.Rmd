@@ -60,8 +60,13 @@ source('Dataset_Comparison_Funcs.R')
 ImageDir <- 'CollectedUnitsPCA/CollectedUnitsPCATrace_'
 includeVerticalMD(ImageDir)
 ```
-
-### Supplementary Figure `r figIndex`g -- PC traces using spike to calcium model
+```{r}
+source('Dataset_Comparison_Funcs.R')
+Datasets <- c('Modeled_Ca_Long_Decay_No_Noise', 'Modeled_Ca_Short_Decay_No_Noise')
+DatasetsName <- c('Ca Long Decay', 'Ca Short Decay')
+ImageDir <- 'S2CModel/CollectedUnitsPCATrace_'
+includeVerticalMD(ImageDir, Datasets=Datasets, DatasetsName = DatasetsName, fileType = 'svg')
+```
 
 ### Supplementary Figure `r figIndex`h -- calcium to spike model (linear model)
 

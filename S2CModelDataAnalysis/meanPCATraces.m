@@ -4,18 +4,19 @@
 
 addpath('../Func');
 setDir;
-load ([TempDatDir 'DataListShuffle.mat']);
+load ([TempDatDir 'DataListS2CModel.mat']);
 
 combinedParams = {{1}, {2}, {[1 2]}};
 margNames      = {'Stim', 'Time', 'Inter'};
 numTrials      = 100;
 numComps       = 3;
 
-if ~exist([PlotDir 'CollectedUnitsPCA'],'dir')
-    mkdir([PlotDir 'CollectedUnitsPCA'])
+
+if ~exist([PlotDir 'S2CModel'],'dir')
+    mkdir([PlotDir 'S2CModel'])
 end
 
-for nData              = [1 3 4]
+for nData              = 1:length(DataSetList)
     load([TempDatDir DataSetList(nData).name '.mat']);
     firingRates        = generateDPCAData(nDataSet, numTrials);
     firingRatesAverage = nanmean(firingRates, ndims(firingRates));
@@ -39,7 +40,7 @@ for nData              = [1 3 4]
         ylabel(['PC' num2str(nPlot) ' score'])  
     end
     
-    setPrint(8*3, 6, [PlotDir 'CollectedUnitsPCA/CollectedUnitsPCATrace_' DataSetList(nData).name])
+    setPrint(8*3, 6, [PlotDir 'S2CModel/CollectedUnitsPCATrace_' DataSetList(nData).name])
     
 end
 

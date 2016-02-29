@@ -32,11 +32,11 @@ minFiringRate          = 5;
 nDataSet               = getSpikeDataWithEphysTime(SpikingDataDir, SpikeFileList, params.minNumTrialToAnalysis, params.timeSeries, params.binsize);
 spikeDataSet           = nDataSet;
 % nDataSet               = getDFFSpike(spikeDataSet, params);
-nData                      = 1;
-DataSetList(nData).name    = 'Modeled_Spikes';
-DataSetList(nData).params  = params; 
-DataSetList(nData).ActiveNeuronIndex = findHighFiringUnits(spikeDataSet, params, minFiringRate);
-save([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet');
+% nData                      = 1;
+% DataSetList(nData).name    = 'Modeled_Spikes';
+% DataSetList(nData).params  = params; 
+ActiveNeuronIndex = findHighFiringUnits(spikeDataSet, params, minFiringRate);
+% save([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet');
 
 
 % Modeled GCaMP6s
@@ -52,10 +52,10 @@ params.tau_d           = params.tau_d;
 params.intNoise        = 1.5;
 params.extNoise        = 1.5;
 nDataSet               = getFakeCaImagingData(spikeDataSet, params);
-nData                      = 2;
+nData                      = 1;
 DataSetList(nData).name    = 'Modeled_Ca_Long_Decay_No_Noise';
 DataSetList(nData).params  = params; 
-DataSetList(nData).ActiveNeuronIndex = DataSetList(1).ActiveNeuronIndex;
+DataSetList(nData).ActiveNeuronIndex = ActiveNeuronIndex;
 save([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet'); 
 
 % Modeled GCaMP6s
@@ -71,10 +71,10 @@ params.tau_d           = params.tau_d/7;
 params.intNoise        = 1.5;
 params.extNoise        = 1.5;
 nDataSet               = getFakeCaImagingData(spikeDataSet, params);
-nData                      = 3;
+nData                      = 2;
 DataSetList(nData).name    = 'Modeled_Ca_Short_Decay_No_Noise';
 DataSetList(nData).params  = params; 
-DataSetList(nData).ActiveNeuronIndex = DataSetList(1).ActiveNeuronIndex;
+DataSetList(nData).ActiveNeuronIndex = ActiveNeuronIndex;
 save([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet'); 
 
 save([TempDatDir 'DataListModeled.mat'], 'DataSetList');
@@ -100,7 +100,7 @@ for nData           = 1:length(DataSetList)
     end
 end
 
-save([TempDatDir 'DataListModeled.mat'], 'DataSetList');
+save([TempDatDir 'DataListS2CModel.mat'], 'DataSetList');
 
 % 
 % nData                       = 1;

@@ -15,19 +15,19 @@ numTestTrials       = 200;
 numTrainingTrials   = numTrials - numTestTrials;
 ROCThres            = 0.5;
 
-load ([TempDatDir 'DataListShuffle.mat']);
+load ([TempDatDir 'DataListS2CModel.mat']);
 addNoise            = [1 0 0 0];
 
 cmap                = cbrewer('div', 'Spectral', 128, 'cubic');
 
 
-if ~exist([PlotDir '/CollectedUnitsDecodability'],'dir')
-    mkdir([PlotDir '/CollectedUnitsDecodability'])
+if ~exist([PlotDir 'S2CModel'],'dir')
+    mkdir([PlotDir 'S2CModel'])
 end
 
 stepSize            = 10;
 
-for nData             = [1 3 4]
+for nData             = 1:length(DataSetList)
     load([TempDatDir DataSetList(nData).name '.mat'])
     oldDataSet               = nDataSet;
     maxRandPickUnits         = 20;
@@ -70,13 +70,13 @@ for nData             = [1 3 4]
     ylabel('# units');
     colormap(cmap)
     set(gca, 'TickDir', 'out')
-    setPrint(8, 6, [PlotDir 'CollectedUnitsDecodability/CollectedUnitsDecodabilityFixedROCThres_0_5_' DataSetList(nData).name])
+    setPrint(8, 6, [PlotDir 'S2CModel/CollectedUnitsDecodabilityFixedROCThres_0_5_' DataSetList(nData).name])
 end
 
 
 ROCThres            = 0.7;
 
-for nData             = [1 3 4]
+for nData             = 1:length(DataSetList)
     load([TempDatDir DataSetList(nData).name '.mat'])
     oldDataSet               = nDataSet;
     maxRandPickUnits         = 20;
@@ -119,11 +119,7 @@ for nData             = [1 3 4]
     ylabel('# units');
     colormap(cmap)
     set(gca, 'TickDir', 'out')
-    setPrint(8, 6, [PlotDir 'CollectedUnitsDecodability/CollectedUnitsDecodabilityFixedROCThres_0_7_' DataSetList(nData).name])
+    setPrint(8, 6, [PlotDir 'S2CModel/CollectedUnitsDecodabilityFixedROCThres_0_7_' DataSetList(nData).name])
 end
-
-setColorbar(cmap, 0.5, 1, 'accuracy', [PlotDir 'CollectedUnitsDecodability/CollectedUnitsDecodabilityFixedROCThres_0_7_'])
-setColorbar(cmap, 0.5, 1, 'accuracy', [PlotDir 'CollectedUnitsDecodability/CollectedUnitsDecodabilityFixedROCThres_0_5_'])
-
 
 close all;
