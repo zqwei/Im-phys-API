@@ -12,6 +12,14 @@ if ~exist([PlotDir '/CollectedUnitsDecodabilityEpoch'],'dir')
     mkdir([PlotDir '/CollectedUnitsDecodabilityEpoch'])
 end
 
+cmap = [         0    0.4470    0.7410
+    0.8500    0.3250    0.0980
+    0.9290    0.6940    0.1250
+    0.4940    0.1840    0.5560
+    0.4660    0.6740    0.1880
+    0.3010    0.7450    0.9330
+    0.6350    0.0780    0.1840];
+
 numRandPickUnits    = 100;
 numTrials           = 500;
 numTestTrials       = 200;
@@ -24,7 +32,7 @@ totTargets          = [testTargets; trainingTargets];
 ROCThres            = 0.5;
 numFold             = 10;
 
-for nData           = 1:length(DataSetList)-1
+for nData           = [1 3 4]
     load([TempDatDir DataSetList(nData).name '.mat'])   
     selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';
     selectedNeuronalIndex = selectedHighROCneurons(nDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);
@@ -53,7 +61,7 @@ for nData           = 1:length(DataSetList)-1
     area(DataSetList(nData).params.timeSeries,squeeze(mean(decodability,1))','Edgecolor','none');
     xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
     ylim([0 1])
-    gridxy ([DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0],[0.5], 'Color','k','Linestyle','--','linewid', 0.5)
+    gridxy ([DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0], [0.5], 'Color','k','Linestyle','--','linewid', 0.5)
     box off;
     hold off;
     ylabel('Decodability')

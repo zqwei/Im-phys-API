@@ -115,13 +115,25 @@ where set $t_{spike}$ is spike times of a recorded spike train; $\tau_d$ is the 
 ## Population comparison across datasets -- Trade-off between decodability of stimulus and precision of temporal dynamics in different recording methods can be explained by Spike-to-Calcium model (Figure 5)
 
 ### Figure 5a -- Trial type information is delayed but enhanced as a function of decaying time constant of calcium indicator
-
+```{r}
+source('Dataset_Comparison_Funcs.R')
+ImageDir <- 'CollectedUnitsDecodability/CollectedUnitsDecodabilityFixedROCThres_0_5_'
+includeColorbarMD(ImageDir, fileType = 'svg')
+```
 
 ### Figure 5b -- Epoch information is delayed as a function of decaying time constant of calcium indicator
-
+```{r}
+source('Dataset_Comparison_Funcs.R')
+ImageDir <- 'CollectedUnitsDecodabilityEpoch/CollectedUnitsDecodabilityEpoch_0_5_'
+includePieMD(ImageDir, fileType = 'svg')
+```
 
 ### Figure 5c -- LDA-LDA correlation
-
+```{r}
+source('Dataset_Comparison_Funcs.R')
+ImageDir <- 'CollectedUnitsPCALDACorr/SimilarityLDALDA_100_'
+includeColorbarMD(ImageDir, fileType = 'svg')
+```
 
 ### Figure 5d -- A trade-off between temporal and stimulus information as a function of decaying time constant of calcium indicator
 ```{r}

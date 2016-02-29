@@ -19,23 +19,30 @@ knitr::opts_chunk$set(echo = FALSE, results='asis')
 Here we examined the decodability of stimulus in different subsets of neurons, which are composed of different
 selectivity across trials (ROC of neuronal subpopulation are ranged from 0.5 to 0.8), as well as of different 
 amounts of neurons, ranged from 100, 200, 500 or all neurons being recorded.
+```{r}
+source('Dataset_Comparison_Funcs.R')
+ImageDir <- 'CollectedUnitsDecodability/CollectedUnitsDecodabilityROC_'
+includeVerticalPieMD(ImageDir, fileType = 'svg')
+```
 
-(spike, AAV 4.12, Transgenetic 4.3)
+### Supplementary Figure `r figIndex`b -- Decodability of epoch in subsets of neurons
+Here we examined the decodability of epoch in different subsets of neurons, which are composed of different
+selectivity across trials (ROC of neuronal subpopulation are ranged from 0.5 to 0.8), as well as of different 
+amounts of neurons, ranged from 100, 200, 500 or all neurons being recorded.
+```{r}
+source('Dataset_Comparison_Funcs.R')
+ImageDir <- 'CollectedUnitsDecodabilityEpoch/CollectedUnitsDecodabilityEpoch'
+includePieMD(ImageDir, Datasets = '', DatasetsName= '', fileType = 'svg')
+```
+
+### Supplementary Figure `r figIndex`c -- Decodability of stimulus using shuffled and simultaneous recorded data
+Here we examined the difference of performance in decodability of instantaneous LDA decoders of trial type using
+simultaneous recording and its trial-blind shuffled data, where a minimum number of simultaneous recording units
+are > 6 and number of trials are > two times of the recording units (where overfit of coefficients should be in 
+principal avoided in analysis).
 
 
-### Supplementary Figure `r figIndex`b -- Decodability of stimulus vs shuffle or simultaneous recorded data
-(spike, AAV 4.12, Transgenetic 4.3)
 
-
-### Supplementary Figure `r figIndex`d -- Decodability of epoch vs the number of neurons
-(spike, AAV 4.12, Transgenetic 4.3)
-
-
-### Supplementary Figure `r figIndex`e -- Decodability of epoch vs neuronal selectivity (ROC)
-(spike, AAV 4.12, Transgenetic 4.3)
-
-### Supplementary Figure `r figIndex`f -- Decodability of epoch vs shuffle or simultaneous recorded data
-(spike, AAV 4.12, Transgenetic 4.3)
 
 ### Supplementary Figure `r figIndex`g -- Decodability of stimulus using spike to calcium model
 

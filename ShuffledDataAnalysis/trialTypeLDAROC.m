@@ -30,7 +30,7 @@ for nData             = [1 3 4]
     figure;
     
     %% 100 random units
-    subplot(1, 4, 1);
+    subplot(1, 3, 1);
     numRandPickUnits    = 100;
     numTrials           = numRandPickUnits*5;
     numTestTrials       = numRandPickUnits*2;
@@ -76,7 +76,7 @@ for nData             = [1 3 4]
     title('100 random units')
     
     %% 200 random units
-    subplot(1, 4, 2);
+    subplot(1, 3, 2);
     
     numRandPickUnits    = 200;
     numTrials           = numRandPickUnits*5;
@@ -122,7 +122,7 @@ for nData             = [1 3 4]
     title('200 random units')
     
     %% 500 random units
-    subplot(1, 4, 3);
+    subplot(1, 3, 3);
     
     numRandPickUnits    = 500;
     numTrials           = numRandPickUnits*5;
@@ -168,49 +168,49 @@ for nData             = [1 3 4]
     title('500 random units')
     
     
-    %% all units
-    subplot(1, 4, 4);
-    
-    numRandPickUnits    = length(oldDataSet);
-    numTrials           = numRandPickUnits*3;
-    numTestTrials       = 500;
-    numTrainingTrials   = numTrials - numTestTrials;
-    hold on
-    for ROCThres          = 0.5:0.1:0.8;
-        selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';% & [DataSetList(nData).cellinfo(:).cellType] == 1;
-        selectedNeuronalIndex = selectedHighROCneurons(oldDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);
-        nDataSet              = oldDataSet(selectedNeuronalIndex);
-        if numRandPickUnits> length(nDataSet); numRandPickUnits = length(nDataSet); end
-        trainingTargets     = [true(numTrainingTrials/2,1); false(numTrainingTrials/2,1)];
-        trainingTargets     = trainingTargets(randperm(numTrainingTrials));
-        testTargets         = [true(numTestTrials/2,1); false(numTestTrials/2,1)];
-        testTargets         = testTargets(randperm(numTestTrials));
-        totTargets          = [testTargets; trainingTargets];
-
-        trainingDecisions   = trainingTargets(randperm(numTrainingTrials));
-        testDecisions       = testTargets(randperm(numTestTrials));
-        totDecisions        = [testDecisions; trainingDecisions];
-
-        randPickUnits       = randperm(length(nDataSet));
-        randPickUnits       = randPickUnits(1:numRandPickUnits);
-
-        nSessionData        = shuffleSessionData(nDataSet(randPickUnits), totTargets, numTestTrials);
-        decodability = decodabilityLDA(nSessionData +randn(size(nSessionData))*1e-3/sqrt(numTrials)* addNoise(nData), trainingTargets, testTargets);
-        plot(DataSetList(nData).params.timeSeries, decodability, '-', 'linewid', 1.0, 'color', cmap(ROCThres*10-4,:));
-    end    
-    xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
-    ylim([0.5 1])
-    legend('boxoff')
-    gridxy ([DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0],[], 'Color','k','Linestyle','--','linewid', 0.5)
-    set(gca, 'TickDir', 'out')
-    box off;
-    hold off;
-    xlabel('Time (s)');
-    ylabel('Decodability');
-    title('all units')
+%     %% all units
+%     subplot(1, 4, 4);
+%     
+%     numRandPickUnits    = length(oldDataSet);
+%     numTrials           = numRandPickUnits*3;
+%     numTestTrials       = 500;
+%     numTrainingTrials   = numTrials - numTestTrials;
+%     hold on
+%     for ROCThres          = 0.5:0.1:0.8;
+%         selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';% & [DataSetList(nData).cellinfo(:).cellType] == 1;
+%         selectedNeuronalIndex = selectedHighROCneurons(oldDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);
+%         nDataSet              = oldDataSet(selectedNeuronalIndex);
+%         if numRandPickUnits> length(nDataSet); numRandPickUnits = length(nDataSet); end
+%         trainingTargets     = [true(numTrainingTrials/2,1); false(numTrainingTrials/2,1)];
+%         trainingTargets     = trainingTargets(randperm(numTrainingTrials));
+%         testTargets         = [true(numTestTrials/2,1); false(numTestTrials/2,1)];
+%         testTargets         = testTargets(randperm(numTestTrials));
+%         totTargets          = [testTargets; trainingTargets];
+% 
+%         trainingDecisions   = trainingTargets(randperm(numTrainingTrials));
+%         testDecisions       = testTargets(randperm(numTestTrials));
+%         totDecisions        = [testDecisions; trainingDecisions];
+% 
+%         randPickUnits       = randperm(length(nDataSet));
+%         randPickUnits       = randPickUnits(1:numRandPickUnits);
+% 
+%         nSessionData        = shuffleSessionData(nDataSet(randPickUnits), totTargets, numTestTrials);
+%         decodability = decodabilityLDA(nSessionData +randn(size(nSessionData))*1e-3/sqrt(numTrials)* addNoise(nData), trainingTargets, testTargets);
+%         plot(DataSetList(nData).params.timeSeries, decodability, '-', 'linewid', 1.0, 'color', cmap(ROCThres*10-4,:));
+%     end    
+%     xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
+%     ylim([0.5 1])
+%     legend('boxoff')
+%     gridxy ([DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0],[], 'Color','k','Linestyle','--','linewid', 0.5)
+%     set(gca, 'TickDir', 'out')
+%     box off;
+%     hold off;
+%     xlabel('Time (s)');
+%     ylabel('Decodability');
+%     title('all units')
     
     %% print
-    setPrint(8*4, 6, [PlotDir 'CollectedUnitsDecodability/CollectedUnitsDecodabilityROC_' DataSetList(nData).name])
+    setPrint(8*3, 6, [PlotDir 'CollectedUnitsDecodability/CollectedUnitsDecodabilityROC_' DataSetList(nData).name])
 end
 
 

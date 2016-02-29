@@ -9,6 +9,59 @@
 addpath('../Func');
 setDir;
 
+load ([TempDatDir 'DataListSimultaneous.mat']);
+
+if ~exist([PlotDir '/SimultaneousUnitsDecodability'],'dir')
+    mkdir([PlotDir '/SimultaneousUnitsDecodability'])
+end
+
+
+
+for nData             = 1:length(DataSetList)
+    load([TempDatDir 'SimultaneousLDA_' DataSetList(nData).name '.mat'], 'correctRates');
+    load([TempDatDir 'SimultaneousUnitStats_' DataSetList(nData).name '.mat'], 'numSimultaneousUnits', 'numSimultaneousTrial');
+    
+    [ss, sessionIndex] = sortrows([numSimultaneousUnits, numSimultaneousTrial], [-1 -2]);
+    
+
+    
+    
+    figure;
+    
+    for nSession      = 1:length(correctRates)
+        correctRate   = correctRates{sessionIndex(nSession)};        
+        subplot(m, m, nSession);
+        plot(DataSetList(nData).params.timeSeries, correctRate, 'Color','k','Linestyle','-','linewid', 2.0);
+        xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
+        ylim([0.5 1])
+        legend('boxoff')
+        gridxy ([DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0],[], 'Color','k','Linestyle','--','linewid', 0.5)
+        box off;
+        hold off;
+        xlabel('Time (s)');
+        ylabel('Decodability');
+        title(['# units: ' num2str(ss(nSession, 1)) '; # trials: ' num2str(ss(nSession, 2))])
+    end
+    
+    
+    
+    
+    
+    
+    setPrint(8*m, 6*m, [PlotDir 'SimultaneousUnitsDecodability/SimultaneousUnitsDecodability_' DataSetList(nData).name], 'pdf')
+end
+
+
+close all;
+
+
+
+
+
+
+
+
+
 numFold             = 10;
 numTrials           = 1000;
 numTestTrials       = 200;
