@@ -157,3 +157,25 @@ includeVerticalPieMD <- function(ImageDir, Datasets = tmpDatasets, DatasetsName=
   verticalPieMD(DataFiles, header = DatasetsName, width = '100%')
 }
 
+includeVerticalColorbarMD <- function(ImageDir, Datasets = tmpDatasets, DatasetsName=tmpDatasetsName, fileType = 'svg'){
+  Datasets <- c(Datasets, "Colorbar")
+  ImageDir <- paste0('../Plot/', ImageDir)
+  DataFiles <- Datasets
+  for (nData in 1:length(DataFiles)){
+    if (fileType == "pdf"){
+      tmpFileNmae <- paste0(ImageDir, DataFiles[nData], '.', fileType)
+      tmpSvgFile <- paste0(ImageDir, DataFiles[nData], '.svg')
+      if(file.exists(tmpFileNmae)){
+        system(paste('pdf2svg', tmpFileNmae, tmpSvgFile))
+        system(paste('rm', tmpFileNmae))
+      }
+      DataFiles[nData] <- paste0(ImageDir, DataFiles[nData], '.svg')
+    } # convert pdf to svg, which gives a better results
+    else{
+      DataFiles[nData] <- paste0(ImageDir, DataFiles[nData], '.', fileType)
+    }
+    
+  }
+  verticalPieMD(DataFiles, header = DatasetsName, width = '100%')
+}
+

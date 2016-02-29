@@ -13,13 +13,14 @@ DataSetList(2).name    = 'Simultaneous_Ca_Fast_Short_Delay';
 DataSetList(3).name    = 'Simultaneous_Ca_Slow_Short_Delay';
 DataSetList(4).name    = 'Simultaneous_Ca_Slow_Short_Delay_Virus';
 DataSetList            = DataSetList(1:4);
-minUnitsSession        = 3;
+minUnitsSession        = 6;
 minRate                = 5;
 perMinRate             = 0.4; % percentage of min Rate in an entire trial
 % In the following analysis of simultaneous recorded datasets, we only use
 % a subset of strong selective neurons (a trick to decrease the number of
 % neurons in each session)
 ROCThres               = 0.50;
+minTrialRatio          = 2.0;
 
 %%%
 % Case 1:
@@ -49,12 +50,12 @@ end
 % Taking the fact that there is the same number of trials in for units in
 % the indentical Ca++ imaging session
 
-for nData                  = 2:length(DataSetList)-1
+for nData                  = 2:length(DataListShuffle)-1
     load([TempDatDir DataListShuffle(nData).name '.mat']);
     [nDataSet, DataSetList(nData).kickOutIndex] = ...
                             getSimultaneousCaimagingData(nDataSet, ...
                             DataSetList(nData), ...
-                            ROCThres, minUnitsSession);
+                            ROCThres, minUnitsSession, minTrialRatio);
     save([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet');
 end
 

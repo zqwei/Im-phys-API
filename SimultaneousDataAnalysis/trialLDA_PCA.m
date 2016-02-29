@@ -4,106 +4,89 @@
 
 addpath('../Func');
 setDir;
-load ([TempDatDir 'DataListShuffle.mat']);
+load ([TempDatDir 'DataListSimultaneous.mat']);
+addNoise         = [1 0 0 0];
 
-if ~exist([PlotDir 'CollectedUnitsPCALDACorr'],'dir')
-    mkdir([PlotDir 'CollectedUnitsPCALDACorr'])
+if ~exist([PlotDir '/SimultaneousUnitsDecodability'],'dir')
+    mkdir([PlotDir '/SimultaneousUnitsDecodability'])
 end
 
 cmap                = cbrewer('div', 'Spectral', 128, 'cubic');
-
+mCol                = 4;
 numFold             = 30;
-numRandPickUnits    = 100;
-numTrials           = numRandPickUnits*6;
-totTargets          = [true(numTrials/2,1); false(numTrials/2,1)];
-ROCThres            = 0.5;
 
-
-for nData           =[1 3 4]
+for nData             = [1 3 4]
     load([TempDatDir DataSetList(nData).name '.mat'])
-    selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';
-    selectedNeuronalIndex = selectedHighROCneurons(nDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);
-    nDataSet              = nDataSet(selectedNeuronalIndex);
-    numUnits              = length(nDataSet);
-    
-    numT                  = length(DataSetList(nData).params.timeSeries);
-    corrMat               = nan(numFold, numT, numT);    
-    
-    for nFold             = 1:numFold
-        currRandPickUnits     = numRandPickUnits;
-        nSessionData = shuffleSessionData(nDataSet(randperm(numUnits, currRandPickUnits)), totTargets, numTrials);
-        nSessionData = normalizationDim(nSessionData, 2);
-        coeffPCAs    = coeffPCA(nSessionData);
-        coeffLDAs    = coeffLDA(nSessionData, totTargets);
-        corrMat(nFold, :, :) = abs(coeffPCAs'*coeffLDAs);
-    end
+    mRow = ceil(length(nDataSet)/mCol*2);
     
     figure;
-    hold on
     
-    imagesc(DataSetList(nData).params.timeSeries, DataSetList(nData).params.timeSeries, squeeze(mean(corrMat, 1)));
-    xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
-    ylim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
-    caxis([0 1]);
-    colormap(cmap)
-    set(gca, 'TickDir', 'out')
-    axis xy;
-    gridxy ([DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0],[DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0], 'Color','k','Linestyle','--','linewid', 0.5);
-    box off;
-    hold off;
-    xlabel('LDA Time (s)')
-    ylabel('PCA Time (s)')
-    setPrint(8, 6, [PlotDir 'CollectedUnitsPCALDACorr/SimilarityLDAPCA_100_' DataSetList(nData).name])
-end
-
-numRandPickUnits    = 500;
-numTrials           = numRandPickUnits*6;
-totTargets          = [true(numTrials/2,1); false(numTrials/2,1)];
-ROCThres            = 0.5;
-
-
-for nData           =[1 3 4]
-    load([TempDatDir DataSetList(nData).name '.mat'])
-    selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';
-    selectedNeuronalIndex = selectedHighROCneurons(nDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);
-    nDataSet              = nDataSet(selectedNeuronalIndex);
-    numUnits              = length(nDataSet);
-    
-    numT                  = length(DataSetList(nData).params.timeSeries);
-    corrMat               = nan(numFold, numT, numT);    
-    
-    for nFold             = 1:numFold
-        currRandPickUnits     = numRandPickUnits;
-        nSessionData = shuffleSessionData(nDataSet(randperm(numUnits, currRandPickUnits)), totTargets, numTrials);
-        nSessionData = normalizationDim(nSessionData, 2);
+    for nSession  = 1:length(nDataSet)
+        numYesTrial = length(nDataSet(nSession).unit_yes_trial_index);
+        numNoTrial  = length(nDataSet(nSession).unit_no_trial_index);
+        totTargets  = [true(numYesTrial, 1); false(numNoTrial, 1)];
+        numUnits   = length(nDataSet(nSession).nUnit);
+        numTrials  = numYesTrial + numNoTrial;
+        nSessionData  = [nDataSet(nSession).unit_yes_trial; nDataSet(nSession).unit_no_trial];
+        nSessionData  = normalizationDim(nSessionData, 2);  
         coeffPCAs    = coeffPCA(nSessionData);
         coeffLDAs    = coeffLDA(nSessionData, totTargets);
-        corrMat(nFold, :, :) = abs(coeffPCAs'*coeffLDAs);
+        %% compute LDA-LDA of simultaneous recording data
+        simCorrMat    = abs(coeffPCAs'*coeffLDAs);
+        
+        %% compute LDA-LDA of shuffled recording data
+        numT          = size(nSessionData, 3);
+        shfCorrMat               = nan(numFold, numT, numT);
+    
+        for nFold             = 1:numFold
+            nSessionData  = [nDataSet(nSession).unit_yes_trial; nDataSet(nSession).unit_no_trial];
+            nSessionData = shuffle3DSessionData(nSessionData, totTargets);
+            nSessionData = normalizationDim(nSessionData, 2);
+            coeffPCAs    = coeffPCA(nSessionData);
+            coeffLDAs    = coeffLDA(nSessionData, totTargets);
+            shfCorrMat(nFold, :, :) = abs(coeffPCAs'*coeffLDAs);
+        end
+        
+        
+        %% plots
+        subplot(mRow, mCol, nSession*2 - 1)
+        hold on
+        imagesc(DataSetList(nData).params.timeSeries, DataSetList(nData).params.timeSeries, simCorrMat);
+        xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
+        ylim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
+        caxis([0 1]);
+        axis xy;
+        gridxy ([DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0],[DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0], 'Color','k','Linestyle','--','linewid', 0.5);
+        box off;
+        hold off;
+        xlabel('LDA Time (s)')
+        ylabel('PCA Time (s)')  
+        colormap(cmap)
+        title({['# units: ' num2str(numUnits)] ; 'Simultaneous'})
+        set(gca, 'TickDir', 'out')
+        
+        subplot(mRow, mCol, nSession*2)
+        hold on
+        imagesc(DataSetList(nData).params.timeSeries, DataSetList(nData).params.timeSeries, squeeze(mean(shfCorrMat, 1)));
+        xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
+        ylim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
+        caxis([0 1]);
+        axis xy;
+        gridxy ([DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0],[DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0], 'Color','k','Linestyle','--','linewid', 0.5);
+        box off;
+        hold off;
+        xlabel('LDA Time (s)')
+        ylabel('PCA Time (s)')
+        colormap(cmap)
+        title({['# trials: ' num2str(numTrials)]; 'Shuffle'})
+        set(gca, 'TickDir', 'out')
+        
     end
-    
-    figure;
-    hold on
-    
-    imagesc(DataSetList(nData).params.timeSeries, DataSetList(nData).params.timeSeries, squeeze(mean(corrMat, 1)));
-    xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
-    ylim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
-    caxis([0 1]);
-    colormap(cmap)
-    set(gca, 'TickDir', 'out')
-    axis xy;
-    gridxy ([DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0],[DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0], 'Color','k','Linestyle','--','linewid', 0.5);
-    box off;
-    hold off;
-    xlabel('LDA Time (s)')
-    ylabel('PCA Time (s)')
-    setPrint(8, 6, [PlotDir 'CollectedUnitsPCALDACorr/SimilarityLDAPCA_500_' DataSetList(nData).name])
+        
+    setPrint(8*mCol, 6*mRow, [PlotDir 'SimultaneousUnitsDecodability/SimilarityLDAPCA_' DataSetList(nData).name])
 end
 
 
-
-
-figure;
-setColorbar(cmap, 0, 1, 'similarity', [PlotDir 'CollectedUnitsPCALDACorr/SimilarityLDAPCA_500_'])
-setColorbar(cmap, 0, 1, 'similarity', [PlotDir 'CollectedUnitsPCALDACorr/SimilarityLDAPCA_100_'])
+setColorbar(cmap, 0, 1, 'similarity', [PlotDir 'SimultaneousUnitsDecodability/SimilarityLDAPCA_'])
 
 close;

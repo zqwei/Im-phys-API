@@ -12,7 +12,7 @@ numUnits       = 100;
 numTrials      = numUnits * 3;
 numComps       = 2;
 ROCThres       = 0.5;
-trialType      = [true(numTrials, 1); false(numTrials, 1)];
+% trialType      = [true(numTrials, 1); false(numTrials, 1)];
 numFold        = 30;
 
 if ~exist([PlotDir 'CollectedUnitsPCA'],'dir')
@@ -59,10 +59,10 @@ for nData              = [1 3 4]
     shadedErrorBar(DataSetList(nData).params.timeSeries, squeeze(mean(pcaVar(:, 2, :), 1)),...
             squeeze(std(pcaVar(:, 2, :), [], 1))/sqrt(numFold),...
             {'-', 'linewid', 1.0, 'color', 'm'}, 0.5);  
-    legend({'PC1', 'PC2'})    
     axis xy;
     xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
-    ylim([0 0.5])
+    ylim([0 0.14])
+    set(gca, 'YTick', [0 0.1])
     gridxy ([DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0],[], 'Color','k','Linestyle','--','linewid', 0.5)
     box off;
     hold off;
@@ -79,10 +79,10 @@ for nData              = [1 3 4]
     shadedErrorBar(DataSetList(nData).params.timeSeries, squeeze(mean(evTrialType(:, 2, :), 1)),...
             squeeze(std(evTrialType(:, 2, :), [], 1))/sqrt(numFold),...
             {'-', 'linewid', 1.0, 'color', 'm'}, 0.5);  
-    legend({'PC1', 'PC2'})    
     axis xy;
     xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
-    ylim([0 0.5])
+    ylim([0 0.14])
+    set(gca, 'YTick', [0 0.1])
     gridxy ([DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0],[], 'Color','k','Linestyle','--','linewid', 0.5)
     box off;
     hold off;
@@ -90,8 +90,10 @@ for nData              = [1 3 4]
     ylabel('frac. EV stim.');
     set(gca, 'TickDir', 'out')
     
-    setPrint(2, 6*2, [PlotDir 'CollectedUnitsPCALDACorr/SimilarityPCA_100_' DataSetList(nData).name])
+    setPrint(8, 6*2, [PlotDir 'CollectedUnitsPCALDACorr/SimilarityPCA_100_' DataSetList(nData).name])
 end
+
+
 
 
 numUnits       = 500;
@@ -145,10 +147,10 @@ for nData              = [1 3 4]
     shadedErrorBar(DataSetList(nData).params.timeSeries, squeeze(mean(pcaVar(:, 2, :), 1)),...
             squeeze(std(pcaVar(:, 2, :), [], 1))/sqrt(numFold),...
             {'-', 'linewid', 1.0, 'color', 'm'}, 0.5);  
-    legend({'PC1', 'PC2'})    
     axis xy;
     xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
-    ylim([0 0.5])
+    ylim([0 0.14])
+    set(gca, 'YTick', [0 0.1])
     gridxy ([DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0],[], 'Color','k','Linestyle','--','linewid', 0.5)
     box off;
     hold off;
@@ -165,10 +167,10 @@ for nData              = [1 3 4]
     shadedErrorBar(DataSetList(nData).params.timeSeries, squeeze(mean(evTrialType(:, 2, :), 1)),...
             squeeze(std(evTrialType(:, 2, :), [], 1))/sqrt(numFold),...
             {'-', 'linewid', 1.0, 'color', 'm'}, 0.5);  
-    legend({'PC1', 'PC2'})    
     axis xy;
     xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
-    ylim([0 0.5])
+    ylim([0 0.14])
+    set(gca, 'YTick', [0 0.1])
     gridxy ([DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0],[], 'Color','k','Linestyle','--','linewid', 0.5)
     box off;
     hold off;
@@ -176,7 +178,22 @@ for nData              = [1 3 4]
     ylabel('frac. EV stim.');
     set(gca, 'TickDir', 'out')
     
-    setPrint(2, 6*2, [PlotDir 'CollectedUnitsPCALDACorr/SimilarityPCA_500_' DataSetList(nData).name])
+    setPrint(8, 6*2, [PlotDir 'CollectedUnitsPCALDACorr/SimilarityPCA_500_' DataSetList(nData).name])
 end
+
+
+margNames = {'PC1', 'PC2'};
+cmap = {'k', 'm'};
+figure;
+hold on
+for nColor = 1:length(margNames)
+    plot(0, nColor, 's', 'color', cmap{nColor}, 'MarkerFaceColor',cmap{nColor},'MarkerSize', 8)
+    text(1, nColor, margNames{nColor})
+end
+xlim([0 10])
+hold off
+axis off
+setPrint(3, 2, [PlotDir 'CollectedUnitsPCALDACorr/SimilarityPCA_500_Label'])
+setPrint(3, 2, [PlotDir 'CollectedUnitsPCALDACorr/SimilarityPCA_100_Label'])
 
 close all

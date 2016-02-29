@@ -151,5 +151,7 @@ function nDataSet3D  = convert2DataSet3D(nDataSet, unitROCIndex, trialIndex)
         nDataSet3D.unit_no_trial(nUnit, :, :)  = nDataSet(nUnit).unit_no_trial...
                                                 (ismember(nDataSet(nUnit).unit_no_trial_index, trialIndex), :);
     end
-
+    
+    nDataSet3D.unit_yes_trial               = permute(nDataSet3D.unit_yes_trial, [2 1 3]);
+    nDataSet3D.unit_no_trial                = permute(nDataSet3D.unit_no_trial, [2 1 3]);
 end

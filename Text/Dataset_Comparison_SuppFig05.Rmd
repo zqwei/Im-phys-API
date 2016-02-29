@@ -38,9 +38,14 @@ includePieMD(ImageDir, Datasets = '', DatasetsName= '', fileType = 'svg')
 ### Supplementary Figure `r figIndex`c -- Decodability of stimulus using shuffled and simultaneous recorded data
 Here we examined the difference of performance in decodability of instantaneous LDA decoders of trial type using
 simultaneous recording and its trial-blind shuffled data, where a minimum number of simultaneous recording units
-are > 6 and number of trials are > two times of the recording units (where overfit of coefficients should be in 
+are > 5 and number of trials are > two times of the recording units (where overfit of coefficients should be in 
 principal avoided in analysis).
-
+```{r}
+source('Dataset_Comparison_Funcs.R')
+Datasets <- c('Simultaneous_Spikes', 'Simultaneous_Ca_Slow_Short_Delay_Virus', 'Simultaneous_Ca_Slow_Short_Delay')
+ImageDir <- 'SimultaneousUnitsDecodability/SimultaneousLDA_'
+includeVerticalPieMD(ImageDir, Datasets=Datasets, fileType = 'svg')
+```
 
 
 
