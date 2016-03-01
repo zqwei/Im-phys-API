@@ -14,21 +14,21 @@ output:
 knitr::opts_chunk$set(echo = FALSE, results='asis')
 ```
 
-### Supplementary Figure `r figIndex`a --Trade-off holds true for a random choice of subpopulation
+### Supplementary Figure `r figIndex`a -- Trade-off holds true for a random choice of subpopulation
 ```{r}
 source('Dataset_Comparison_Funcs.R')
 ImageDir <- 'CollectedUnitsPCA/CollectedSubUnitsPCA_'
 includeVerticalMD(ImageDir, fileType = 'svg')
 ```
 
-### Supplementary Figure `r figIndex`b --Trade-off holds true for normalization of raw neuronal activity
+### Supplementary Figure `r figIndex`b -- Trade-off holds true for normalization of raw neuronal activity
 ```{r}
 source('Dataset_Comparison_Funcs.R')
 ImageDir <- 'CollectedUnitsPCA/CollectedUnitsNormPCA_'
 includeHtmlMD(ImageDir)
 ```
 
-### Supplementary Figure `r figIndex`c --Trade-off holds true at different depths
+### Supplementary Figure `r figIndex`c -- Trade-off holds true at different depths
 ```{r}
 source('Dataset_Comparison_Funcs.R')
 Datasets <- c('ShuffleConfounding_Spikes', 'ShuffleConfounding_Ca_Slow_Short_Delay_Virus', 'ShuffleConfounding_Ca_Slow_Short_Delay')
@@ -54,7 +54,9 @@ source('Dataset_Comparison_Funcs.R')
 includeVerticalMD(ImageDir, Datasets = anmDatasets, DatasetsName=anmDatasetsName)
 ```
 
-### Supplementary Figure `r figIndex`f -- PC traces
+### Supplementary Figure `r figIndex`f -- calcium to spike model (linear model)
+
+### Supplementary Figure `r figIndex`g -- PC traces
 ```{r}
 source('Dataset_Comparison_Funcs.R')
 ImageDir <- 'CollectedUnitsPCA/CollectedUnitsPCATrace_'
@@ -68,7 +70,6 @@ ImageDir <- 'S2CModel/CollectedUnitsPCATrace_'
 includeVerticalMD(ImageDir, Datasets=Datasets, DatasetsName = DatasetsName, fileType = 'svg')
 ```
 
-### Supplementary Figure `r figIndex`h -- calcium to spike model (linear model)
 
-### Supplementary Figure `r figIndex`i -- calcium to spike model (non-linear model)
+
 

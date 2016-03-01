@@ -15,22 +15,26 @@ knitr::opts_chunk$set(echo = FALSE, results='asis')
 ```
 
 ## Parameter space of spike-to-calcium model
-
-### Supplementary Figure `r figIndex`a -- 
-
-
-## Modeled neuron from dynamical to homogeneous in model
-
-### Supplementary Figure `r figIndex`b -- example neuron
-
-### Supplementary Figure `r figIndex`c -- switching probability
+### Supplementary Figure `r figIndex`a -- parameter space of spike-to-calcium model, from simultaneous recordings in mice V1 areas.
 
 
-## Modeled neuron of demixed neuron in model
-
-### Supplementary Figure `r figIndex`d -- example neuron
-
-### Supplementary Figure `r figIndex`e -- switching probability
+## Transition of cell types in model
+### Supplementary Figure `r figIndex`b -- example neurons that vary from dynamical to homogeneous cell type in model
+```{r}
+source('Dataset_Comparison_Funcs.R')
+Datasets <- c('Modeled_Ca_Long_Decay_No_Noise', 'Modeled_Ca_Short_Decay_No_Noise')
+DatasetsName <- c('Ca Long Decay', 'Ca Short Decay')
+ImageDir <- 'S2CModel/SingleUnitsTscoreExampleNeuron_'
+includeVerticalMD(ImageDir, Datasets=Datasets, DatasetsName = DatasetsName, fileType = 'svg')
+```
+### Supplementary Figure `r figIndex`c -- example neurons that vary from mixed-selective to homogeneous cell type in model
+```{r}
+source('Dataset_Comparison_Funcs.R')
+Datasets <- c('Modeled_Ca_Long_Decay_No_Noise', 'Modeled_Ca_Short_Decay_No_Noise')
+DatasetsName <- c('Ca Long Decay', 'Ca Short Decay')
+ImageDir <- 'S2CModel/SingleUnitsAnovaExampleNeuron_'
+includeVerticalMD(ImageDir, Datasets=Datasets, DatasetsName = DatasetsName, fileType = 'svg')
+```
 
 ## Deconvolution models
 

@@ -119,6 +119,13 @@ DatasetsName <- c('Ca Long Decay', 'Ca Short Decay')
 ImageDir <- 'S2CModel/SingleUnitsTscore_'
 includePieMD(ImageDir, Datasets=Datasets, DatasetsName = DatasetsName, fileType = 'svg')
 ```
+```{r}
+source('Dataset_Comparison_Funcs.R')
+Datasets <- c('Modeled_Ca_Long_Decay_No_Noise', 'Modeled_Ca_Short_Decay_No_Noise')
+DatasetsName <- c('Ca Long Decay', 'Ca Short Decay')
+ImageDir <- 'S2CModel/SingleUnitsTscoreTrans_'
+includeHtmlMD(ImageDir, Datasets=Datasets, DatasetsName = DatasetsName, fileType = 'svg')
+```
 
 ### Figure 4b -- Fraction of mixed-selective neuron decreases a function of decaying time constant of calcium indicator
 ```{r}
@@ -127,6 +134,13 @@ Datasets <- c('Modeled_Ca_Long_Decay_No_Noise', 'Modeled_Ca_Short_Decay_No_Noise
 DatasetsName <- c('Ca Long Decay', 'Ca Short Decay')
 ImageDir <- 'S2CModel/SingleUnitsAnova_'
 includePieMD(ImageDir, Datasets=Datasets, DatasetsName = DatasetsName, fileType = 'svg')
+```
+```{r}
+source('Dataset_Comparison_Funcs.R')
+Datasets <- c('Modeled_Ca_Long_Decay_No_Noise', 'Modeled_Ca_Short_Decay_No_Noise')
+DatasetsName <- c('Ca Long Decay', 'Ca Short Decay')
+ImageDir <- 'S2CModel/SingleUnitsAnovaTrans_'
+includeHtmlMD(ImageDir, Datasets=Datasets, DatasetsName = DatasetsName, fileType = 'svg')
 ```
 
 ### Figure 4c -- ROC
