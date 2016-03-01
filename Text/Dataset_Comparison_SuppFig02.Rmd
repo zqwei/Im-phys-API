@@ -23,7 +23,12 @@ source('Dataset_Comparison_Funcs.R')
 includeVerticalMD(ImageDir)
 ```
 
-
+## Fraction of mixed-selective neurons decreases in calcium imaging datasets (comparing to ephys), but it is roughly the same across calcium imaging datasets.
+```{r}
+source('Dataset_Comparison_Funcs.R')
+ImageDir <- 'SingleUnitsAnova/SingleUnitsAnovaNoNon_'
+includeHtmlMD(ImageDir)
+```
 
 ## Fraction of mixed-selective neurons is distributed similarly at different locations
 

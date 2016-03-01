@@ -31,7 +31,8 @@ params.expression      = 'Transgentic';
 nDataSet               = getCaImagingData(CaImagingShortDelaySlowDir, ...
                                           CaImagingShortDelaySlowFileList, ...
                                           params.minNumTrialToAnalysis, params); 
-nDataSet               = getFakeSpikeFastOOPSIData(nDataSet, params);  
+[nDataSetFast, nDataSetSMC] = getFakeSpikeOOPSIData(nDataSet, params);  
+nDataSet               = nDataSetFast;
 nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
 nData                  = 1;
 DataSetList(nData).name    = 'ModelSpikeFastOOPSI_Ca_Slow_Short_Delay';
@@ -39,7 +40,7 @@ DataSetList(nData).params  = params;
 DataSetList(nData).ActiveNeuronIndex = ~nonActiveNeuronIndex;
 save([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet');
 
-nDataSet               = getFakeSpikeSMCOOPSIData(nDataSet, params);  
+nDataSet               = nDataSetSMC;
 nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
 nData                  = 3;
 DataSetList(nData).name    = 'ModelSpikeSMCOOPSI_Ca_Slow_Short_Delay';
@@ -63,7 +64,8 @@ params.expression      = 'Virus';
 nDataSet               = getCaImagingData(CaImagingShortDelaySlowVirusDir, ...
                                           CaImagingShortDelaySlowVirusFileList, ...
                                           params.minNumTrialToAnalysis, params);
-nDataSet               = getFakeSpikeData(nDataSet, params);                                  
+[nDataSetFast, nDataSetSMC] = getFakeSpikeOOPSIData(nDataSet, params);  
+nDataSet               = nDataSetFast;
 nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
 nData                  = 2;
 DataSetList(nData).name    = 'ModelSpikeFastOOPSI_Ca_Slow_Short_Delay_Virus';
@@ -71,7 +73,7 @@ DataSetList(nData).params  = params;
 DataSetList(nData).ActiveNeuronIndex = ~nonActiveNeuronIndex;
 save([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet');
 
-nDataSet               = getFakeSpikeSMCOOPSIData(nDataSet, params);  
+nDataSet               = nDataSetSMC;
 nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
 nData                  = 4;
 DataSetList(nData).name    = 'ModelSpikeSMCOOPSI_Ca_Slow_Short_Delay';

@@ -22,6 +22,13 @@ source('Dataset_Comparison_Funcs.R')
 includeVerticalMD(ImageDir)
 ```
 
+## Fraction of dynamical-selective neurons decreases in calcium imaging datasets (comparing to ephys), but it is roughly the same across calcium imaging datasets.
+```{r}
+source('Dataset_Comparison_Funcs.R')
+ImageDir <- 'SingleUnitsTscore/SingleUnitsTscoreNoNon_'
+includeHtmlMD(ImageDir)
+```
+
 ## Fraction of dynamical-selective neurons is distributed similarly at different locations
 <!-- Add neuronal activity as Fig. a -->
 Here, we examined __Hypothesis I__ by sampling neurons in the same dataset according to their depths (__Supplementary Figure 1b__), anterior-to-posterior and medial-to-lateral locations (__Supplementary Figure 1c__), and animal tags (__Supplementary Figure 1d__), where, for each dataset, left panel shows the fraction of neuron type (non-selective neuron, _navy_; homogeneous-selective neuron, _green_; dynamical-selective neuron, _yellow_), and right panel shows the total number of neurons in each condition.
