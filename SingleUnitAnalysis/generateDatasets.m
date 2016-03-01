@@ -22,9 +22,10 @@ params.timeSeries      = params.timeWindowIndexRange * params.binsize;
 params.minNumTrialToAnalysis =  minNumTrialToAnalysis;
 params.expression      = 'None';
 minFiringRate          = 5; % Hz per epoch
-nDataSet               = getSpikeData(SpikingDataDir, SpikeFileList, ...
-                                      params.minNumTrialToAnalysis, ...
-                                      params.timeSeries, params.binsize);
+% nDataSet               = getSpikeData(SpikingDataDir, SpikeFileList, ...
+%                                       params.minNumTrialToAnalysis, ...
+%                                       params.timeSeries, params.binsize);
+nDataSet               = getSpikeDataWithEphysTime(SpikingDataDir, SpikeFileList, params.minNumTrialToAnalysis, params.timeSeries, params.binsize);                                  
 DataSetList(1).name    = 'Shuffle_Spikes';
 DataSetList(1).params  = params; 
 DataSetList(1).ActiveNeuronIndex = findHighFiringUnits(nDataSet, params, minFiringRate);

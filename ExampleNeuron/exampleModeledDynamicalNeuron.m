@@ -25,7 +25,7 @@ if ~exist([PlotDir 'S2CModel'],'dir')
 end
 
 
-
+cmap = cbrewer('qual', 'Set1', 3, 'cubic');
 
 for nData      = 1:length(DataSetList)
     load([TempDatDir DataSetList(nData).name '.mat'])
@@ -49,11 +49,13 @@ for nData      = 1:length(DataSetList)
     caxis([1 3])
     xlim([0 1])
     box off
-    xlabel('frac. cell type in model ')
+    xlabel('frac. cell type changed in model ')
     ylabel('original cell type')
+    colormap(cmap)
     ylim([0.5 3.5])
+    set(gca, 'TickDir', 'out')
     set(gca, 'yTick', 1:3, 'yTickLabel', {'Non.', 'Homo.', 'Dynamicial'})
-    setPrint(8*5, 6*8, [PlotDir 'S2CModel/SingleUnitsTscoreExampleNeuron_Label' DataSetList(nData).name])
+    setPrint(8, 6, [PlotDir 'S2CModel/SingleUnitsTscoreTrans_' DataSetList(nData).name])
     
     %%% Example neurons Dynamical --> Homo neuron
     figure;
