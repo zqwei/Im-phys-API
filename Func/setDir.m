@@ -12,15 +12,11 @@
 % 
 
 warning('off', 'all')
+addpath('../Func/plotFuncs')
+addpath('../Func/utilFuncs')
 set(0, 'defaultfigureVisible','off')
 set(0, 'defaultaxesTickDir', 'out')
 set(0, 'defaultaxesLineWidth', 1.0)
-
-% addpath('./Func')
-
-% function setDir
-
-addpath('/Users/Dalin/Documents/My_Research/Empirical_Data_Analysis_Code/cbrewer/')
 
 SpikingDataDir              = '../../../Data_In_Use/Dataset_Comparison/ElectrophysiologyData/';
 CaImagingDataDir            = '../../../Data_In_Use/Dataset_Comparison/ImagingData/';
@@ -46,13 +42,7 @@ if ~exist(TempDatDir, 'dir')
 end
 
 
-isNotebook                     = false;
-
-if ~isNotebook
-    PlotDir                      = '../Plot/';
-else
-    PlotDir                      = '~/Google Drive/Dataset comparison/Plot/';
-end
+PlotDir                      = '../Plot/';
 
 if ~exist(PlotDir, 'dir')
     mkdir(PlotDir)
