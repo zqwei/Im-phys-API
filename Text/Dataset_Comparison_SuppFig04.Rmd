@@ -16,6 +16,7 @@ knitr::opts_chunk$set(echo = FALSE, results='asis')
 
 ## Parameter space of spike-to-calcium model
 ### Supplementary Figure `r figIndex`a -- parameter space of spike-to-calcium model, from simultaneous recordings in mice V1 areas.
+![](../Plot/ModelCellFits/parasSpace.svg)
 
 ### Supplementary Figure `r figIndex`b -- baseline firing rate _de facto_ influence activity profile of generated calcium activity
 ![](../Plot/ModelCellFits/S2CSuppRiseTime.svg)

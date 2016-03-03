@@ -103,6 +103,9 @@ where set $t_{spike}$ is spike times of a recorded spike train; $\tau_d$ is the 
 ![](../Plot/ModelExampleSpikesWithDiffParams/S2CModelNeuronIndex_0030.svg)
 
 
+![](../Plot/ModelCellFits/S2CVariabilityActivityProfile.png)
+
+
 
 
 
