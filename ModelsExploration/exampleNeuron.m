@@ -8,8 +8,8 @@ addpath('../Func');
 setDirV1Cells;
 load([TempDatDir 'DataListCells.mat'], 'totCell');
 
-if ~exist([PlotDir 'ModelCellFits'],'dir')
-    mkdir([PlotDir 'ModelCellFits'])
+if ~exist([PlotDir 'ModelExampleCellFits'],'dir')
+    mkdir([PlotDir 'ModelExampleCellFits'])
 end
 
 % paras = repmat(struct('cellName',1, 'nRep', 1, 'expression', 'virus',...
@@ -143,7 +143,7 @@ for nCell   = 1:length(totCell)
     xlim([0 30])
     title('C2S model')
     
-    setPrint(18, 10,[PlotDir 'ModelCellFits/' totCell(nCell).expression '_' ...
+    setPrint(18, 10,[PlotDir 'ModelExampleCellFits/' totCell(nCell).expression '_' ...
         totCell(nCell).cellName '_' num2str(totCell(nCell).nRep,'%02d')])
 end
 

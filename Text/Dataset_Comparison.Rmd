@@ -98,9 +98,19 @@ Simultaneous recording -- (one figure?) Maybe move description to methods?
 
 where set $t_{spike}$ is spike times of a recorded spike train; $\tau_d$ is the decaying time constant of a calcium indicator; $\tau_r$ is the rising time constant of a spike-triggered 
 
-### Figure 3b -- Baseline spiking rate can result in differences in fluorescence data, even the activity profiles are identical
+### Figure 3b1 -- Baseline spiking rate can result in differences in fluorescence data, even the activity profiles are identical
+### Figure 3b2 -- Variability of parameters in Spike-to-Calcium can explain also explain variation of activity profiles from spike to calcium imaging datasets
+![](../Plot/ModelExampleSpikesWithDiffParams/S2CModelNeuronIndex_0030.svg)
 
-### Figure 3c -- Variability of parameters in Spike-to-Calcium can explain also explain variation of activity profiles from spike to calcium imaging datasets
+
+
+
+
+
+
+
+
+
 
 ### Figure 3d Normalized neuronal activity
 ```{r}
