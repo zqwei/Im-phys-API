@@ -1,15 +1,15 @@
 ---
 title: Trade-off between decodability of stimulus and precision of temporal dynamics
   in different recording methods
-# author: "Ziqiang Wei"
-# date: '`r Sys.Date()`'
 output:
   html_document:
+    css: pdfprint.css
     toc: no
     toc_float:
       collapsed: no
       smooth_scroll: no
-    css: "pdfprint.css"
+  pdf_document:
+    toc: no
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, results='asis')

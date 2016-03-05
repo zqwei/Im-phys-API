@@ -39,4 +39,4 @@ CaTraces=Fm*(CaTraces.^n)./(Kd.^n+CaTraces.^n);
 % time = time(101:end-100);
 % PSTH = PSTH(101:end-100);
 
-return
+end
