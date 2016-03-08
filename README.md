@@ -4,6 +4,14 @@ Here is a collection of published calcium imaging deconvolution methods and link
 
 A revision of each code for __basic performance test__ is marked as revision in list.
 
+## Main goal
+
+As a part of my thesis work (unpublished yet), we (Ziqiang Wei and Shaul Druckmann) will try to make a comparison of exisiting calcium imaging deconvolution methods, using the [published dataset](http://crcns.org/data-sets/methods/cai-1) from Karel Svoboda's lab, where both electrical and GCaMP optical responses of a single neuron are simultaneously recorded. We laid out serveral performance indice in comparison and left a note for the performance computation, which is not clear in the original codes. This comparison project is planned to be gradually invovled. In this case, one can leave notes in __Issues tracker__, if any new comparison is missing in list or any performance should be computed towards cross comparison.
+
+> Dataset description: Simultaneous imaging and loose-seal cell-attached electrical recordings from neurons expressing a variety of genetically encoded calcium indicators. The data is described in: Akerboom, et al JNS 2012 and Chen, et al Nature 2013. The data provides ground truth by recording electrical and GCaMP optical responses simultaneously.
+
+
+
 ## Helmchen Model
 * Model:
   * Peeling
