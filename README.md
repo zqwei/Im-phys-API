@@ -46,8 +46,12 @@ More inquires should be email to: weiz AT janelia DOT hhmi DOT org
 * Revision: https://github.com/zqwei/py-oopsi
 
 ##  Constrained Fast OOPSI
-* Model:
-  * Parent model: 
+* Model: an extension of __Fast OOPSI__
+	* Method extension:
+			1. strict non-negative constraint of firing rate
+			2. extension of  to a general AR(p) process
+			3. empirical estimation of noise prior
+  * Parent model: Fast OOPSI (using [__conic programming__](http://cvxopt.org/))
 * Main paper:
   * 
 * Code (Matlab): https://github.com/epnev/constrained-foopsi
@@ -56,7 +60,7 @@ More inquires should be email to: weiz AT janelia DOT hhmi DOT org
 * Revision:
 
 ##  Constrained Fast OOPSI (MCMC spike inference in continuous time)
-* Model:
+* Model: 
   * Parent model: 
 * Main paper:
   * 
@@ -76,7 +80,12 @@ More inquires should be email to: weiz AT janelia DOT hhmi DOT org
 * Revision:
 
 ## Deconvolution and demixing of calcium imaging data code
-* Model:
+* Model: An extension of __Constrained Fast OOPSI__
+	* Method extension:
+		1. Dual ascent method
+		2. Conic programming
+		3. Nonngegative Lars
+	* Parent model: Constrained Fast OOPSI (using SPGL1; CVXPY)
 * Main paper:
 * Code (Matlab): https://github.com/epnev/ca_source_extraction
 * Code (Python): https://github.com/agiovann/Constrained_NMF
