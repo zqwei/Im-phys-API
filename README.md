@@ -73,3 +73,14 @@ A revision of each code for __basic performance test__ is marked as revision in 
 * Original contribution: Andrea Giovannucci and Eftychios Pnevmatikakis
 * Revision:
 
+## Sequential Image Analysis
+* Model: Open source package for analysise of time-series imaging data arising from fluorescence microscopy (__Losonczy Lab__)
+ * Correction of motion artifacts
+ * Segmentation of imaging fields into regions of interest (ROIs)
+ * Extraction of dynamic signals from ROIs
+ * Parent model:
+  * Constrained Fast OOPSI: https://github.com/epnev/constrained_foopsi_python
+* Main paper: [Kaifosh P, Zaremba J, Danielson N, and Losonczy A. SIMA: Python software for analysis of dynamic fluorescence imaging data. Frontiers in Neuroinformatics. 2014 Aug 27; 8:77. doi: 10.3389/fninf.2014.00077.](http://journal.frontiersin.org/article/10.3389/fninf.2014.00080/full)
+* Code (Python): https://github.com/losonczylab/sima
+* Original contribution: Losonczy Lab
+* Revision:
