@@ -11,6 +11,7 @@ A revision of each code for __basic performance test__ is marked as revision in 
 As a part of my thesis work (unpublished yet), we (Ziqiang Wei and Shaul Druckmann) will try to make a comparison of exisiting calcium imaging deconvolution methods, using the [published dataset](http://crcns.org/data-sets/methods/cai-1) from Karel Svoboda's lab, where both electrical and GCaMP optical responses of a single neuron are simultaneously recorded. We laid out serveral performance indice in comparison and left a note for the performance computation, which is not clear in the original codes. This comparison project is planned to be gradually invovled. In this case, one can leave notes in __Issues tracker__, if any new comparison is missing in list or any performance should be computed towards cross comparison.
 
 > * Dataset description: Simultaneous imaging and loose-seal cell-attached electrical recordings from neurons expressing a variety of genetically encoded calcium indicators. The data is described in: Akerboom, et al JNS 2012 and Chen, et al Nature 2013. The data provides ground truth by recording electrical and GCaMP optical responses simultaneously.
+> * Tested code: all code being test is highlighted in __bold__.
 
 More inquires should be email to: weiz AT janelia DOT hhmi DOT org
 
@@ -22,7 +23,7 @@ More inquires should be email to: weiz AT janelia DOT hhmi DOT org
 * Main paper:
   * http://www.hifo.uzh.ch/research/helmchen/publication/grewe2010.pdf
   * 
-* Code (Matlab): https://github.com/HelmchenLab/CalciumSim
+* Code (__Matlab__): https://github.com/HelmchenLab/CalciumSim
 * Original contribution: Helmchen Lab
 * Revision: 
 
@@ -31,9 +32,9 @@ More inquires should be email to: weiz AT janelia DOT hhmi DOT org
   * Parent model: 
 * Main paper:
   * 
-* Code (Matlab, Python): https://github.com/jovo/smc-oopsi
+* Code (__Matlab__, Python): https://github.com/jovo/smc-oopsi
 * Original contribution: Josh Vogelstein
-* Revision: 
+* Revision:
 
 ##  Fast OOPSI
 * Model:
@@ -41,7 +42,7 @@ More inquires should be email to: weiz AT janelia DOT hhmi DOT org
 * Main paper:
   * 
 * Code (Matlab): https://github.com/jovo/fast-oopsi
-* Code (Python): https://github.com/liubenyuan/py-oopsi
+* Code (__Python__): https://github.com/liubenyuan/py-oopsi
 * Original contribution: Josh Vogelstein, Benyuan Liu
 * Revision: https://github.com/zqwei/py-oopsi
 
@@ -88,7 +89,7 @@ More inquires should be email to: weiz AT janelia DOT hhmi DOT org
 	* Parent model: Constrained Fast OOPSI (using SPGL1; CVXPY)
 * Main paper:
 * Code (Matlab): https://github.com/epnev/ca_source_extraction
-* Code (Python): https://github.com/agiovann/Constrained_NMF
+* Code (__Python__): https://github.com/agiovann/Constrained_NMF
 * Code (source extraction, Python; _alpha_): https://github.com/epnev/SOURCE_EXTRACTION_PYTHON
 * Original contribution: Andrea Giovannucci and Eftychios Pnevmatikakis
 * Revision:
