@@ -2,6 +2,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import fast_oopsi
+import constrained_oopsi
 
 T = 2000
 dt = 0.020
@@ -21,33 +22,43 @@ fig = plt.figure(num=None, figsize=(5, 7), dpi=90, facecolor='w',
 # fig = plt.figure()
 
 # create subplot
-ax1 = fig.add_subplot(411)
-ax2 = fig.add_subplot(412)
-ax3 = fig.add_subplot(413)
-ax4 = fig.add_subplot(414)
+ax1 = fig.add_subplot(511)
+ax2 = fig.add_subplot(512)
+ax3 = fig.add_subplot(513)
+ax4 = fig.add_subplot(514)
+ax5 = fig.add_subplot(515)
+
 
 # operate on axis, plot grund-truth
 ax1.plot(F)
-# ax1.plot(C,color='red',linewidth=2)
+ax1.plot(N,color='red',linewidth=2)
 ax2.plot(F, linewidth=2)
 ax3.plot(F, linewidth=2)
 ax4.plot(N, linewidth=2)
+ax5.plot(F, linewidth=2)
 ax1.set_title('Synthetic Calcium Fluorescence Signal')
 
 # fast-oopsi,
 d, Cz, P, F_est = fast_oopsi.fast(F, dt=dt, iter_max=6)
 ax2.plot(F_est, color='red', linewidth=1.5)
-ax2.set_title('Reconstruct Spikes by fast-oopsi')
+ax2.set_title('Reconstruct Calcium Fluorescence by fast-oopsi')
 
 # wiener filter,
 d, Cw, F_est, F_est_nonneg = fast_oopsi.wiener(F, dt=dt, iter_max=100)
 ax3.plot(F_est_nonneg, color='red', linewidth=1.5)
-ax3.set_title('Reconstruct Spikes by wiener filter')
+ax3.set_title('Reconstruct Calcium Fluorescence by wiener filter')
 
 # descritize,
 d, v = fast_oopsi.discretize(F, bins=[0.75])
 ax4.plot(d, color='red', linewidth=1.5)
 ax4.set_title('Reconstruct Spikes by discretized binning')
+
+
+methods = ['cvxpy', 'spgl1', 'debug', 'cvx'];
+
+c,bl,c1,g,sn,spikes = constrained_oopsi.constrained_foopsi(F, p=2, noise_range = [.25,.5], methods=methods[0])
+ax5.plot(c, color='red', linewidth=1.5)
+ax5.set_title('Reconstruct Calcium Fluorescence by wiener filter')
 
 # tunning the plot and show !
 ax1.get_xaxis().set_visible(False)
