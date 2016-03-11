@@ -17,7 +17,7 @@ if ~nargin
     S = struct;
     doPlot = 1;
 end
-
+% addpath('etc')
 saveMatfile = 0;
 
 if ~isstruct(S)
