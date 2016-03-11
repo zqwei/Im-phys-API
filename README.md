@@ -32,6 +32,9 @@ More inquires should be email to: weiz AT janelia DOT hhmi DOT org
   * Parent model: 
 * Main paper:
   * 
+* Note:
+  * change of code:
+    1. __P.k = V.spikegen.EFGinv(0.01, P, V);__ to __P.k      = log(-log(1-sum(nnorm)/V.T)/V.dt);__
 * Code (__Matlab__, Python): https://github.com/jovo/smc-oopsi
 * Original contribution: Josh Vogelstein
 * Revision:
@@ -41,6 +44,11 @@ More inquires should be email to: weiz AT janelia DOT hhmi DOT org
   * Parent model: 
 * Main paper:
   * 
+* Note: decaying time constant parameter $\gamma = 1 - \Delta/(1.0)$ is not updated/estimated in the code.
+
+>   1. estimating $\gamma$ is difficult
+>   2. Yaski and Friedrich (2006) showed that results are somewhat robust to minor variations in time constant  
+
 * Code (Matlab): https://github.com/jovo/fast-oopsi
 * Code (__Python__): https://github.com/liubenyuan/py-oopsi
 * Original contribution: Josh Vogelstein, Benyuan Liu
