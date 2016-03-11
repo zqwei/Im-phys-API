@@ -137,7 +137,7 @@ if doPlot
         for n = 1:numel(S.spkTimes{m})
             h_err = errorbar(S.spkTimes{m}(n),max(currentDff),0,...
                 max(dff(:))/10,'Color',cmap(m,:));
-            removeErrorBarEnds(h_err)
+%             removeErrorBarEnds(h_err)
             set(h_err,'LineWidth',2)
         end
     end
@@ -181,7 +181,7 @@ if doPlot
         for n = 1:numel(S.spkTimes{m})
             h_err = errorbar(S.spkTimes{m}(n),max(currentDff),0,...
                 max(noisyDFF(:))/10,'Color',cmap(m,:));
-            removeErrorBarEnds(h_err)
+%             removeErrorBarEnds(h_err)
             set(h_err,'LineWidth',2)
         end
     end
@@ -579,4 +579,39 @@ S = orderfields(S);
 
 end
 
+function spikeTimes = PoissonSpikeTrain(rate, dur)
+% Generate Poisson Spike Train with firing rate and duration
 
+
+dt = 0.0001;
+
+spikeTimes=[];
+
+% Generating spikes from a exponential distribution
+for t=0:dt:dur
+    if (rate*dt)>=rand
+        spikeTimes(end+1,1)=t;
+    end
+end
+end
+
+
+function [y, x] = spkTimes2Calcium(spkT,tauOn,ampFast,tauFast,ampSlow,...
+    tauSlow,frameRate,duration)
+% for OGB1-AM (from Grewe et al., Nat Meth, 2010)
+% tauOn ... 10ms
+% ampFast ... 8% tauFast ... 60ms
+% ampSlow ... 3% tauSlow ... 800ms
+
+% Henry Luetcke (hluetck@gmail.com)
+% Brain Research Institut
+% University of Zurich
+% Switzerland
+
+x = 0:(1/frameRate):duration;
+y = (1-(exp(-(x-spkT)./tauOn))).*...
+    (ampFast.*exp(-(x-spkT)./tauFast))+(ampSlow.*exp(-(x-spkT)./tauSlow)); 
+% y = (1-(exp(-(x-spkT)./tauOn))).*(ampFast*exp(-(x-spkT)./tauFast));
+y(x<spkT) = 0;
+y(isnan(y)) = 0;
+end

@@ -51,23 +51,41 @@ Pest.A     = 50;
 Pest.n     = 1;  
 Pest.k_d   = 200; 
 
+Fold       = F;
+
 [smc, fast, F, estF] = smc_oopsi(F, V, Pest);
 tvec=0:V.dt:(T-1)*V.dt;
 
 figure;
-subplot(211)
+subplot(331)
 plot(tvec,F)
-hold on
+subplot(334)
 plot(tvec,estF)
+title('smc')
+subplot(335)
 plot(tvec,fast.C*fast.P.a + fast.P.b)
+title('fast')
 
-subplot(212)
+subplot(332)
+stem(tvec,N); 
+
+subplot(338)
 Nfast = fast.n/max(fast.n);
 Nfast(Nfast<0.1) = 0;
+stem(tvec,Nfast);
+title('fast')
+
+subplot(337)
 Nsmc = smc.M.nbar/max(smc.M.nbar);
 Nsmc(Nsmc<0.1)=0;
-stem(tvec,N); 
-hold on, 
-plot(tvec,Nsmc);
-plot(tvec,Nfast);
+stem(tvec,Nsmc);
+title('smc')
+
+[~, ~, data] = peel_oopsi(F*10, fr);
+subplot(336)
+plot(data.tim,data.model)
+title('peel')
+subplot(339)
+stem(data.tim,data.spiketrain)
+title('peel')
 
