@@ -17,7 +17,7 @@ np.random.seed(42)
 F, C, N = fast_oopsi.fcn_generate(T, dt=dt, lam=lam, tau=tau, sigma=sigma)
 
 # create figure
-fig = plt.figure(num=None, figsize=(5, 7), dpi=90, facecolor='w',
+fig = plt.figure(num=None, figsize=(5, 9), dpi=90, facecolor='w',
                  edgecolor='k')
 # fig = plt.figure()
 
@@ -31,7 +31,7 @@ ax5 = fig.add_subplot(515)
 
 # operate on axis, plot grund-truth
 ax1.plot(F)
-ax1.plot(N,color='red',linewidth=2)
+ax1.plot(N, color='red', linewidth=2)
 ax2.plot(F, linewidth=2)
 ax3.plot(F, linewidth=2)
 ax4.plot(N, linewidth=2)
@@ -54,20 +54,22 @@ ax4.plot(d, color='red', linewidth=1.5)
 ax4.set_title('Reconstruct Spikes by discretized binning')
 
 
-methods = ['cvxpy', 'spgl1', 'debug', 'cvx'];
+methods = ['cvxpy', 'spgl1', 'debug', 'cvx']
 
-c,bl,c1,g,sn,spikes = constrained_oopsi.constrained_foopsi(F, p=2, noise_range = [.25,.5], methods=methods[0])
+c, bl, c1, g, sn, spikes = constrained_oopsi.constrained_foopsi(F, p=2, noise_range=[.25, .5], methods=methods[0])
 ax5.plot(c, color='red', linewidth=1.5)
-ax5.set_title('Reconstruct Calcium Fluorescence by wiener filter')
+ax5.set_title('Reconstruct Calcium Fluorescence by constrained oopsi filter')
 
 # tunning the plot and show !
 ax1.get_xaxis().set_visible(False)
 ax2.get_xaxis().set_visible(False)
 ax3.get_xaxis().set_visible(False)
+ax4.get_xaxis().set_visible(False)
 ax1.set_yticks([-1, 0, 1])
 ax2.set_yticks([0, 1])
 ax3.set_yticks([0, 1])
 ax4.set_yticks([0, 1])
+ax5.set_yticks([0, 1])
 font = {'weight': 'bold', 'size': 9}
 matplotlib.rc('font', **font)
 plt.show()
