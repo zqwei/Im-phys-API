@@ -1,27 +1,39 @@
-import matplotlib
-import matplotlib.pyplot as plt
-import numpy as np
 import fast_oopsi
 import constrained_oopsi
 from scipy.io import loadmat, savemat
+import sys
 
 
-def KS_dat_fast_oopsi(nCell=1):
-	totCell = loadmat('DataListCells.mat')
-	dff = totCell['totCell'][nCell-1]['dff']
-	dff = dff[0].astype('float64')[:,0]
-	spk = totCell['totCell'][nCell-1]['spk']
-	spk = spk[0]
-	caTime = totCell['totCell'][nCell-1]['CaTime']
-	caTime = caTime[0]
-	dt = caTime[1] - caTime[0]
-	# fast-oopsi,
-    fast.d, fast.C, fast.P, fast.F_est = fast_oopsi.fast(dff, dt=dt, iter_max=100)
-	# wiener filter,
-    wiener.d, wiener.C, wiener.F_est, wiener.F_est_nonneg = fast_oopsi.wiener(dff, dt=dt, iter_max=100)
+def main(argv):
+	nCell = int(float(argv))
+	fast, wiener, discr, cf = KS_dat_fast_oopsi(nCell)
+	save_vars = {'fast': fast, 'wiener': wiener, 'discr': discr, 'cf': cf}
+	savemat('Fast_oopsi_fit_Cell_' + str(nCell), save_vars)
+
+
+def KS_dat_fast_oopsi(nCell):
+    totCell = loadmat('DataListCells.mat')
+    dff = totCell['totCell'][nCell - 1]['dff']
+    dff = dff[0].astype('float64')[:, 0]
+    spk = totCell['totCell'][nCell - 1]['spk']
+    spk = spk[0]
+    caTime = totCell['totCell'][nCell - 1]['CaTime']
+    caTime = caTime[0]
+    dt = caTime[1] - caTime[0]
+    d, C, P, F_est = fast_oopsi.fast(dff, dt=dt, iter_max=100)
+    fast = {'d': d, 'C': C, 'P': P, 'F_est': F_est}
+    # wiener filter,
+    d, C, F_est, F_est_nonneg = fast_oopsi.wiener(dff, dt=dt, iter_max=100)
+    wiener = {'d': d, 'C': C, 'F_est_nonneg': F_est_nonneg, 'F_est': F_est}
     # descritize,
-    discr.d, discr.v = fast_oopsi.discretize(dff, bins=[0.75])
+    d, v = fast_oopsi.discretize(dff, bins=[0.75])
+    discr = {'d': d, 'v': v}
     # constrained-foopsi
     methods = ['cvxpy', 'spgl1', 'debug', 'cvx']
-    cf.c, cf.bl, cf.c1, cf.g, cf.sn, cf.spikes = constrained_oopsi.constrained_foopsi(dff, p=2, noise_range=[.25, .5], methods=methods[0])
+    c, bl, c1, g, sn, spikes = constrained_oopsi.constrained_foopsi(dff, p=2, noise_range=[.25, .5], methods=methods[0])
+    cf = {'c': c, 'bl': bl, 'c1': c1, 'g': g, 'sn': sn, 'spikes': spikes}
     return fast, wiener, discr, cf
+
+
+if __name__ == "__main__":
+	main(sys.argv[1])
