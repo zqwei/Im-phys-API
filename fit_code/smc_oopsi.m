@@ -30,6 +30,8 @@
 function [smc, fast, F, estF] = smc_oopsi(F, V, P)
 if V.fast_iter_max < 1; V.fast_iter_max = 1; end;
 if V.smc_iter_max < 1;  V.smc_iter_max = 1; end;
+V.fast_thr  = 0;
+V.fast_ignore_post = 0;
 % preprocess - remove the lowest 10 frequencies
 if V.preprocess==1
     V.T     = length(F);
