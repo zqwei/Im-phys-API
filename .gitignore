@@ -1,3 +1,4 @@
+*.sh
 *.ipynb
 *.mat
 *.png
