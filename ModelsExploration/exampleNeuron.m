@@ -4,7 +4,6 @@
 %
 %
 
-
 addpath('../Func');
 setDirV1Cells;
 load([TempDatDir 'DataListCells.mat'], 'totCell');
@@ -12,8 +11,6 @@ load([TempDatDir 'DataListCells.mat'], 'totCell');
 if ~exist([PlotDir 'ModelExampleCellFits'],'dir')
     mkdir([PlotDir 'ModelExampleCellFits'])
 end
-
-
 
 load([TempDatDir 'ParamsFitCells.mat'], 'paras');
 

@@ -135,7 +135,7 @@ function varNParams = varChangeParams(spikeDataSet, params, nKey)
     varNParams(2)            = kruskalwallis(NoData', [], 'off');    
 end
 
-function varNParams = varChangeBaseline_v1(spikeDataSet, params)    
+function varNParams = varChangeBaseline_v1(spikeDataSet, params)     %#ok<*DEFNU>
     nDataSet = [spikeDataSet; spikeDataSet; spikeDataSet];
     tKeys   = {'tau_r', 'tau_d', 'Fm', 'n', 'K'};
     for n   = 1:length(tKeys)
@@ -182,7 +182,7 @@ function varNParams = varChangeBaseline_v1(spikeDataSet, params)
     varNParams(2)            = kruskalwallis(NoData', [], 'off');    
 end
 
-function [varNParams1 varNParams2] = varChangeBaseline(spikeDataSet, params)
+function [varNParams1, varNParams2] = varChangeBaseline(spikeDataSet, params)
     timeBins = params.timeSeries;
     binSize  = params.binsize;        
     nDataSet = [spikeDataSet; spikeDataSet; spikeDataSet];
@@ -198,10 +198,10 @@ function [varNParams1 varNParams2] = varChangeBaseline(spikeDataSet, params)
     noTrialRate     = mean(nUnitData, 1);
     numNoTrial      = size(nUnitData, 1);
     for nFactor     = 2:3
-        [spkTime, spkCounts] = NHpoisson(yesTrialRate * nFactor, timeBins, binSize, numYesTrial)
+        [spkTime, spkCounts] = NHpoisson(yesTrialRate * nFactor, timeBins, binSize, numYesTrial);
         nDataSet(nFactor).unit_yes_trial          = spkCounts;
         nDataSet(nFactor).unit_yes_trial_spk_time = spkTime;
-        [spkTime, spkCounts] = NHpoisson(noTrialRate * nFactor, timeBins, binSize, numNoTrial)
+        [spkTime, spkCounts] = NHpoisson(noTrialRate * nFactor, timeBins, binSize, numNoTrial);
         nDataSet(nFactor).unit_no_trial           = spkCounts;
         nDataSet(nFactor).unit_no_trial_spk_time  = spkTime;
     end
@@ -251,17 +251,20 @@ function [spkTime, spkCounts] = NHpoisson(rate, timeBins, binSize, numTrial)
     spkTime    = cell(numTrial, 1);
     spkCounts  = zeros(numTrial, length(timeBins));
     for nTrial = 1:numTrial
-        t        = t_start;
         kSpk     = 0;
-        spkTrial = nan(ceil((t_end-t_start)/dt), 1);
-        while t<=t_end
-            r    = rand();
-            t    = t - ln(r)/maxRate;
-            s    = rand();
-            lambda_t = rate(sum(t>timeBins))
-            if s<= lambda_t/maxRate
-                k= k+1;
-                spkTrial(k) = t;
+        while kSpk == 0
+            t        = t_start;
+            kSpk     = 0;
+            spkTrial = nan(ceil((t_end-t_start)/dt), 1);
+            while t<=t_end
+                r    = rand();
+                t    = t - log(r)/maxRate;
+                s    = rand();
+                lambda_t = rate(sum(t>timeBins));
+                if s<= lambda_t/maxRate
+                    kSpk= kSpk+1;
+                    spkTrial(kSpk) = t;
+                end
             end
         end
         spkTrial             = spkTrial(~isnan(spkTrial));

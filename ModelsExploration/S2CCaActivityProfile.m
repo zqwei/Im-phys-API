@@ -95,9 +95,9 @@ function spkPSTH(spikeDataSet, params)
     noTrialRate     = mean(nUnitData, 1);
     stdNoTrial      = std(nUnitData, 1)/sqrt(size(nUnitData, 1));
     maxRate         = max([yesTrialRate, noTrialRate]);  
-    shadedErrorBar(params.timeSeries, yesTrialRate/maxRate, stdYesTrial/maxRate, ...
+    shadedErrorBar(params.timeSeries, yesTrialRate, stdYesTrial, ...
         {'k-', 'linewid', 1.0, 'color', color_index(1, :)}, 0.5);
-    shadedErrorBar(params.timeSeries, noTrialRate/maxRate, stdNoTrial/maxRate, ...
+    shadedErrorBar(params.timeSeries, noTrialRate, stdNoTrial, ...
         {'k-', 'linewid', 1.0, 'color', color_index(2, :)}, 0.5);
     gridxy ([params.polein, params.poleout, 0],[], 'Color','k','Linestyle','--','linewid', 1.0)
     hold off;
@@ -162,83 +162,83 @@ function plotChangeParams(spikeDataSet, params, nKey, nTitle, nPlot)
     title(nTitle)
 end
 
-function plotChangeBaseline_v1(spikeDataSet, params)
-    nDataSet = [spikeDataSet; spikeDataSet; spikeDataSet];
-    nKeys   = {'tau_r', 'tau_d', 'Fm', 'n', 'K'};
-    for n   = 1:length(nKeys)
-        nKey          = nKeys{n};
-        params.(nKey) = params.(nKey) * ones(3, 1);
-    end
-    spkTimes{1}    = spikeDataSet.unit_yes_trial_spk_time;
-    spkTimes{2}    = spikeDataSet.unit_no_trial_spk_time;
-    newSpkTimes1   = spkTimes;
-    newSpkTimes2   = spkTimes;
-    for nType        = 1:length(spkTimes)
-        for nTrial   = 1:length(spkTimes{nType})
-            spk      = spkTimes{nType}{nTrial};
-            if length(spk)>1
-                DiffSpk  = diff(spk);
-                addSpk1  = DiffSpk.*rand(size(DiffSpk)) + spk(1:end-1);
-                newSpkTimes1{nType}{nTrial} = [spk; addSpk1];
-                addSpk2  = DiffSpk.*rand(size(DiffSpk)) + spk(1:end-1);
-                newSpkTimes2{nType}{nTrial} = [spk; addSpk1; addSpk2];
-            end
-        end
-    end
-    subplot(3, 3, 2);
-    hold on;
-    oldBlue         = [     0         0       0.7];
-    newBlue         = [     0    0.4470    0.7410];
-    oldRed          = [    0.7        0         0];
-    newRed          = [0.6350    0.0780    0.1840];
-    nDataSet(2).unit_yes_trial_spk_time = newSpkTimes1{1};
-    nDataSet(3).unit_yes_trial_spk_time = newSpkTimes2{1};
-    nDataSet(2).unit_no_trial_spk_time  = newSpkTimes1{2};
-    nDataSet(3).unit_no_trial_spk_time  = newSpkTimes2{2};
-    mDataSet         = getFakeCaImagingData(nDataSet, params);    
-    for mData        = 1:length(mDataSet)
-        nYesData             = mDataSet(mData).unit_yes_trial;
-        nNoData              = mDataSet(mData).unit_no_trial;
-        nYesData             = mean(nYesData, 1);
-        nNoData              = mean(nNoData, 1);        
-        maxDff               = max([nYesData, nNoData]);
-        minDff               = min([nYesData, nNoData]);
-        diffDff              = maxDff - minDff;        
-        nYesData             = (nYesData - minDff)/diffDff;
-        nNoData              = (nNoData - minDff)/diffDff;        
-        h = plot(params.timeSeries, nYesData, 'linewid', 1.0);
-        switch mData
-            case 2
-                h.Color = newRed;
-                h.LineStyle = '--';
-            case 1
-                h.Color = oldRed;
-                h.LineStyle = '-';
-            case 3
-                h.Color = newRed;
-                h.LineStyle = '-';
-        end
-        h = plot(params.timeSeries, nNoData, 'linewid', 1.0);
-        switch mData
-            case 2
-                h.Color = newBlue;
-                h.LineStyle = '--';
-            case 1
-                h.Color = oldBlue;
-                h.LineStyle = '-';
-            case 3
-                h.Color = newBlue;
-                h.LineStyle = '-';
-        end
-    end
-    gridxy ([params.polein, params.poleout, 0],[], 'Color','k','Linestyle','--','linewid', 1.0)
-    xlim([params.timeSeries(1) params.timeSeries(end)]);
-    hold off;
-    ylabel('normalized DF/F');
-    ylim([0 1])
-    xlabel('Time (s)');
-    title('baseline')
-end
+% function plotChangeBaseline_v1(spikeDataSet, params) %#ok<DEFNU>
+%     nDataSet = [spikeDataSet; spikeDataSet; spikeDataSet];
+%     nKeys   = {'tau_r', 'tau_d', 'Fm', 'n', 'K'};
+%     for n   = 1:length(nKeys)
+%         nKey          = nKeys{n};
+%         params.(nKey) = params.(nKey) * ones(3, 1);
+%     end
+%     spkTimes{1}    = spikeDataSet.unit_yes_trial_spk_time;
+%     spkTimes{2}    = spikeDataSet.unit_no_trial_spk_time;
+%     newSpkTimes1   = spkTimes;
+%     newSpkTimes2   = spkTimes;
+%     for nType        = 1:length(spkTimes)
+%         for nTrial   = 1:length(spkTimes{nType})
+%             spk      = spkTimes{nType}{nTrial};
+%             if length(spk)>1
+%                 DiffSpk  = diff(spk);
+%                 addSpk1  = DiffSpk.*rand(size(DiffSpk)) + spk(1:end-1);
+%                 newSpkTimes1{nType}{nTrial} = [spk; addSpk1];
+%                 addSpk2  = DiffSpk.*rand(size(DiffSpk)) + spk(1:end-1);
+%                 newSpkTimes2{nType}{nTrial} = [spk; addSpk1; addSpk2];
+%             end
+%         end
+%     end
+%     subplot(3, 3, 2);
+%     hold on;
+%     oldBlue         = [     0         0       0.7];
+%     newBlue         = [     0    0.4470    0.7410];
+%     oldRed          = [    0.7        0         0];
+%     newRed          = [0.6350    0.0780    0.1840];
+%     nDataSet(2).unit_yes_trial_spk_time = newSpkTimes1{1};
+%     nDataSet(3).unit_yes_trial_spk_time = newSpkTimes2{1};
+%     nDataSet(2).unit_no_trial_spk_time  = newSpkTimes1{2};
+%     nDataSet(3).unit_no_trial_spk_time  = newSpkTimes2{2};
+%     mDataSet         = getFakeCaImagingData(nDataSet, params);    
+%     for mData        = 1:length(mDataSet)
+%         nYesData             = mDataSet(mData).unit_yes_trial;
+%         nNoData              = mDataSet(mData).unit_no_trial;
+%         nYesData             = mean(nYesData, 1);
+%         nNoData              = mean(nNoData, 1);        
+%         maxDff               = max([nYesData, nNoData]);
+%         minDff               = min([nYesData, nNoData]);
+%         diffDff              = maxDff - minDff;        
+%         nYesData             = (nYesData - minDff)/diffDff;
+%         nNoData              = (nNoData - minDff)/diffDff;        
+%         h = plot(params.timeSeries, nYesData, 'linewid', 1.0);
+%         switch mData
+%             case 2
+%                 h.Color = newRed;
+%                 h.LineStyle = '--';
+%             case 1
+%                 h.Color = oldRed;
+%                 h.LineStyle = '-';
+%             case 3
+%                 h.Color = newRed;
+%                 h.LineStyle = '-';
+%         end
+%         h = plot(params.timeSeries, nNoData, 'linewid', 1.0);
+%         switch mData
+%             case 2
+%                 h.Color = newBlue;
+%                 h.LineStyle = '--';
+%             case 1
+%                 h.Color = oldBlue;
+%                 h.LineStyle = '-';
+%             case 3
+%                 h.Color = newBlue;
+%                 h.LineStyle = '-';
+%         end
+%     end
+%     gridxy ([params.polein, params.poleout, 0],[], 'Color','k','Linestyle','--','linewid', 1.0)
+%     xlim([params.timeSeries(1) params.timeSeries(end)]);
+%     hold off;
+%     ylabel('normalized DF/F');
+%     ylim([0 1])
+%     xlabel('Time (s)');
+%     title('baseline')
+% end
 
 function plotChangeBaseline(spikeDataSet, params)   
     timeBins = params.timeSeries;
@@ -258,10 +258,10 @@ function plotChangeBaseline(spikeDataSet, params)
     numNoTrial      = size(nUnitData, 1);
 
     for nFactor     = 2:3
-        [spkTime, spkCounts] = NHpoisson(yesTrialRate * nFactor, timeBins, binSize, numYesTrial)
+        [spkTime, spkCounts] = NHpoisson(yesTrialRate * nFactor, timeBins, binSize, numYesTrial);
         nDataSet(nFactor).unit_yes_trial          = spkCounts;
         nDataSet(nFactor).unit_yes_trial_spk_time = spkTime;
-        [spkTime, spkCounts] = NHpoisson(noTrialRate * nFactor, timeBins, binSize, numNoTrial)
+        [spkTime, spkCounts] = NHpoisson(noTrialRate * nFactor, timeBins, binSize, numNoTrial);
         nDataSet(nFactor).unit_no_trial           = spkCounts;
         nDataSet(nFactor).unit_no_trial_spk_time  = spkTime;
     end
@@ -284,9 +284,9 @@ function plotChangeBaseline(spikeDataSet, params)
         stdNoTrial      = std(nUnitData, 1)/sqrt(size(nUnitData, 1));
         maxRate         = max([yesTrialRate, noTrialRate]);  
         shadedErrorBar(params.timeSeries, yesTrialRate/maxRate, stdYesTrial/maxRate, ...
-            {'linestyle', lineStyles{nFactor}, 'linewid', 1.0, 'color', yesColors(nFactor, :)}, 0.5);
+            {lineStyles{nFactor}, 'linewid', 1.0, 'color', yesColors(nFactor, :)}, 0.5);
         shadedErrorBar(params.timeSeries, noTrialRate/maxRate, stdNoTrial/maxRate, ...
-            {'linestyle', lineStyles{nFactor}, 1.0, 'color', noColors(nFactor, :)}, 0.5);
+            {lineStyles{nFactor}, 'linewid', 1.0, 'color', noColors(nFactor, :)}, 0.5);
     end
     hold off;
     gridxy ([params.polein, params.poleout, 0],[], 'Color','k','Linestyle','--','linewid', 1.0)
@@ -304,10 +304,6 @@ function plotChangeBaseline(spikeDataSet, params)
     newBlue         = [     0    0.4470    0.7410];
     oldRed          = [    0.7        0         0];
     newRed          = [0.6350    0.0780    0.1840];
-    nDataSet(2).unit_yes_trial_spk_time = newSpkTimes1{1};
-    nDataSet(3).unit_yes_trial_spk_time = newSpkTimes2{1};
-    nDataSet(2).unit_no_trial_spk_time  = newSpkTimes1{2};
-    nDataSet(3).unit_no_trial_spk_time  = newSpkTimes2{2};
     mDataSet                 = getFakeCaImagingData(nDataSet, params);    
     for mData                = 1:length(mDataSet)
         nYesData             = mDataSet(mData).unit_yes_trial;
@@ -362,17 +358,20 @@ function [spkTime, spkCounts] = NHpoisson(rate, timeBins, binSize, numTrial)
     spkTime    = cell(numTrial, 1);
     spkCounts  = zeros(numTrial, length(timeBins));
     for nTrial = 1:numTrial
-        t        = t_start;
         kSpk     = 0;
-        spkTrial = nan(ceil((t_end-t_start)/dt), 1);
-        while t<=t_end
-            r    = rand();
-            t    = t - ln(r)/maxRate;
-            s    = rand();
-            lambda_t = rate(sum(t>timeBins))
-            if s<= lambda_t/maxRate
-                k= k+1;
-                spkTrial(k) = t;
+        while kSpk == 0
+            t        = t_start;
+            kSpk     = 0;
+            spkTrial = nan(ceil((t_end-t_start)/dt), 1);
+            while t<=t_end
+                r    = rand();
+                t    = t - log(r)/maxRate;
+                s    = rand();
+                lambda_t = rate(sum(t>timeBins));
+                if s<= lambda_t/maxRate
+                    kSpk= kSpk+1;
+                    spkTrial(kSpk) = t;
+                end
             end
         end
         spkTrial             = spkTrial(~isnan(spkTrial));
