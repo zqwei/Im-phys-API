@@ -6,8 +6,8 @@ import sys
 
 def main(argv):
 	nCell = int(float(argv))
-	fast, wiener, discr, cf = KS_dat_fast_oopsi(nCell)
-	save_vars = {'fast': fast, 'wiener': wiener, 'discr': discr, 'cf': cf}
+	fast, wiener, discr, cf1, cf2 = KS_dat_fast_oopsi(nCell)
+	save_vars = {'fast': fast, 'wiener': wiener, 'discr': discr, 'cf1': cf1, 'cf2': cf2}
 	savemat('Fast_oopsi_fit_Cell_' + str(nCell), save_vars)
 
 
@@ -30,9 +30,11 @@ def KS_dat_fast_oopsi(nCell):
     discr = {'d': d, 'v': v}
     # constrained-foopsi
     methods = ['cvxpy', 'spgl1', 'debug', 'cvx']
+    c, bl, c1, g, sn, spikes = constrained_oopsi.constrained_foopsi(dff, p=1, noise_range=[.25, .5], methods=methods[0])
+    cf1 = {'c': c, 'bl': bl, 'c1': c1, 'g': g, 'sn': sn, 'spikes': spikes}
     c, bl, c1, g, sn, spikes = constrained_oopsi.constrained_foopsi(dff, p=2, noise_range=[.25, .5], methods=methods[0])
-    cf = {'c': c, 'bl': bl, 'c1': c1, 'g': g, 'sn': sn, 'spikes': spikes}
-    return fast, wiener, discr, cf
+    cf2 = {'c': c, 'bl': bl, 'c1': c1, 'g': g, 'sn': sn, 'spikes': spikes}
+    return fast, wiener, discr, cf1, cf2
 
 
 if __name__ == "__main__":
