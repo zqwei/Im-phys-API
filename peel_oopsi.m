@@ -347,7 +347,7 @@ for n = nstart:length(data.peel_pad)-wsiz
         end
         
         if length(find(currentDff<=peel_p.smttlow)) > peel_p.smttlowMinEvents
-            n = n + find(currentDff<=peel_p.smttlow,1,'last');
+            n = n + find(currentDff<=peel_p.smttlow,1,'last'); %#ok<FXSET>
             if n > length(data.peel_pad)-wsiz
                 break
             end

@@ -6,11 +6,9 @@ warning('off', 'all');
 
 dat     = totCell(nCell);
 dff     = double(dat.dff);
-spk     = double(dat.spk);
 caTime  = double(dat.CaTime);
-dt      = caTime[1] - caTime[0];
+dt      = caTime(1) - caTime(0);
 fr      = 1/dt;
-T       = length(caTime);
 % smc-oopsi
 V.fast_iter_max    = 100;
 V.smc_iter_max     = 100;
@@ -38,15 +36,41 @@ P.A     = 50;
 P.n     = 1;  
 P.k_d   = 200; 
 
-[smc, fast, F, estF] = smc_oopsi(dff, V, P);
+[smc, fast, F, estF] = smc_oopsi(dff, V, P); %#ok<ASGLU>
 smc.F                = F;
 smc.F_est            = estF;
+smc.freq             = V.freq;
+smc.Nspikehist       = V.Nspikehist;
+
+V.freq               = 2;
+[smc_freq_2, ~, F, estF] = smc_oopsi(dff, V, P);
+smc_freq_2.F             = F;
+smc_freq_2.F_est         = estF;
+smc_freq_2.freq          = V.freq;
+smc_freq_2.Nspikehist    = V.Nspikehist;
+
+V.freq               = 4;
+[smc_freq_4, ~, F, estF] = smc_oopsi(dff, V, P);
+smc_freq_4.F             = F;
+smc_freq_4.F_est         = estF;
+smc_freq_4.freq          = V.freq;
+smc_freq_4.Nspikehist    = V.Nspikehist;
+
+V.freq               = 1;
+V.Nspikehist         = 1;
+[smc_Nspike_1, ~, F, estF] = smc_oopsi(dff, V, P);
+smc_Nspike_1.F             = F;
+smc_Nspike_1.F_est         = estF;
+smc_Nspike_1.freq          = V.freq;
+smc_Nspike_1.Nspikehist    = V.Nspikehist;
+
+
 
 [ca_p,peel_p, data]  = peel_oopsi(dff, fr);
 peel                 = data;
 peel.ca_params       = ca_p;
 peel.peel_params     = peel_p;
 
-save(['Smc_oopsi_fit_Cell_' num2str(nCell)], 'smc', 'peel', 'fast')
+save(['Smc_oopsi_fit_Cell_' num2str(nCell)], 'smc', 'peel', 'fast', 'smc_freq_2', 'smc_freq_4', 'smc_Nspike_1')
 
 end

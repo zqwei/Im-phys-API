@@ -3,6 +3,10 @@
 *.mat
 *.png
 .DS_Store
+peel_nl_oopsi.m
+test_peel_nl_oopsi.m
+*.m~
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
