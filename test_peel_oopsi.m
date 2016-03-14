@@ -42,26 +42,30 @@ Pest.n     = 1;
 Pest.k_d   = 200; 
 
 tvec=0:V.dt:(T-1)*V.dt;
+
+% figure;
+% [~, ~, data] = peel_oopsi(F', fr);
+% subplot(211)
+% hold on
+% plot(tvec,F)
+% plot(data.tim,data.model)
+% title('peel')
+% subplot(212)
+% hold on
+% stem(tvec,N); 
+% stem(data.tim,data.spiketrain)
+% title('peel')
+
 figure;
-subplot(331)
+[~, ~, data] = peel_nl_oopsi(F', fr);
+subplot(211)
+hold on
 plot(tvec,F)
-subplot(332)
+plot(data.tim,data.model)
+title('peel')
+subplot(212)
+hold on
 stem(tvec,N); 
-
-
-[~, ~, data] = peel_oopsi(F', fr);
-subplot(334)
-plot(data.tim,data.model)
-title('peel')
-subplot(337)
-stem(data.tim,data.spiketrain)
-title('peel')
-
-[~, ~, data] = peel_nl_oopsi(F'*10, fr);
-subplot(335)
-plot(data.tim,data.model)
-title('peel')
-subplot(338)
 stem(data.tim,data.spiketrain)
 title('peel')
 

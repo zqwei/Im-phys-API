@@ -258,10 +258,10 @@ peel_p.padding = 0;        % number of points for padding before and after
 % peel_p.sdnoise = 1.4;       % expected SD baseline noise level
 % peel_p.smtthigh = 2.4;      % Schmitt trigger - high threshold (multiple of exp_p.noiseSD)
 % peel_p.smttlow = -1.2;      % Schmitt trigger - low threshold (multiple of exp_p.noiseSD)
-peel_p.smtthigh = 2*exp_p.noiseSD; % ZW: change
-peel_p.smttlow = -1*exp_p.noiseSD; % ZW: change
-peel_p.smttbox= 3;          % Schmitt trigger - smoothing box size (in points)
-peel_p.smttmindur= 0.3;     % Schmitt trigger - minimum duration (s)
+peel_p.smtthigh = 1/rate/2*exp_p.noiseSD; % ZW: change
+peel_p.smttlow = -1/rate/2*exp_p.noiseSD; % ZW: change
+peel_p.smttbox= 10;          % Schmitt trigger - smoothing box size (in points)
+peel_p.smttmindur= 1/rate*2;     % Schmitt trigger - minimum duration (s)
 % HL: 2012-05-04
 % new parameter: max. frames fro smttmindur
 % if the frame rate is high, number of frames for smttmindur can be
