@@ -100,7 +100,6 @@ nexttimMem      = Inf;
 nexttimCounter  = 0;
 timeStepForward = 2./exp_p.acqrate;
 while (peel_p.evtfound == 1)
-    disp(iter)
     % check integral after subtracting Ca transient
     dummy               = data.peel - data.singleTransient;
     [~,startIdx]        = min(abs(data.tim-data.spikes(data.numspikes)));
@@ -247,16 +246,20 @@ ca_p.scale=1.0;             % scale factor to scale entire trace (s)
 % exp_p: experiment parameters, including dye properties and data acquisition 
 exp_p.numpnts = length(dff); % numpoints
 exp_p.acqrate = rate;        % acquisition rate (Hz)
-exp_p.noiseSD = 1.2;        % noise stdev of DF/F trace (in percent), should be specified by the user
+% exp_p.noiseSD = 1.2;        % noise stdev of DF/F trace (in percent), should be specified by the user
+exp_p.noiseSD = std(dff);   % ZW: change
 exp_p.indicator = 'OGB-1';  % calcium indicator
 exp_p.dffmax = 93;          % saturating dff max (in percent)
 exp_p.kd = 200;             % dye dissociation constant (nM)
 exp_p.carest = 50;          % presumed resting calcium concentration (nM)
 % peel_p: parameters for peeling algorithm
-peel_p.padding = 20;        % number of points for padding before and after
+% peel_p.padding = 20;        % number of points for padding before and after
+peel_p.padding = 0;        % number of points for padding before and after
 % peel_p.sdnoise = 1.4;       % expected SD baseline noise level
-peel_p.smtthigh = 2.4;      % Schmitt trigger - high threshold (multiple of exp_p.noiseSD)
-peel_p.smttlow = -1.2;      % Schmitt trigger - low threshold (multiple of exp_p.noiseSD)
+% peel_p.smtthigh = 2.4;      % Schmitt trigger - high threshold (multiple of exp_p.noiseSD)
+% peel_p.smttlow = -1.2;      % Schmitt trigger - low threshold (multiple of exp_p.noiseSD)
+peel_p.smtthigh = 2*exp_p.noiseSD; % ZW: change
+peel_p.smttlow = -1*exp_p.noiseSD; % ZW: change
 peel_p.smttbox= 3;          % Schmitt trigger - smoothing box size (in points)
 peel_p.smttmindur= 0.3;     % Schmitt trigger - minimum duration (s)
 % HL: 2012-05-04
@@ -267,7 +270,8 @@ peel_p.smttmindur= 0.3;     % Schmitt trigger - minimum duration (s)
 % frames to this value for high frame rates
 % peel_p.smttminFrames = 20;
 peel_p.smttnumevts= 0;      % Schmitt trigger - number of found events
-peel_p.slidwinsiz= 10.0;    % sliding window size - event detection (s)
+% peel_p.slidwinsiz= 10.0;    % sliding window size - event detection (s)
+peel_p.slidwinsiz= 2.0;    % sliding window size - event detection (s)
 peel_p.maxbaseslope= 0.5;   % maximum baseslope %/s
 peel_p.evtfound=0;          % flag - 1: crossing found 
 peel_p.nextevt=0;           % next crossing found (s)
@@ -345,7 +349,6 @@ for n = nstart:length(data.peel_pad)-wsiz
         else
             currentDff = data.peel_pad(n:end);
         end
-        
         if length(find(currentDff<=peel_p.smttlow)) > peel_p.smttlowMinEvents
             n = n + find(currentDff<=peel_p.smttlow,1,'last'); %#ok<FXSET>
             if n > length(data.peel_pad)-wsiz
@@ -357,10 +360,8 @@ for n = nstart:length(data.peel_pad)-wsiz
         data.slide_pad = data.peel_pad - currentoffset;
         data.temp_pad = tmpslope*data.tim_pad + linefit(2) - currentoffset;
         data.slide_pad = data.slide_pad - data.temp_pad;
-        
         currentIntegral = trapz(data.tim_pad(n:n+checkwsiz),...
             data.slide_pad(n:n+checkwsiz));
-        
         if currentIntegral>(ca_p.integral*peel_p.intacclevel)
             peel_p.evtfound=1;
             break
