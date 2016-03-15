@@ -130,5 +130,5 @@ More inquires should be email to: weiz AT janelia DOT hhmi DOT org
 Supervised learning sets benchmark for robust spike detection from calcium imaging signals
 bioRxiv, 2014](http://bethgelab.org/publications/127/)
 * Code (Python): https://github.com/lucastheis/c2s
-* Original contribution: Jon Oñativia
+* Original contribution: Lucas Theis
 * Revision:
