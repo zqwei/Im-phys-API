@@ -112,4 +112,14 @@ More inquires should be email to: weiz AT janelia DOT hhmi DOT org
 * Main paper: [Kaifosh P, Zaremba J, Danielson N, and Losonczy A. SIMA: Python software for analysis of dynamic fluorescence imaging data. Frontiers in Neuroinformatics. 2014 Aug 27; 8:77. doi: 10.3389/fninf.2014.00077.](http://journal.frontiersin.org/article/10.3389/fninf.2014.00080/full)
 * Code (Python): https://github.com/losonczylab/sima
 * Original contribution: Losonczy Lab
+
+## Fast rate of innovation algorithm
+* Model: 
+* Main paper: [Jon Oñativia, Simon R. Schultz, and Pier Luigi Dragotti, A Finite Rate of Innovation algorithm for fast and accurate spike detection from two-photon calcium imaging. (J. Neural Eng. 10 (2013) 046017)](http://stacks.iop.org/1741-2552/10/046017)
+* Code (Matlab): http://www.commsp.ee.ic.ac.uk/~jo210/src/ca_transient.zip
+	* File real_data.m runs the double consistency algorithm on real data and reproduces figure 7 of the journal paper.
+	* File surrogate_data.m runs the double consistency algorithm on surrogate data.
+	* File fig3.m reproduces figure 3 of the journal paper.
+	* File fig9.m reproduces figure 9 of the journal paper.
+* Original contribution: Jon Oñativia
 * Revision:
