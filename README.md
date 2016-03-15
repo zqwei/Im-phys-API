@@ -123,3 +123,12 @@ More inquires should be email to: weiz AT janelia DOT hhmi DOT org
 	* File fig9.m reproduces figure 9 of the journal paper.
 * Original contribution: Jon Oñativia
 * Revision:
+
+## A version of comparison
+* Model: 
+* Main paper: [L. Theis, P. Berens, E. Froudarakis, J. Reimer, M. Roman-Roson, T. Baden, T. Euler, A. S. Tolias, et al.
+Supervised learning sets benchmark for robust spike detection from calcium imaging signals
+bioRxiv, 2014](http://bethgelab.org/publications/127/)
+* Code (Python): https://github.com/lucastheis/c2s
+* Original contribution: Jon Oñativia
+* Revision:
