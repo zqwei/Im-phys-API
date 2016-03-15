@@ -124,11 +124,18 @@ More inquires should be email to: weiz AT janelia DOT hhmi DOT org
 * Original contribution: Jon Oñativia
 * Revision:
 
-## A version of comparison
+## STM
 * Model: 
 * Main paper: [L. Theis, P. Berens, E. Froudarakis, J. Reimer, M. Roman-Roson, T. Baden, T. Euler, A. S. Tolias, et al.
 Supervised learning sets benchmark for robust spike detection from calcium imaging signals
 bioRxiv, 2014](http://bethgelab.org/publications/127/)
+* __Important note__ : This paper is also one with extensive comparison of STM, SI08, PP14, OD13, VP10, VP09, YF06 algorithms.
 * Code (Python): https://github.com/lucastheis/c2s
 * Original contribution: Lucas Theis
 * Revision:
+
+## SI08
+
+## YF06
+
+
