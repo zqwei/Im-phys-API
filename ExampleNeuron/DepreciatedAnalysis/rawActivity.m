@@ -3,7 +3,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 addpath('../Func');
 setDir;
-load ([TempDatDir 'DataListModeled.mat']);
+load ([TempDatDir 'DataListShuffle.mat']);
 
 ylabels                 = {'Fring Rate (Hz)', 'dF/F', 'dF/F', 'dF/F', 'dR/R' };
 yAxes_set               = [0 60; -0.5 2.0; -0.5 2.0; -0.5 2.0; -0.5 2.0 ; -0.5 2.0];
@@ -56,50 +56,48 @@ end
 
 [~, similaritySort]       = sortrows([bumpStartPoint, bumpSize], [1 -2]);
 similaritySort            = similaritySort(end:-1:1);
-
-figure;
-hold on;
-timeSeries                    =  DataSetList(nData).params.timeSeries;
-minTime                       =  DataSetList(nData).params.timeSeries(1);
-maxTime                       =  DataSetList(nData).params.timeSeries(end);
-betweenSpace                  = blankSpace * DataSetList(nData).params.binsize;
-constShift                    =  - minTime + maxTime + betweenSpace;
-timeSeries                    = [timeSeries, maxTime + (1:blankSpace)*DataSetList(nData).params.binsize, timeSeries+constShift];
-tMaxTime                      = timeSeries(end);
-b = imagesc(timeSeries, 1:length(similaritySort), actMat(similaritySort, :), [0 1]);
-set(b,'AlphaData',~isnan(actMat));
-axis xy;
-%gridxy ([maxTime + betweenSpace/2],[], 'Color','k','Linestyle','-','linewid', 2.0)
-gridxy ([DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0, DataSetList(nData).params.polein+constShift, DataSetList(nData).params.poleout+constShift, constShift],[], 'Color','k','Linestyle','--','linewid', 1.0)
-ax              = gca;
-hColor          = colorbar;    
-ylabel(hColor, 'Normalized activity');
-cPos            = hColor.Position;
-axpos           = ax.Position;
-hColor.Position = [axpos(1)+axpos(3)+0.11 cPos(2)+cPos(4)*0.25 cPos(3)*0.5 cPos(4)*0.5];    
-box off
-xTicks                        = round(minTime):floor(maxTime);
-xTickLabel                    = arrayfun(@(x) num2str(x), xTicks,'Uniform',false);
-xTickLabel(mod(xTicks,2)==1)  = {''};
-set(ax, 'XTick', [xTicks xTicks+constShift], 'XTickLabel', [xTickLabel, xTickLabel]);
-set(ax, 'YTick', [1 length(nDataSet)])
-axis([minTime, tMaxTime, 1, length(similaritySort)]);
-
-xlabel('Time (s)')
-ylabel('Neuronal index');
-
-hold off
-
-setPrint(6*2, 3*3, [PlotDir 'ModeledComparingSingleUnitsImagescWithSort/SingleUnitsImagescWithSort_' DataSetList(nData).name], 'tif')
-
-
+% 
+% figure;
+% hold on;
+% timeSeries                    =  DataSetList(nData).params.timeSeries;
+% minTime                       =  DataSetList(nData).params.timeSeries(1);
+% maxTime                       =  DataSetList(nData).params.timeSeries(end);
+% betweenSpace                  = blankSpace * DataSetList(nData).params.binsize;
+% constShift                    =  - minTime + maxTime + betweenSpace;
+% timeSeries                    = [timeSeries, maxTime + (1:blankSpace)*DataSetList(nData).params.binsize, timeSeries+constShift];
+% tMaxTime                      = timeSeries(end);
+% b = imagesc(timeSeries, 1:length(similaritySort), actMat(similaritySort, :), [0 1]);
+% set(b,'AlphaData',~isnan(actMat));
+% axis xy;
+% %gridxy ([maxTime + betweenSpace/2],[], 'Color','k','Linestyle','-','linewid', 2.0)
+% gridxy ([DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0, DataSetList(nData).params.polein+constShift, DataSetList(nData).params.poleout+constShift, constShift],[], 'Color','k','Linestyle','--','linewid', 1.0)
+% ax              = gca;
+% hColor          = colorbar;    
+% ylabel(hColor, 'Normalized activity');
+% cPos            = hColor.Position;
+% axpos           = ax.Position;
+% hColor.Position = [axpos(1)+axpos(3)+0.11 cPos(2)+cPos(4)*0.25 cPos(3)*0.5 cPos(4)*0.5];    
+% box off
+% xTicks                        = round(minTime):floor(maxTime);
+% xTickLabel                    = arrayfun(@(x) num2str(x), xTicks,'Uniform',false);
+% xTickLabel(mod(xTicks,2)==1)  = {''};
+% set(ax, 'XTick', [xTicks xTicks+constShift], 'XTickLabel', [xTickLabel, xTickLabel]);
+% set(ax, 'YTick', [1 length(nDataSet)])
+% axis([minTime, tMaxTime, 1, length(similaritySort)]);
+% 
+% xlabel('Time (s)')
+% ylabel('Neuronal index');
+% 
+% hold off
+% 
+% setPrint(6*2, 3*3, [PlotDir 'ModeledComparingSingleUnitsImagescWithSort/SingleUnitsImagescWithSort_' DataSetList(nData).name])
 
 
 
 
 
-
-for nData             = 2:length(DataSetList)
+load ([TempDatDir 'DataListS2CModel.mat']);
+for nData             = 1:length(DataSetList)
     load([TempDatDir DataSetList(nData).name '.mat'])
     
     for nUnit = 1: length(nDataSet)
@@ -141,7 +139,7 @@ for nData             = 2:length(DataSetList)
 
     hold off
 
-    setPrint(6*2, 3*3, [PlotDir 'ModeledComparingSingleUnitsImagescWithSort/SingleUnitsImagescWithSort_' DataSetList(nData).name], 'tif')
+    setPrint(6*2, 3*3, [PlotDir 'ModeledComparingSingleUnitsImagescWithSort/SingleUnitsImagescWithSort_' DataSetList(nData).name])
         
 end
 
