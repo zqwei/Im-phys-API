@@ -100,7 +100,7 @@ where set $t_{spike}$ is spike times of a recorded spike train; $\tau_d$ is the 
 
 ### Figure 3b1 -- Baseline spiking rate can result in differences in fluorescence data, even the activity profiles are identical
 ### Figure 3b2 -- Variability of parameters in Spike-to-Calcium can explain also explain variation of activity profiles from spike to calcium imaging datasets
-![](../Plot/ModelExampleSpikesWithDiffParams/S2CModelNeuronIndex_0797.svg)
+![](../Plot/ModelExampleSpikesWithDiffParams/S2CModelNeuronIndex_0030.svg)
 
 
 ![](../Plot/ModelCellFits/S2CVariabilityActivityProfile.png)
