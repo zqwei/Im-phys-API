@@ -2,6 +2,7 @@
 % Example neurons for neuronal trace from S2C model and C2S model
 %
 %
+% This will later moved to Deconv Project
 
 
 addpath('../Func');

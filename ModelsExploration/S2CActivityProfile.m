@@ -11,50 +11,69 @@
 % a more detailed comparison is based on those of 10 levels of changes
 % 
 % 
+% version 1.0:
+% using doubling of parameters
+%
+% version 1.1:
+% using 10% percentile and 90% percentile of the extreme data for
+% parameters
+%
 % -------------------------------------------------------------------------
 % Ziqiang Wei
 % weiz@janelia.hhmi.org
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function S2CCaActivityProfile
+
+
+function S2CActivityProfile
     addpath('../Func/')
     setDir;
     load ([TempDatDir 'DataListShuffle.mat']);
+    load ([TempDatDir 'ParamsFitCells_S2CModel_Sim.mat'], 'params');
+    paramsSim = params; %#ok<NODEF>
+    clear params;
     nData = 1;
     load([TempDatDir DataSetList(nData).name '.mat'])
-    if ~exist([PlotDir 'ModelExampleSpikesWithDiffParams'],'dir')
-        mkdir([PlotDir 'ModelExampleSpikesWithDiffParams'])
-    end
+    if ~exist([PlotDir 'ModelExampleSpikesWithDiffParams_6s_AAV'],'dir')
+        mkdir([PlotDir 'ModelExampleSpikesWithDiffParams_6s_AAV'])
+    end   
+    if ~exist([PlotDir 'ModelExampleSpikesWithDiffParams_6s_Tsg'],'dir')
+        mkdir([PlotDir 'ModelExampleSpikesWithDiffParams_6s_Tsg'])
+    end       
+    
     Fm              = 21.3240;
-    K               = 13.9248;
-    n               = 1.7531;
-    tau_rise        = 0.0728;
-    tau_decay       = 1.4551;
     intNoise        = 1.5;
     extNoise        = 0;
-    for nNeuron                = 1:length(nDataSet)
-        spikeDataSet           = nDataSet(nNeuron);
-        params                 = DataSetList(nData).params;
-        params.Fm              = Fm;
-        params.K               = K;
-        params.n               = n;
-        params.tau_r           = tau_rise;
-        params.tau_d           = tau_decay;
-        params.intNoise        = intNoise;
-        params.extNoise        = extNoise;   
-        figure;   
-        spkRaster(spikeDataSet, params);
-        spkPSTH(spikeDataSet, params);    
-        nKeys   = {'tau_r', 'tau_d', 'intNoise', 'n', 'K'};
-        nTitles = {'S2C-linear \tau_{r}', 'S2C-linear \tau_{d}', 'S2C-noise \sigma_{int}', 'S2C-nonlinear n', 'S2C-nonlinear K'};
-        nPlots  = [5 8 3 6 9];    
-        for nParams = 1:length(nKeys)
-            plotChangeParams(spikeDataSet, params, nKeys{nParams}, nTitles{nParams}, nPlots(nParams));
+    groupNames      = {'6f_AAV', '6s_AAV', '6f_Tsg', '6s_Tsg'};
+    for nGroup      = [2 4]
+        for nNeuron                = 1:length(nDataSet)
+            spikeDataSet           = nDataSet(nNeuron);
+            params                 = DataSetList(nData).params;
+            params.Fm              = Fm;
+            params.K               = paramsSim(1, nGroup).K;
+            params.n               = paramsSim(1, nGroup).n;
+            params.tau_r           = paramsSim(1, nGroup).tau_r;
+            params.tau_d           = paramsSim(1, nGroup).tau_d;
+            params.intNoise        = intNoise;
+            params.extNoise        = extNoise;   
+            nParamsSim             = paramsSim(:, nGroup);
+            for ii                 = 1:length(nParamsSim)
+                nParamsSim(ii).intNoise = intNoise * ii/2;
+            end
+            figure;   
+            spkRaster(spikeDataSet, params);
+            spkPSTH(spikeDataSet, params);    
+            nKeys   = {'tau_r', 'tau_d', 'intNoise', 'n', 'K'};
+            nTitles = {'S2C-linear \tau_{r}', 'S2C-linear \tau_{d}', 'S2C-noise \sigma_{int}', 'S2C-nonlinear n', 'S2C-nonlinear K'};
+            nPlots  = [5 8 3 6 9];    
+            for nParams = 1:length(nKeys)
+                plotChangeParams(spikeDataSet, params, nParamsSim, nKeys{nParams}, nTitles{nParams}, nPlots(nParams));
+            end
+            plotChangeBaseline(spikeDataSet, params);   
+            setPrint(8*3, 6*3, [PlotDir 'ModelExampleSpikesWithDiffParams_' groupNames{nGroup} '/S2CModelNeuronIndex_' num2str(nNeuron,'%04d')])    
+            close all;
         end
-        plotChangeBaseline(spikeDataSet, params);   
-        setPrint(8*3, 6*3, [PlotDir 'ModelExampleSpikesWithDiffParams/S2CModelNeuronIndex_' num2str(nNeuron,'%04d')])    
-        close all;
     end
 end
 
@@ -94,7 +113,6 @@ function spkPSTH(spikeDataSet, params)
     nUnitData       = spikeDataSet.unit_no_trial;
     noTrialRate     = mean(nUnitData, 1);
     stdNoTrial      = std(nUnitData, 1)/sqrt(size(nUnitData, 1));
-    maxRate         = max([yesTrialRate, noTrialRate]);  
     shadedErrorBar(params.timeSeries, yesTrialRate, stdYesTrial, ...
         {'k-', 'linewid', 1.0, 'color', color_index(1, :)}, 0.5);
     shadedErrorBar(params.timeSeries, noTrialRate, stdNoTrial, ...
@@ -107,17 +125,15 @@ function spkPSTH(spikeDataSet, params)
     set(gca, 'TickDir', 'out')
 end
 
-function plotChangeParams(spikeDataSet, params, nKey, nTitle, nPlot)
-    nValue          = params.(nKey);
-    
+function plotChangeParams(spikeDataSet, params, paramsSim, nKey, nTitle, nPlot)
     oldBlue         = [     0         0       0.7];
     newBlue         = [     0    0.4470    0.7410];
     oldRed          = [    0.7        0         0];
     newRed          = [0.6350    0.0780    0.1840];
     subplot(3, 3, nPlot);
     hold on;
-    for nFactor              = 0.5:0.5:1.5
-        params.(nKey)        = nValue * nFactor;
+    for nFactor              = 1:3
+        params.(nKey)        = paramsSim(nFactor).(nKey);
         nDataSet             = getFakeCaImagingData(spikeDataSet, params);
         nYesData             = nDataSet.unit_yes_trial;
         nNoData              = nDataSet.unit_no_trial;
@@ -130,25 +146,25 @@ function plotChangeParams(spikeDataSet, params, nKey, nTitle, nPlot)
         nNoData              = (nNoData - minDff)/diffDff;
         h = plot(params.timeSeries, nYesData, 'linewid', 1.0);
         switch nFactor
-            case 0.5
+            case 1
                 h.Color = newRed;
                 h.LineStyle = '--';
-            case 1.0
+            case 2
                 h.Color = oldRed;
                 h.LineStyle = '-';
-            case 1.5
+            case 3
                 h.Color = newRed;
                 h.LineStyle = '-';
         end
         h = plot(params.timeSeries, nNoData, 'linewid', 1.0);
         switch nFactor
-            case 0.5
+            case 1
                 h.Color = newBlue;
                 h.LineStyle = '--';
-            case 1.0
+            case 2
                 h.Color = oldBlue;
                 h.LineStyle = '-';
-            case 1.5
+            case 3
                 h.Color = newBlue;
                 h.LineStyle = '-';
         end
@@ -161,84 +177,6 @@ function plotChangeParams(spikeDataSet, params, nKey, nTitle, nPlot)
     xlabel('Time (s)');
     title(nTitle)
 end
-
-% function plotChangeBaseline_v1(spikeDataSet, params) %#ok<DEFNU>
-%     nDataSet = [spikeDataSet; spikeDataSet; spikeDataSet];
-%     nKeys   = {'tau_r', 'tau_d', 'Fm', 'n', 'K'};
-%     for n   = 1:length(nKeys)
-%         nKey          = nKeys{n};
-%         params.(nKey) = params.(nKey) * ones(3, 1);
-%     end
-%     spkTimes{1}    = spikeDataSet.unit_yes_trial_spk_time;
-%     spkTimes{2}    = spikeDataSet.unit_no_trial_spk_time;
-%     newSpkTimes1   = spkTimes;
-%     newSpkTimes2   = spkTimes;
-%     for nType        = 1:length(spkTimes)
-%         for nTrial   = 1:length(spkTimes{nType})
-%             spk      = spkTimes{nType}{nTrial};
-%             if length(spk)>1
-%                 DiffSpk  = diff(spk);
-%                 addSpk1  = DiffSpk.*rand(size(DiffSpk)) + spk(1:end-1);
-%                 newSpkTimes1{nType}{nTrial} = [spk; addSpk1];
-%                 addSpk2  = DiffSpk.*rand(size(DiffSpk)) + spk(1:end-1);
-%                 newSpkTimes2{nType}{nTrial} = [spk; addSpk1; addSpk2];
-%             end
-%         end
-%     end
-%     subplot(3, 3, 2);
-%     hold on;
-%     oldBlue         = [     0         0       0.7];
-%     newBlue         = [     0    0.4470    0.7410];
-%     oldRed          = [    0.7        0         0];
-%     newRed          = [0.6350    0.0780    0.1840];
-%     nDataSet(2).unit_yes_trial_spk_time = newSpkTimes1{1};
-%     nDataSet(3).unit_yes_trial_spk_time = newSpkTimes2{1};
-%     nDataSet(2).unit_no_trial_spk_time  = newSpkTimes1{2};
-%     nDataSet(3).unit_no_trial_spk_time  = newSpkTimes2{2};
-%     mDataSet         = getFakeCaImagingData(nDataSet, params);    
-%     for mData        = 1:length(mDataSet)
-%         nYesData             = mDataSet(mData).unit_yes_trial;
-%         nNoData              = mDataSet(mData).unit_no_trial;
-%         nYesData             = mean(nYesData, 1);
-%         nNoData              = mean(nNoData, 1);        
-%         maxDff               = max([nYesData, nNoData]);
-%         minDff               = min([nYesData, nNoData]);
-%         diffDff              = maxDff - minDff;        
-%         nYesData             = (nYesData - minDff)/diffDff;
-%         nNoData              = (nNoData - minDff)/diffDff;        
-%         h = plot(params.timeSeries, nYesData, 'linewid', 1.0);
-%         switch mData
-%             case 2
-%                 h.Color = newRed;
-%                 h.LineStyle = '--';
-%             case 1
-%                 h.Color = oldRed;
-%                 h.LineStyle = '-';
-%             case 3
-%                 h.Color = newRed;
-%                 h.LineStyle = '-';
-%         end
-%         h = plot(params.timeSeries, nNoData, 'linewid', 1.0);
-%         switch mData
-%             case 2
-%                 h.Color = newBlue;
-%                 h.LineStyle = '--';
-%             case 1
-%                 h.Color = oldBlue;
-%                 h.LineStyle = '-';
-%             case 3
-%                 h.Color = newBlue;
-%                 h.LineStyle = '-';
-%         end
-%     end
-%     gridxy ([params.polein, params.poleout, 0],[], 'Color','k','Linestyle','--','linewid', 1.0)
-%     xlim([params.timeSeries(1) params.timeSeries(end)]);
-%     hold off;
-%     ylabel('normalized DF/F');
-%     ylim([0 1])
-%     xlabel('Time (s)');
-%     title('baseline')
-% end
 
 function plotChangeBaseline(spikeDataSet, params)   
     timeBins = params.timeSeries;

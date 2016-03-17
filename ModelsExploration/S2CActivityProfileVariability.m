@@ -3,6 +3,13 @@
 % neurons)
 %
 %
+% version 1.0:
+% using doubling of parameters
+%
+% version 1.1:
+% using 10% percentile and 90% percentile of the extreme data for
+% parameters
+%
 % -------------------------------------------------------------------------
 % Ziqiang Wei
 % weiz@janelia.hhmi.org
@@ -10,48 +17,53 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-function S2CVariabilityActivityProfile
+function S2CActivityProfileVariability
     addpath('../Func/')
     setDir;
     load ([TempDatDir 'DataListShuffle.mat']);
+    load ([TempDatDir 'ParamsFitCells_S2CModel_Sim.mat'], 'params');
+    paramsSim = params; %#ok<NODEF>
+    clear params;
     nData = 1;
     load([TempDatDir DataSetList(nData).name '.mat'])
     if ~exist([PlotDir 'ModelCellFits'],'dir')
         mkdir([PlotDir 'ModelCellFits'])
     end
+
     Fm              = 21.3240;
-    K               = 13.9248;
-    n               = 1.7531;
-    tau_rise        = 0.0728;
-    tau_decay       = 1.4551;
     intNoise        = 1.5;
     extNoise        = 0;
+    groupNames      = {'6f_AAV', '6s_AAV', '6f_Tsg', '6s_Tsg'};
     nKeys           = {'tau_r', 'tau_d', 'intNoise', 'n', 'K'};
-    varNParams      = nan(length(nDataSet), length(nKeys)+2, 2);
-    for nNeuron                = 1:length(nDataSet)
-        disp(nNeuron)
-        spikeDataSet           = nDataSet(nNeuron);
-        params                 = DataSetList(nData).params;
-        params.Fm              = Fm;
-        params.K               = K;
-        params.n               = n;
-        params.tau_r           = tau_rise;
-        params.tau_d           = tau_decay;
-        params.intNoise        = intNoise;
-        params.extNoise        = extNoise;
-        for nParams = 1:length(nKeys)
-            varNParams(nNeuron, nParams+2, :) = varChangeParams(spikeDataSet, params, nKeys{nParams});
-        end
-    
-        [varNParams(nNeuron, 1, :), varNParams(nNeuron, 2, :)] = varChangeBaseline(spikeDataSet, params);
-       
-    end    
-    save([TempDatDir 'PValueModelVariability.mat'], 'varNParams')
-    load([TempDatDir 'PValueModelVariability.mat'], 'varNParams')
-    nTitles = {'rate', 'baseline', '\tau_{r}', '\tau_{d}', '\sigma_{int}', 'n', 'K'};
-    plotCorrMatrix(varNParams, nTitles)
-    setPrint(8*2, 8*2, [PlotDir 'ModelCellFits/S2CVariabilityActivityProfile'])
-    setPrint(8*2, 8*2, [PlotDir 'ModelCellFits/S2CVariabilityActivityProfile'],'png')
+    for nGroup      = [2 4]
+        varNParams      = nan(length(nDataSet), length(nKeys)+2, 2);
+        for nNeuron                = 1:length(nDataSet)
+            disp(nNeuron)
+            spikeDataSet           = nDataSet(nNeuron);
+            params                 = DataSetList(nData).params;
+            params.Fm              = Fm;
+            params.K               = paramsSim(1, nGroup).K;
+            params.n               = paramsSim(1, nGroup).n;
+            params.tau_r           = paramsSim(1, nGroup).tau_r;
+            params.tau_d           = paramsSim(1, nGroup).tau_d;
+            params.intNoise        = intNoise;
+            params.extNoise        = extNoise;   
+            nParamsSim             = paramsSim(:, nGroup);
+            for ii                 = 1:length(nParamsSim)
+                nParamsSim(ii).intNoise = intNoise * ii/2;
+            end                
+            for nParams = 1:length(nKeys)
+                varNParams(nNeuron, nParams+2, :) = varChangeParams(spikeDataSet, params, nParamsSim, nKeys{nParams});
+            end
+            [varNParams(nNeuron, 1, :), varNParams(nNeuron, 2, :)] = varChangeBaseline(spikeDataSet, params);
+        end    
+        save([TempDatDir 'PValueModelVariability' groupNames{nGroup} '.mat'], 'varNParams')
+        load([TempDatDir 'PValueModelVariability' groupNames{nGroup} '.mat'], 'varNParams')
+        nTitles = {'rate', 'baseline', '\tau_{r}', '\tau_{d}', '\sigma_{int}', 'n', 'K'};
+        plotCorrMatrix(varNParams, nTitles)
+        setPrint(8*2, 8*2, [PlotDir 'ModelCellFits/S2CVariabilityActivityProfile_' groupNames{nGroup}])
+        setPrint(8*2, 8*2, [PlotDir 'ModelCellFits/S2CVariabilityActivityProfile_' groupNames{nGroup}],'png')
+    end
 end
 
 function plotCorrMatrix(varNParams, nTitles)    
@@ -112,12 +124,11 @@ function plotCorrMatrix(varNParams, nTitles)
     end
 end
 
-function varNParams = varChangeParams(spikeDataSet, params, nKey)
-    nValue          = params.(nKey);
+function varNParams = varChangeParams(spikeDataSet, params, paramsSim, nKey)
     YesData         = zeros(3, length(params.timeSeries));
     NoData          = zeros(3, length(params.timeSeries));        
-    for nFactor              = 0.5:0.5:1.5
-        params.(nKey)        = nValue * nFactor;
+    for nFactor              = 1:3
+        params.(nKey)        = paramsSim(nFactor).(nKey);
         nDataSet             = getFakeCaImagingData(spikeDataSet, params);
         nYesData             = nDataSet.unit_yes_trial;
         nNoData              = nDataSet.unit_no_trial;
@@ -128,56 +139,9 @@ function varNParams = varChangeParams(spikeDataSet, params, nKey)
         diffDff              = maxDff - minDff;       
         nYesData             = (nYesData - minDff)/diffDff;
         nNoData              = (nNoData - minDff)/diffDff; 
-        YesData(nFactor*2, :) = nYesData;
-        NoData(nFactor*2, :)  = nNoData;
+        YesData(nFactor, :) = nYesData;
+        NoData(nFactor, :)  = nNoData;
     end
-    varNParams(1)            = kruskalwallis(YesData', [], 'off');
-    varNParams(2)            = kruskalwallis(NoData', [], 'off');    
-end
-
-function varNParams = varChangeBaseline_v1(spikeDataSet, params)     %#ok<*DEFNU>
-    nDataSet = [spikeDataSet; spikeDataSet; spikeDataSet];
-    tKeys   = {'tau_r', 'tau_d', 'Fm', 'n', 'K'};
-    for n   = 1:length(tKeys)
-        nKey          = tKeys{n};
-        params.(nKey) = params.(nKey) * ones(3, 1);
-    end    
-    spkTimes{1}    = spikeDataSet.unit_yes_trial_spk_time;
-    spkTimes{2}    = spikeDataSet.unit_no_trial_spk_time;    
-    newSpkTimes1   = spkTimes;
-    newSpkTimes2   = spkTimes;
-    for nType        = 1:length(spkTimes)
-        for nTrial   = 1:length(spkTimes{nType})
-            spk      = spkTimes{nType}{nTrial};
-            if length(spk)>1
-                DiffSpk  = diff(spk);
-                addSpk1  = DiffSpk.*rand(size(DiffSpk)) + spk(1:end-1);
-                newSpkTimes1{nType}{nTrial} = [spk; addSpk1];
-                addSpk2  = DiffSpk.*rand(size(DiffSpk)) + spk(1:end-1);
-                newSpkTimes2{nType}{nTrial} = [spk; addSpk1; addSpk2];
-            end
-        end
-    end
-    nDataSet(2).unit_yes_trial_spk_time = newSpkTimes1{1};
-    nDataSet(3).unit_yes_trial_spk_time = newSpkTimes2{1};
-    nDataSet(2).unit_no_trial_spk_time  = newSpkTimes1{2};
-    nDataSet(3).unit_no_trial_spk_time  = newSpkTimes2{2};    
-    mDataSet         = getFakeCaImagingData(nDataSet, params);    
-    YesData          = zeros(3, length(params.timeSeries));
-    NoData           = zeros(3, length(params.timeSeries));    
-    for mData        = 1:length(mDataSet)
-        nYesData             = mDataSet(mData).unit_yes_trial;
-        nNoData              = mDataSet(mData).unit_no_trial;
-        nYesData             = mean(nYesData, 1);
-        nNoData              = mean(nNoData, 1);        
-        maxDff               = max([nYesData, nNoData]);
-        minDff               = min([nYesData, nNoData]);
-        diffDff              = maxDff - minDff;
-        nYesData             = (nYesData - minDff)/diffDff;
-        nNoData              = (nNoData - minDff)/diffDff;
-        YesData(mData, :) = nYesData;
-        NoData(mData, :)  = nNoData;
-    end    
     varNParams(1)            = kruskalwallis(YesData', [], 'off');
     varNParams(2)            = kruskalwallis(NoData', [], 'off');    
 end

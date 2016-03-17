@@ -17,7 +17,7 @@
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function S2CCaActivityProfile
+function S2CCaActivityProfile_v1
     addpath('../Func/')
     setDir;
     load ([TempDatDir 'DataListShuffle.mat']);
