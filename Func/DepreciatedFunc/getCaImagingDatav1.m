@@ -13,7 +13,7 @@
 % weiz@janelia.hhmi.org
 % 
 
-function CaImagingDataSet    = getCaImagingDataRaw(CaImagingDir, CaImagingFileList, minNumTrialToAnalysis, paramsROI)
+function CaImagingDataSet    = getCaImagingDatav1(CaImagingDir, CaImagingFileList, minNumTrialToAnalysis, paramsROI)
 
     CaImagingDataSet   = repmat(struct('sessionIndex',1, 'nUnit', 1, ...
                                 'unit_yes_trial', 1, 'unit_no_trial', 1),1000, 1);
@@ -27,7 +27,7 @@ function CaImagingDataSet    = getCaImagingDataRaw(CaImagingDir, CaImagingFileLi
         load([CaImagingDir fname])
         
         [dFF, correctRightTrial, correctLeftTrial, errorRightTrial, errorLeftTrial] = ...
-                    extractALMImagingDataRaw...
+                    extractALMImagingDatav1...
                     (ROI_list, trial, nimage, paramsROI);
                 
         if sum(correctRightTrial) > minNumTrialToAnalysis && sum(correctLeftTrial) > minNumTrialToAnalysis

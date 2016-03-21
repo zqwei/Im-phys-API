@@ -20,13 +20,17 @@
 
 
 function [dFF, correctRightTrial, correctLeftTrial, errorRightTrial, errorLeftTrial] = ...
-    extractALMImagingDataRaw (ROI_list, trial, nimage, params)
+    extractALMImagingDataNoNeuropil (ROI_list, trial, nimage, params)
     
     if isfield(params, 'timeWindowIndexRange')
         timeWindowIndexRange = params.timeWindowIndexRange;  % sec
     else
         timeWindowIndexRange = -45:30;  % sec
-    end    
+    end
+    
+    timePoints  = timePointTrialPeriod(params.polein, params.poleout, params.timeSeries);
+    % presample   = min(params.timeWindowIndexRange) - 1 + (timePoints(1):timePoints(2));
+    
 
     neuronNum          = length(ROI_list);
     trialNum           = length(trial);
@@ -64,5 +68,12 @@ function [dFF, correctRightTrial, correctLeftTrial, errorRightTrial, errorLeftTr
     errorRightTrial   = ~correct & (type=='r') & (~early) & validTrials;
     errorLeftTrial    = ~correct & (type=='l') & (~early) & validTrials;
     
-    dFF                = alignedNeuralData;
+    
+    
+    
+%     mean_F             = squeeze(mean(mean(alignedNeuralData(:,timePoints(1):timePoints(2),correctRightTrial|correctLeftTrial),3),2));
+    mean_F             = squeeze(mean(mean(alignedNeuralData(:,timePoints(1):timePoints(2),:),3),2));
+    
+    alignedNeuralData  = alignedNeuralData - repmat(mean_F,1,timePointNum,trialNum);
+    dFF                = alignedNeuralData./repmat(mean_F,1,timePointNum,trialNum);
 
