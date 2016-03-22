@@ -126,6 +126,7 @@ More inquires should be email to: weiz AT janelia DOT hhmi DOT org
 
 ## STM
 * Model: 
+	* STM fit model: model is built to supervise-learning the parameter of the conditional distribution $p(y \mid x, z) = q(y \mid g(f(x, z)))$, where $y$ is a scalar, $x \in R^N$, $z \in R^M$, $q$ is a univariate distribution, $g$ is some nonlinearity, and $f(x, z) = \log \sum_k \exp\left( \lambda \left[ \sum_l \beta_{kl} (u_l^\top x)^2 + w_k x + a_k \right] \right) / \lambda + v^\top z$. (see __Conditional Modeling Toolkit__ for detail)
 * Main paper: [L. Theis, P. Berens, E. Froudarakis, J. Reimer, M. Roman-Roson, T. Baden, T. Euler, A. S. Tolias, et al.
 Supervised learning sets benchmark for robust spike detection from calcium imaging signals
 bioRxiv, 2014](http://bethgelab.org/publications/127/)
