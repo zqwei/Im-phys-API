@@ -15,6 +15,16 @@ As a part of my thesis work (unpublished yet), we (Ziqiang Wei and Shaul Druckma
 
 More inquires should be email to: weiz AT janelia DOT hhmi DOT org
 
+## Choices of working models
+
+With rapid development of modern statistical techniques in this field, we found us in an exciting whilst, unfortunately, allodoxaphobia position. It seems that the underlying models are more or less the same, but being solved using different approach under a variety of addtional assumptions of noise structures and constraints. Here we list some basic principal in our selection of models, where we believe a model would better be used a relative __unconstraint__ condition.
+* Avoid _explicit_ use of external (known stimulus) input in model.
+* Avoid _supervised learning_ (a __generative model__ is favorable), which parameters are first optimized using training dataset.
+* Avoid _pre-defined_ template-matching methods
+* Avoid _pure_ event detection (rather than spike detection) model
+![](texts/model_selection.png)
+
+
 
 ## Helmchen Model
 * Model:
