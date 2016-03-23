@@ -75,6 +75,6 @@ peelNL                 = data;
 peelNL.ca_params       = ca_p;
 peelNL.peel_params     = peel_p;
 
-save(['Smc_oopsi_fit_Cell_' num2str(nCell)], 'smc', 'peel', 'fast', 'smc_freq_2', 'smc_freq_4', 'smc_Nspike_1', 'peelNL')
+save(['Smc_oopsi_fit_Cell_' num2str(nCell)], 'smc', 'peel', 'fast', 'smc_freq_2', 'smc_freq_4', 'peelNL')
 
 end

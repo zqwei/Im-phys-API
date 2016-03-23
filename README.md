@@ -26,7 +26,7 @@ With rapid development of modern statistical techniques in this field, we found 
 
 
 
-## Helmchen Model
+<!-- ## Helmchen Model
 * Model:
   * Peeling
   * Parent model: 
@@ -150,4 +150,4 @@ bioRxiv, 2014](http://bethgelab.org/publications/127/)
 ## YF06
 
 ## Equation renders of readme file in this git
-Unfortunately, you need to do it on your own side by installing chrome app [Github with Mathjax](https://chrome.google.com/webstore/detail/github-with-mathjax/ioemnmodlmafdkllaclgeombjnmnbima).
+Unfortunately, you need to do it on your own side by installing chrome app [Github with Mathjax](https://chrome.google.com/webstore/detail/github-with-mathjax/ioemnmodlmafdkllaclgeombjnmnbima). -->
