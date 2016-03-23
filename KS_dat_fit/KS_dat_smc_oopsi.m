@@ -56,13 +56,13 @@ smc_freq_4.F_est         = estF;
 smc_freq_4.freq          = V.freq;
 smc_freq_4.Nspikehist    = V.Nspikehist;
 
-V.freq               = 1;
-V.Nspikehist         = 1;
-[smc_Nspike_1, ~, F, estF] = smc_oopsi(dff, V, P);
-smc_Nspike_1.F             = F;
-smc_Nspike_1.F_est         = estF;
-smc_Nspike_1.freq          = V.freq;
-smc_Nspike_1.Nspikehist    = V.Nspikehist;
+% V.freq               = 1;
+% V.Nspikehist         = 1;
+% [smc_Nspike_1, ~, F, estF] = smc_oopsi(dff, V, P);
+% smc_Nspike_1.F             = F;
+% smc_Nspike_1.F_est         = estF;
+% smc_Nspike_1.freq          = V.freq;
+% smc_Nspike_1.Nspikehist    = V.Nspikehist;
 
 
 [ca_p,peel_p, data]  = peel_oopsi(dff, fr);
