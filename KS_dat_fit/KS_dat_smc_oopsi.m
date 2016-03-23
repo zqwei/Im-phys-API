@@ -64,17 +64,6 @@ smc_freq_4.Nspikehist    = V.Nspikehist;
 % smc_Nspike_1.freq          = V.freq;
 % smc_Nspike_1.Nspikehist    = V.Nspikehist;
 
-
-[ca_p,peel_p, data]  = peel_oopsi(dff, fr);
-peel                 = data;
-peel.ca_params       = ca_p;
-peel.peel_params     = peel_p;
-
-[ca_p,peel_p, data]  = peel_oopsi(dff, fr);
-peelNL                 = data;
-peelNL.ca_params       = ca_p;
-peelNL.peel_params     = peel_p;
-
-save(['Smc_oopsi_fit_Cell_' num2str(nCell)], 'smc', 'peel', 'fast', 'smc_freq_2', 'smc_freq_4', 'peelNL')
+save(['Smc_oopsi_fit_Cell_' num2str(nCell)], 'smc', 'fast', 'smc_freq_2', 'smc_freq_4')
 
 end
