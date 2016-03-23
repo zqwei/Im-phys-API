@@ -1,6 +1,6 @@
 # List Of Calcium Imaging Deconvolution Methods
 
-[![Gitter](https://badges.gitter.im/zqwei/Ca-Imaging-Deconv-List.svg)](https://gitter.im/zqwei/Ca-Imaging-Deconv-List?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Gitter](https://badges.gitter.im/zqwei/Ca-Imaging-Deconv-List.svg)](https://gitter.im/zqwei/Ca-Imaging-Deconv-List?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [SlackChannel](https://datasetscomparison.slack.com/archives/denov_comp_list)
 
 Here is a collection of published calcium imaging deconvolution methods and link to their codes.
 
