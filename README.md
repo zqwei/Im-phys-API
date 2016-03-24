@@ -22,7 +22,7 @@ With rapid development of modern statistical techniques in this field, we found 
 * Avoid _supervised learning_ (a __generative model__ is favorable), which parameters are first optimized using training dataset.
 * Avoid _pre-defined_ template-matching methods
 * Avoid _pure_ event detection (rather than spike detection) model
-![](texts/model_selection.png)
+![](texts/model_selection.jpg)
 
 
 
