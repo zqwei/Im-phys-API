@@ -80,12 +80,3 @@ Nsmc = smc.M.nbar/max(smc.M.nbar);
 Nsmc(Nsmc<0.1)=0;
 stem(tvec,Nsmc);
 title('smc')
-
-[~, ~, data] = peel_oopsi(F*10, fr);
-subplot(336)
-plot(data.tim,data.model)
-title('peel')
-subplot(339)
-stem(data.tim,data.spiketrain)
-title('peel')
-
