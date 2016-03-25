@@ -5,6 +5,7 @@ tmp
 *.ipynb
 *.mat
 .DS_Store
+peel_nl_oopsi.m
 *.m~
 
 
