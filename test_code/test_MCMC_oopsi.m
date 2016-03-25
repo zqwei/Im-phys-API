@@ -14,21 +14,18 @@ N = poissrnd(P.lam*V.dt*ones(T,1)); % simulate spike train
 C = filter(1,[1 -P.gam],N);         % calcium concentration
 F = P.a*C+P.b + P.sig*randn(T,1);   % observations
 tvec=0:V.dt:(T-1)*V.dt;
-fr = 1/V.dt;
 
 figure;
-[~,~, data]  = peel_oopsi(F', fr);
-[~,~, dataNL]  = peel_nl_oopsi(F', fr);
+[cont, constr] = conttime_oopsi(F);
 subplot(211)
 hold on
 plot(tvec,F)
-plot(tvec,data.model)
-plot(tvec,dataNL.model)
+plot(tvec,cont.F_est)
+plot(tvec,constr.F_est)
 title('continuous time fast oopsi')
 subplot(212)
 hold on
 stem(tvec,N); 
-stem(tvec,data.spiketrain)
-stem(tvec,dataNL.spiketrain)
+plot(tvec,cont.spk)
+plot(tvec,constr.spk)
 title('continuous time fast oopsi')
-
