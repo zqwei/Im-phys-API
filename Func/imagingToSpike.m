@@ -17,21 +17,15 @@
 % weiz@janelia.hhmi.org
 % 
 
-function [fastData, smcData] = imagingToSpike(nDataSet, V)
+function contData = imagingToSpike(nDataSet)
 
     
-    fastData          = nDataSet;
-    smcData           = nDataSet;
-    
+    contData          = nDataSet;    
     numTrial          = size(nDataSet, 1);
     
+    
     for nTrial        = 1:numTrial
-        [fast, smc]   = runOOPSI(nDataSet(nTrial, :), V);
-        n_fast        = fast.n/max(fast.n);
-        fastData(nTrial, :) = n_fast / V.dt;
-        if ~isempty(smc)
-            smcData(nTrial, :)  = smc.E.nbar/V.dt;
-        else
-            smcData(nTrial, :)  = n_fast / V.dt;
-        end
+%         disp(nTrial)
+        [cont, ~]     = conttime_oopsi(nDataSet(nTrial, :));
+        contData(nTrial, :) = cont.spk;
     end

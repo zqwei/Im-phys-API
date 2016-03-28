@@ -83,20 +83,25 @@ gplotmatrix(paraMat, [], group, groupColor, 'oooo', [], 'off', [], nTitles, nTit
 setPrint(8*2, 8*2, [PlotDir 'ModelCellFits/ParamsFitCells_S2CModel_Fmfix'])
 
 
+groupColors = zeros(length(group), 3);
+for nCell  = 1:length(group)
+    groupColors(nCell, :) = groupColor(group(nCell), :);
+end
+
 parasFmFix = paras;
 figure;
-subplot(2, 2, 1)
+subplot(1, 4, 1)
 hold on
-plot([parasNoFix.ev],[parasFmFix.ev],'ok')
+scatter([parasNoFix.ev],[parasFmFix.ev], [], groupColors,'o', 'filled')
 plot([-0.3 1], [-0.3 1], '--k', 'linewid', 1)
 xlabel('EV without fixed parameters')
 ylabel('EV with parameters Fm fixed')
 box off
 axis([-0.3 1 -0.3 1])
 
-subplot(2, 2, 2)
+subplot(1, 4, 2)
 hold on
-plot([parasFmFix.var],[parasFmFix.ev],'ok')
+scatter([parasFmFix.var],[parasFmFix.ev], [], groupColors,'o', 'filled')
 ylabel('EV with parameters Fm fixed')
 xlabel('var. DF/F')
 box off
@@ -106,22 +111,23 @@ load([TempDatDir 'DataListCells.mat'], 'totCell');
 numSpk = arrayfun(@(x) length(x.spk)/x.CaTime(end), totCell, 'uniformoutput', false);
 numSpk = cell2mat(numSpk);
 
-subplot(2, 2, 3)
+subplot(1, 4, 3)
 hold on
-plot(numSpk, [parasFmFix.ev],'ok')
+scatter(numSpk, [parasFmFix.ev], [], groupColors,'o', 'filled')
 xlabel('Spike rate (Hz)')
 ylabel('EV with parameters Fm fixed')
 box off
 
-subplot(2, 2, 4)
+subplot(1, 4, 4)
 hold on
-plot(numSpk, [parasFmFix.var],'ok')
+scatter(numSpk, [parasFmFix.var], [], groupColors,'o', 'filled')
 xlabel('Spike rate (Hz)')
 ylabel('var. DF/F')
 box off
-setPrint(8*2, 6*2, [PlotDir 'ModelCellFits/ParamsFitEV_FiringRate'])
+setPrint(8*4, 6*1, [PlotDir 'ModelCellFits/ParamsFitEV_FiringRate'])
+setPrint(8*4, 6*1, [PlotDir 'ModelCellFits/ParamsFitEV_FiringRate'],'png')
 
-nGroupName = {'5T', '4.12', '5.17', '4.3'};
+nGroupName = {'6f-AAV', '6s-AAV', '5.17', '4.3'};
 nTitles = {'\tau_{r} (s)', '\tau_{d} (s)', 'n', 'K', 'Fm'};
 figure('visible', 'on');
 for nKey = 1:length(nKeys)

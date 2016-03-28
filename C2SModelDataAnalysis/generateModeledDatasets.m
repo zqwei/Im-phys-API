@@ -12,6 +12,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 addpath('../Func');
 setDir;
+load ([TempDatDir 'DataListShuffle.mat']);
 
 minNumTrialToAnalysis  = 20;
 
@@ -28,22 +29,12 @@ params.timeWindowIndexRange  = minTimeToAnalysis : maxTimeToAnalysis;
 params.timeSeries      = params.timeWindowIndexRange * params.binsize;
 params.minNumTrialToAnalysis =  minNumTrialToAnalysis;
 params.expression      = 'Transgentic';
-nDataSet               = getCaImagingData(CaImagingShortDelaySlowDir, ...
-                                          CaImagingShortDelaySlowFileList, ...
-                                          params.minNumTrialToAnalysis, params); 
-[nDataSetFast, nDataSetSMC] = getFakeSpikeOOPSIData(nDataSet, params);  
-nDataSet               = nDataSetFast;
+
+load([TempDatDir DataSetList(3).name '.mat'])
+nDataSet               = getFakeSpikeOOPSIData(nDataSet);  
 nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
 nData                  = 1;
-DataSetList(nData).name    = 'ModelSpikeFastOOPSI_Ca_Slow_Short_Delay';
-DataSetList(nData).params  = params; 
-DataSetList(nData).ActiveNeuronIndex = ~nonActiveNeuronIndex;
-save([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet');
-
-nDataSet               = nDataSetSMC;
-nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
-nData                  = 3;
-DataSetList(nData).name    = 'ModelSpikeSMCOOPSI_Ca_Slow_Short_Delay';
+DataSetList(nData).name    = 'ModelSpikeMCMC_OOPSI_Ca_Slow_Short_Delay';
 DataSetList(nData).params  = params; 
 DataSetList(nData).ActiveNeuronIndex = ~nonActiveNeuronIndex;
 save([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet');
@@ -61,22 +52,11 @@ params.timeWindowIndexRange  = minTimeToAnalysis : maxTimeToAnalysis;
 params.timeSeries      = params.timeWindowIndexRange * params.binsize;
 params.minNumTrialToAnalysis =  minNumTrialToAnalysis;
 params.expression      = 'Virus';
-nDataSet               = getCaImagingData(CaImagingShortDelaySlowVirusDir, ...
-                                          CaImagingShortDelaySlowVirusFileList, ...
-                                          params.minNumTrialToAnalysis, params);
-[nDataSetFast, nDataSetSMC] = getFakeSpikeOOPSIData(nDataSet, params);  
-nDataSet               = nDataSetFast;
+load([TempDatDir DataSetList(4).name '.mat'])
+nDataSet               = getFakeSpikeOOPSIData(nDataSet);  
 nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
 nData                  = 2;
-DataSetList(nData).name    = 'ModelSpikeFastOOPSI_Ca_Slow_Short_Delay_Virus';
-DataSetList(nData).params  = params; 
-DataSetList(nData).ActiveNeuronIndex = ~nonActiveNeuronIndex;
-save([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet');
-
-nDataSet               = nDataSetSMC;
-nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
-nData                  = 4;
-DataSetList(nData).name    = 'ModelSpikeSMCOOPSI_Ca_Slow_Short_Delay';
+DataSetList(nData).name    = 'ModelSpikeMCMC_OOPSI_Ca_Slow_Short_Delay_Virus';
 DataSetList(nData).params  = params; 
 DataSetList(nData).ActiveNeuronIndex = ~nonActiveNeuronIndex;
 save([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet');

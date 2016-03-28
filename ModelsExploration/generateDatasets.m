@@ -114,6 +114,7 @@ fileList     = dir([dataDir, dataFolders{nFolder}, '*.mat']);
             totCell(numCell).CaTime      = CaTime;
             totCell(numCell).spk         = spk;
             totCell(numCell).dff         = dff;
+            totCell(numCell).peak        = detectedSpikes;
         end
     end        
 end
