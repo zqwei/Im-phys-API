@@ -26,12 +26,6 @@ paramsSim = params;
 clear params;
 nData = 1;
 load([TempDatDir DataSetList(nData).name '.mat'])
-if ~exist([PlotDir 'ModelExampleSpikesWithDiffParams_6s_AAV'],'dir')
-    mkdir([PlotDir 'ModelExampleSpikesWithDiffParams_6s_AAV'])
-end   
-if ~exist([PlotDir 'ModelExampleSpikesWithDiffParams_6s_Tsg'],'dir')
-    mkdir([PlotDir 'ModelExampleSpikesWithDiffParams_6s_Tsg'])
-end       
 
 Fm              = 21.3240;
 intNoise        = 1.5;
@@ -47,6 +41,26 @@ params.tau_r           = paramsSim(1, nGroup).tau_r;
 params.tau_d           = paramsSim(1, nGroup).tau_d;
 params.intNoise        = intNoise;
 params.extNoise        = extNoise;   
+
+
+nUnitData       = spikeDataSet.unit_yes_trial;
+yesTrialRate    = mean(nUnitData, 1);
+nUnitData       = spikeDataSet.unit_no_trial;
+noTrialRate     = mean(nUnitData, 1);
+numYesTrial     = size(nUnitData, 1);
+numNoTrial      = size(nUnitData, 1);
+timeBins = params.timeSeries;
+binSize  = params.binsize;
+
+nFactor         = 10;
+
+[spkTime, spkCounts] = NHpoisson(yesTrialRate * nFactor, timeBins, binSize, numYesTrial);
+spikeDataSet.unit_yes_trial          = spkCounts;
+spikeDataSet.unit_yes_trial_spk_time = spkTime;
+[spkTime, spkCounts] = NHpoisson(noTrialRate * nFactor, timeBins, binSize, numNoTrial);
+spikeDataSet.unit_no_trial           = spkCounts;
+spikeDataSet.unit_no_trial_spk_time  = spkTime;
+
 
 figure;
 
@@ -157,8 +171,8 @@ xlim([params.timeSeries(1) params.timeSeries(end)]);
 set(gca, 'TickDir', 'out') 
 title('C2S model')
 
-setPrint(8*2, 6*2, ['ModelExampleForward_Backward_Trans_' num2str(nNeuron,'%04d')]) 
-setPrint(8*2, 6*2, ['ModelExampleForward_Backward_Trans_' num2str(nNeuron,'%04d')], 'png')    
+setPrint(8*2, 6*2, ['ModelExampleForward_Backward_Trans_' num2str(nNeuron,'%04d') 'nFactor_' num2str(round(nFactor))]) 
+setPrint(8*2, 6*2, ['ModelExampleForward_Backward_Trans_' num2str(nNeuron,'%04d') 'nFactor_' num2str(round(nFactor))], 'png')    
 
 close all;
 
