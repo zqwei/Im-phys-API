@@ -1,3 +1,5 @@
+*.png
+*.svg
 tempDat
 Plots
 tmp

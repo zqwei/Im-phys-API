@@ -55,28 +55,32 @@ Fold       = F;
 
 [smc, fast, F, estF] = smc_oopsi(F, V, Pest);
 tvec=0:V.dt:(T-1)*V.dt;
-
-figure;
-subplot(331)
-plot(tvec,F)
-subplot(334)
-plot(tvec,estF)
-title('smc')
-subplot(335)
-plot(tvec,fast.C*fast.P.a + fast.P.b)
-title('fast')
-
-subplot(332)
-stem(tvec,N); 
-
-subplot(338)
 Nfast = fast.n/max(fast.n);
 Nfast(Nfast<0.1) = 0;
-stem(tvec,Nfast);
-title('fast')
-
-subplot(337)
 Nsmc = smc.M.nbar/max(smc.M.nbar);
 Nsmc(Nsmc<0.1)=0;
-stem(tvec,Nsmc);
-title('smc')
+
+subplot(211)
+hold on
+plot(tvec,F, 'linewid', 1)
+plot(tvec,estF, 'linewid', 1)
+plot(tvec,fast.C*fast.P.a + fast.P.b, 'linewid', 1)
+xlim([0 100])
+ylabel([0 1])
+xlabel('time (sec)')
+ylabel('normalized F')
+box off
+legend('raw', 'smc', 'fast')
+
+subplot(212)
+hold on
+stem(tvec,N); 
+stem(tvec,Nsmc)
+stem(tvec,Nfast)
+xlim([0 100])
+ylabel([0 1])
+xlabel('time (sec)')
+ylabel('normalized # spk')
+box off
+setPrint(8, 6*2, 'smc_oopsi', 'png')
+setPrint(8, 6*2, 'smc_oopsi')

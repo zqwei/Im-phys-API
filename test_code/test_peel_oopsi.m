@@ -21,14 +21,29 @@ figure;
 [~,~, dataNL]  = peel_nl_oopsi(F', fr);
 subplot(211)
 hold on
-plot(tvec,F)
-plot(tvec,data.model)
-plot(tvec,dataNL.model)
-title('continuous time fast oopsi')
+plot(tvec,F, 'linewid', 1)
+plot(tvec,data.model, 'linewid', 1)
+plot(tvec,dataNL.model, 'linewid', 1)
+box off
+% title('continuous time fast oopsi')
+xlim([0 100])
+ylabel([0 1])
+xlabel('time (sec)')
+ylabel('normalized F')
+box off
+legend('raw', 'linear peel', 'NL peel')
+
 subplot(212)
 hold on
 stem(tvec,N); 
 stem(tvec,data.spiketrain)
 stem(tvec,dataNL.spiketrain)
-title('continuous time fast oopsi')
+% title('continuous time fast oopsi')
+xlim([0 100])
+ylabel([0 1])
+xlabel('time (sec)')
+ylabel('normalized # spk')
+box off
+setPrint(8, 6*2, 'peel_oopsi', 'png')
+setPrint(8, 6*2, 'peel_oopsi')
 

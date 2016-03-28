@@ -19,13 +19,27 @@ figure;
 [cont, constr] = conttime_oopsi(F);
 subplot(211)
 hold on
-plot(tvec,F)
-plot(tvec,cont.F_est)
-plot(tvec,constr.F_est)
-title('continuous time fast oopsi')
+plot(tvec,F, 'linewid', 1)
+plot(tvec,cont.F_est, 'linewid', 1)
+plot(tvec,constr.F_est, 'linewid', 1)
+xlim([0 100])
+ylabel([0 1])
+xlabel('time (sec)')
+ylabel('normalized F')
+box off
+% title('continuous time fast oopsi')
+legend('raw', 'MCMC', 'CVX')
+
 subplot(212)
 hold on
 stem(tvec,N); 
-plot(tvec,cont.spk)
-plot(tvec,constr.spk)
-title('continuous time fast oopsi')
+stem(tvec,cont.spk)
+stem(tvec,constr.spk)
+% title('continuous time fast oopsi')
+xlim([0 100])
+ylabel([0 1])
+xlabel('time (sec)')
+ylabel('normalized # spk')
+box off
+setPrint(8, 6*2, 'continuous_foopsi', 'png')
+setPrint(8, 6*2, 'continuous_foopsi')

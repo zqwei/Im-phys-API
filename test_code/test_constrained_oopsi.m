@@ -23,9 +23,9 @@ subplot(211)
 hold on
 plot(tvec,F)
 plot(tvec,c) % c is F_est
-title('constrained_foopsi')
+% title('constrained_foopsi')
 subplot(212)
 hold on
 stem(tvec,N); 
 plot(tvec,sp) %sp is n_bar in most of foopsi code
-title('constrained_foopsi')
+% title('constrained_foopsi')
