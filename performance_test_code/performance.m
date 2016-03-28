@@ -1,64 +1,173 @@
-% I incorporte some performance test from FRI code
-% Only take into account the peak of the histograms
-sspp       = [];
-threshold  = 0.45 * max_detect;
-for ith_t = 1 : hist_len
-    if hist_sp(ith_t) > threshold
-        if ( ith_t < hist_len && (hist_sp(ith_t) >= hist_sp(ith_t+1)) ) ...
-        && ( ith_t > 1       && (hist_sp(ith_t) >  hist_sp(ith_t-1)) )
-            t_i  = hist_t(ith_t);
-            inds = find(t_k > (t_i - delta_t/2) & t_k < (t_i + delta_t/2));
-            sspp = [sspp; mean(t_k(inds))];
-        end
-    end
-end
+tempFitDir = '../tempDat/';
+plotDir = '../plotExampleNeuron/';
+load('../KS_dat_fit/DataListCells.mat');
+xlimMin = 0;
+xlimMax = 50;
 
-% Retrieve the amplitudes of the spikes
-ap   = retrieve_amplitudes(noisy_signal, t, sp, 7*T_s, .5);
-aapp = retrieve_amplitudes(noisy_signal, t, sspp, 7*T_s, .5);
+dffPerformance = zeros(length(totCell), 9);
+spkPerformance = zeros(length(totCell), 9);
 
-% Remove spikes with an amplitude smaller than a threshold
-max_amp = max(noisy_signal);
-sspp(aapp < 0.3 * max_amp) = [];
-aapp(aapp < 0.3 * max_amp) = [];
-
-% Compare the detected spikes with the real spikes
-num_sp   = length(sp);
-hit_sp   = false(num_sp, 1);
-sspp_ids = [];
-sspp_cpy = sspp;
-delta_t  = 2*T_s;
-for ith_sp = 1 : num_sp
-    t_i  = sp(ith_sp);
-    inds = find(sspp_cpy > (t_i - delta_t/2) & sspp_cpy < (t_i + delta_t/2));
+for nCell  = 1:length(totCell)
+    load([tempFitDir 'Fast_oopsi_fit_Cell_' num2str(nCell) '.mat'])
+    load([tempFitDir 'FRI_oopsi_fit_Cell_' num2str(nCell) '.mat'])
+    load([tempFitDir 'MCMC_oopsi_fit_Cell_' num2str(nCell) '.mat'])
+    load([tempFitDir 'Peel_oopsi_fit_Cell_' num2str(nCell) '.mat'])
+    t_vec  = totCell(nCell).CaTime;
+    spk    = totCell(nCell).spk;
+    dff    = totCell(nCell).dff;
+    t_frame = t_vec;
+    normalized_dff     = normalized_dat(dff);
+    n_spk              = hist(spk, t_frame);
+    n_spk              = n_spk/max(n_spk);
+    corr_dff = corr(normalized_dff, normalized_dat(wiener.F_est_nonneg)');
+    dffPerformance(nCell, 1) = corr_dff;
     
-    if ~isempty(inds)
-        hit_sp(ith_sp) = true;
-        sspp_ids       = [sspp_ids; find(sspp == sspp_cpy(inds(1)))];
-        
-        % Remove this spike from detected spikes
-        sspp_cpy(inds(1)) = [];
-        
-        if length(inds) > 1
-            warning('More than one spike detected in the neighbourhood of a real spike');
-        end
+    corr_dff = corr(normalized_dff, normalized_dat(fast.F_est)');
+    dffPerformance(nCell, 2) = corr_dff;
+    
+    corr_dff = corr(normalized_dff, normalized_dat(fri.F_est));
+    dffPerformance(nCell, 3) = corr_dff;
+
+    corr_dff = corr(normalized_dff, normalized_dat(cf1.c)');
+    dffPerformance(nCell, 4) = corr_dff;
+
+    corr_dff = corr(normalized_dff, normalized_dat(cf2.c)');
+    dffPerformance(nCell, 5) = corr_dff;
+    
+    corr_dff = corr(normalized_dff, normalized_dat(cf3.c)');
+    dffPerformance(nCell, 6) = corr_dff;
+
+    corr_dff = corr(normalized_dff, normalized_dat(cont.F_est)');
+    dffPerformance(nCell, 7) = corr_dff;
+
+    corr_dff = corr(normalized_dff, normalized_dat(peel.model)');
+    dffPerformance(nCell, 8) = corr_dff;
+
+    corr_dff = corr(normalized_dff, normalized_dat(peelNL.model)');
+    dffPerformance(nCell, 9) = corr_dff;
+
+    corr_dff = corr(n_spk', wiener.d'/max(wiener.d),'type','Spearman');
+    spkPerformance(nCell, 1) = corr_dff;
+
+    corr_dff = corr(n_spk', fast.d'/max(fast.d),'type','Spearman');
+    spkPerformance(nCell, 2) = corr_dff;
+
+    fri_spk   = hist(fri.spk, t_frame);
+    if max(fri_spk) > 0
+        fri_spk   = fri_spk/max(fri_spk);
+    else
+        fri_spk   = fri_spk';
     end
+    corr_dff = corr(n_spk', fri_spk','type','Spearman');
+    spkPerformance(nCell, 3) = corr_dff;
+    
+    corr_dff = corr(n_spk', cf1.spikes'/max(cf1.spikes),'type','Spearman');
+    spkPerformance(nCell, 4) = corr_dff;
+
+    corr_dff = corr(n_spk', cf2.spikes'/max(cf2.spikes),'type','Spearman');
+    spkPerformance(nCell, 5) = corr_dff;
+    
+    corr_dff = corr(n_spk', cf3.spikes'/max(cf3.spikes),'type','Spearman');
+    spkPerformance(nCell, 6) = corr_dff;
+
+    corr_dff = corr(n_spk', cont.spk'/max(cont.spk),'type','Spearman');
+    spkPerformance(nCell, 7) = corr_dff;
+
+    corr_dff = corr(normalized_dff, peel.spiketrain'/max(peel.spiketrain),'type','Spearman');
+    spkPerformance(nCell, 8) = corr_dff;
+
+    corr_dff = corr(normalized_dff, peelNL.spiketrain'/max(peelNL.spiketrain),'type','Spearman');
+    spkPerformance(nCell, 9) = corr_dff;
 end
 
-% Accuracy of detected spikes
-hit_rate  = sum(hit_sp) / length(hit_sp) * 100;
-false_pos = length(sspp_cpy);
-mse       = mean( (sp(hit_sp) - sspp(sspp_ids)).^2 );
-disp('')
-disp('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-disp(['++++ SLIDING WINDOW Ca transient detection algorithm double consistency'])
-disp(['++++ win_len1 = ' num2str(win_len1) ', win_len2 = ' num2str(win_len2)])
-disp(['Total number of real spikes     : ' num2str(num_sp)])
-disp(['Total number of detected spikes : ' num2str(length(sspp))])
-disp(['Real spikes detected            : ' num2str(sum(hit_sp))])
-disp(['MSE of spike locations          : ' num2str(mse)])
-disp(['RMSE of spike locations         : ' num2str(sqrt(mse))])
-disp(['Spike detection rate            : ' num2str(hit_rate) '%'])
-disp(['False positives                 : ' num2str(false_pos)])
-disp(['False positives rate            : ' num2str(false_pos/len) ' Hz'])
-disp(' ')
+
+
+
+
+
+
+expression  = {'virus', 'virus', 'transgenic', 'transgenic'};
+CaIndicator = {'GCaMP6f', 'GCaMP6s', 'GCaMP6f', 'GCaMP6s'};
+group    = nan(length(totCell), 1);
+for nGroup = 1:length(expression)    
+    indexExpression = strcmp(expression{nGroup}, {totCell.expression});
+    indexCaInd      = strcmp(CaIndicator{nGroup}, {totCell.CaIndicator});
+    group(indexExpression & indexCaInd)     = nGroup;
+end
+
+groups = group * ones(1, 9);
+figure;
+scatter(spkPerformance(:), dffPerformance(:),[],groups(:),'filled')
+xlabel('spk. corr.')
+ylabel('dff corr.')
+xlim([0 0.4])
+ylim([0 1])
+setPrint(8, 6, 'xcorr_performance')
+setPrint(8, 6, 'xcorr_performance','png')
+
+groupColor = [         0    0.4470    0.7410
+    0.9290    0.6940    0.1250
+    0.3010    0.7450    0.9330
+    0.6350    0.0780    0.1840];
+
+nTitles = {'wiener', 'fast', 'fri', 'cvx(1)', 'cvx(2)', 'cvx(3)', 'mcmc', 'peel', 'peel(NL)'};
+figure;
+[~, ax, ~] = gplotmatrix(dffPerformance, [], group, groupColor, 'oooo', [], 'off', [], nTitles, nTitles);
+for nAx   = 1:length(nTitles)
+    for mAx = 1:length(nTitles)
+        if nAx ~= mAx
+            axes(ax(mAx, nAx)); %#ok<LAXES>
+            hold on;
+            plot ([0 1], [0 1], '--k','linewid', 1.0);
+            hold off;
+            xlim(ax(mAx, nAx), [0 1]);
+            ylim(ax(mAx, nAx), [0 1]);
+        end            
+    end
+end
+setPrint(8*5, 6*5, 'dff_performance')
+setPrint(8*5, 6*5, 'dff_performance','png')
+
+figure;
+[~, ax, ~] = gplotmatrix(spkPerformance, [], group, groupColor, 'oooo', [], 'off', [], nTitles, nTitles);
+for nAx   = 1:length(nTitles)
+    for mAx = 1:length(nTitles)
+        if nAx ~= mAx
+            axes(ax(mAx, nAx)); %#ok<LAXES>
+            hold on;
+            plot ([0 1], [0 1], '--k','linewid', 1.0);
+            hold off;
+            xlim(ax(mAx, nAx), [0 1]);
+            ylim(ax(mAx, nAx), [0 1]);
+        end            
+    end
+end
+setPrint(8*5, 6*5, 'spk_performance')
+setPrint(8*5, 6*5, 'spk_performance','png')
+
+load('../KS_dat_fit/ParamsFitCells_S2CModel_Fmfix.mat', 'paras');
+numSpk = arrayfun(@(x) length(x.spk)/x.CaTime(end), totCell, 'uniformoutput', false);
+numSpk = cell2mat(numSpk);
+parasFmFix = paras;
+ev_snr = [parasFmFix.ev];
+figure;
+scatter(spkPerformance(:, 7), dffPerformance(:, 7), [], ev_snr, 'filled')
+colorbar
+xlabel('spk. corr.')
+ylabel('dff corr.')
+xlim([0 0.4])
+ylim([0.4 1])
+title('SNR')
+setPrint(8, 6, 'ev_snr_performance')
+setPrint(8, 6, 'ev_snr_performance','png')
+
+figure;
+scatter(spkPerformance(:, 7), dffPerformance(:, 7), [], numSpk, 'filled')
+colorbar
+xlabel('spk. corr.')
+ylabel('dff corr.')
+xlim([0 0.4])
+ylim([0.4 1])
+title('Spiking rate')
+setPrint(8, 6, 'fr_performance')
+setPrint(8, 6, 'fr_performance','png')
