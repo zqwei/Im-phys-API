@@ -48,11 +48,11 @@ load('colorbrewer.mat')
 % initialise the colormap is there are any problems
 colormap=[];
 if (~exist('interp_method', 'var'))
-    interp_method='cubic';
+    interp_method='PCHIP';
 end
 
 % If no arguments
-if (~exist('ctype', 'var') | ~exist('cname', 'var') | ~exist('ncol', 'var'))
+if (~exist('ctype', 'var') || ~exist('cname', 'var') || ~exist('ncol', 'var'))
     disp(' ')
     disp('[colormap] = cbrewer(ctype, cname, ncol [, interp_method])')
     disp(' ')
