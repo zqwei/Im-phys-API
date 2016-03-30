@@ -32,9 +32,7 @@ params.expression      = 'Transgentic';
 nData                  = 1;
 DataSetList(nData).name    = 'ModelSpikeMCMC_OOPSI_Ca_Slow_Short_Delay';
 fileName               = [batchClusterDir DataSetList(nData).name '_'];
-load([TempDatDir DataSetList(3).name '.mat'])
-oldDataSet             = nDataSet;
-for nCell              = 1:length(oldDataSet)
+for nCell              = 1:3333
     load([fileName num2str(nCell) '.mat'])
     nDataSet(nCell)   = DataSetOOPSI; %#ok<SAGROW>
 end
@@ -56,16 +54,12 @@ params.timeWindowIndexRange  = minTimeToAnalysis : maxTimeToAnalysis;
 params.timeSeries      = params.timeWindowIndexRange * params.binsize;
 params.minNumTrialToAnalysis =  minNumTrialToAnalysis;
 params.expression      = 'Virus';
-
-
 nData                  = 2;
 DataSetList(nData).name    = 'ModelSpikeMCMC_OOPSI_Ca_Slow_Short_Delay_Virus';
 fileName               = [batchClusterDir DataSetList(nData).name '_'];
-load([TempDatDir DataSetList(4).name '.mat'])
-oldDataSet             = nDataSet;
-for nCell              = 1:length(oldDataSet)
+for nCell              = 1:4439
     load([fileName num2str(nCell) '.mat'])
-    nDataSet(nCell)   = DataSetOOPSI; %#ok<SAGROW>
+    nDataSet(nCell)   = DataSetOOPSI;
 end
 nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
 DataSetList(nData).params  = params; 
