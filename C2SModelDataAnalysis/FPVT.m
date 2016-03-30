@@ -20,8 +20,8 @@ end
 for nData                     = 1:length(DataSetList)
     load([TempDatDir DataSetList(nData).name '.mat']);
     numUnits                  = length(nDataSet);
-    pValue                    = applyFuncToCompareTrialType(nDataSet, @pValueTTest2);
-    meanDiffValue             = applyFuncToCompareTrialType(nDataSet, @meanDiff);
+    pValue                    = applyFuncToCompareTrialTypeVec(nDataSet, @pValueTTest2)';
+    meanDiffValue             = applyFuncToCompareTrialTypeVec(nDataSet, @meanDiff)';
     logPValue                 = -log(pValue);
     % yes  -- blue trial
     % no   -- red trial

@@ -54,7 +54,7 @@ for nData             = 1:length(DataSetList)
             randPickUnits       = randperm(length(nDataSet));
             randPickUnits       = randPickUnits(1:numRandPickUnits*stepSize);
 
-            nSessionData        = shuffleSessionData(nDataSet(randPickUnits), totTargets, numTestTrials);
+            nSessionData        = shuffleSessionDataVec(nDataSet(randPickUnits), totTargets, numTestTrials);
             decodability(nFold,:) = decodabilityLDA(nSessionData +randn(size(nSessionData))*1e-3/sqrt(numTrials)* addNoise(nData), trainingTargets, testTargets);
         end
         decodabilityAll(numRandPickUnits, :) = mean(decodability,1);
@@ -103,7 +103,7 @@ for nData             = 1:length(DataSetList)
             randPickUnits       = randperm(length(nDataSet));
             randPickUnits       = randPickUnits(1:numRandPickUnits*stepSize);
 
-            nSessionData        = shuffleSessionData(nDataSet(randPickUnits), totTargets, numTestTrials);
+            nSessionData        = shuffleSessionDataVec(nDataSet(randPickUnits), totTargets, numTestTrials);
             decodability(nFold,:) = decodabilityLDA(nSessionData +randn(size(nSessionData))*1e-3/sqrt(numTrials)* addNoise(nData), trainingTargets, testTargets);
         end
         decodabilityAll(numRandPickUnits, :) = mean(decodability,1);

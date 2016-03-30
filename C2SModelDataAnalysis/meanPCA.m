@@ -29,7 +29,7 @@ cmap = [         0    0.4470    0.7410
 for nData              = 1:length(DataSetList)
     load([TempDatDir DataSetList(nData).name '.mat']);
     evMat              = zeros(numFold, length(combinedParams), numComps);
-    firingRates        = generateDPCAData(nDataSet, numTrials);
+    firingRates        = generateDPCADataVec(nDataSet, numTrials);
     firingRatesAverage = nanmean(firingRates, ndims(firingRates));
     pcaX               = firingRatesAverage(:,:);
     firingRatesAverage = bsxfun(@minus, firingRatesAverage, mean(pcaX,2));

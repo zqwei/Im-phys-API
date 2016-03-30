@@ -31,7 +31,7 @@ for nData             = 1:length(DataSetList)
     
     for nFold             = 1:numFold
         currRandPickUnits     = numRandPickUnits;
-        nSessionData = shuffleSessionData(nDataSet(randperm(numUnits, currRandPickUnits)), totTargets, numTrials);
+        nSessionData = shuffleSessionDataVec(nDataSet(randperm(numUnits, currRandPickUnits)), totTargets, numTrials);
         nSessionData = normalizationDim(nSessionData, 2);
         coeffs       = coeffLDA(nSessionData, totTargets);
         corrMat(nFold, :, :) = coeffs'*coeffs;

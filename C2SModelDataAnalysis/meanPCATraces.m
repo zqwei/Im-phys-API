@@ -18,7 +18,7 @@ end
 
 for nData              = 1:length(DataSetList)
     load([TempDatDir DataSetList(nData).name '.mat']);
-    firingRates        = generateDPCAData(nDataSet, numTrials);
+    firingRates        = generateDPCADataVec(nDataSet, numTrials);
     firingRatesAverage = nanmean(firingRates, ndims(firingRates));
     pcaFiringRatesAverage = zeros(numComps, 2, 77);
     firingRatesAverage = [squeeze(firingRatesAverage(:, 1, :)), squeeze(firingRatesAverage(:, 2, :));];
