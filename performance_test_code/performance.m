@@ -157,7 +157,7 @@ xlabel('spk. corr.')
 ylabel('dff corr.')
 xlim([0 0.4])
 ylim([0.4 1])
-title('SNR')
+title('EV from S2C model')
 setPrint(8, 6, 'ev_snr_performance')
 setPrint(8, 6, 'ev_snr_performance','png')
 
@@ -171,3 +171,33 @@ ylim([0.4 1])
 title('Spiking rate')
 setPrint(8, 6, 'fr_performance')
 setPrint(8, 6, 'fr_performance','png')
+
+
+load('../KS_dat_fit/ParamsFitCells_S2CModel_Fmfix.mat', 'paras');
+varDFF = arrayfun(@(x) std(x.dff), totCell, 'uniformoutput', false);
+varStdDFF = arrayfun(@(x) std(x.dff)/(max(x.dff)-min(x.dff)), totCell, 'uniformoutput', false);
+varDFF = cell2mat(varDFF);
+varStdDFF = cell2mat(varStdDFF);
+figure;
+scatter(spkPerformance(:, 7), dffPerformance(:, 7), [], log(varDFF), 'filled')
+colorbar
+xlabel('spk. corr.')
+ylabel('dff corr.')
+caxis([-2 1])
+xlim([0 0.4])
+ylim([0.4 1])
+title('log of std. dff')
+setPrint(8, 6, 'vardff_performance')
+setPrint(8, 6, 'vardff_performance','png')
+
+figure;
+scatter(spkPerformance(:, 7), dffPerformance(:, 7), [], log(varStdDFF), 'filled')
+colorbar
+xlabel('spk. corr.')
+ylabel('dff corr.')
+xlim([0 0.4])
+ylim([0.4 1])
+title('log of std. norm. dff')
+caxis([-3 -1.5])
+setPrint(8, 6, 'varstddff_performance')
+setPrint(8, 6, 'varstddff_performance','png')
