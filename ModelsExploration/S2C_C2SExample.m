@@ -52,7 +52,7 @@ numNoTrial      = size(nUnitData, 1);
 timeBins = params.timeSeries;
 binSize  = params.binsize;
 
-nFactor         = 10;
+nFactor         = 5;
 
 [spkTime, spkCounts] = NHpoisson(yesTrialRate * nFactor, timeBins, binSize, numYesTrial);
 spikeDataSet.unit_yes_trial          = spkCounts;

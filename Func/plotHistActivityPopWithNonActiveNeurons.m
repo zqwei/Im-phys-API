@@ -19,7 +19,11 @@ function plotHistActivityPopWithNonActiveNeurons(nDataSet, params, barSeries, nF
     m                   = ceil(sqrt(length(timePoints)-1));
     figure;
     
+<<<<<<< Updated upstream
 %     suptitle(nDataSetName);
+=======
+    suptitle(nDataSetName);
+>>>>>>> Stashed changes
     % barSeries           = 10;
     
     nTitle              = {'Pre-sample', 'Sample', 'Delay', 'Response'};

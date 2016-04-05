@@ -1,15 +1,26 @@
 ---
 title: Trade-off between decodability of stimulus and precision of temporal dynamics
   in different recording methods
+<<<<<<< Updated upstream
 output:
   html_document:
     css: pdfprint.css
+=======
+# author: "Ziqiang Wei"
+# date: '`r Sys.Date()`'
+output:
+  html_document:
+>>>>>>> Stashed changes
     toc: no
     toc_float:
       collapsed: no
       smooth_scroll: no
+<<<<<<< Updated upstream
   pdf_document:
     toc: no
+=======
+    css: "pdfprint.css"
+>>>>>>> Stashed changes
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, results='asis')
@@ -100,10 +111,24 @@ where set $t_{spike}$ is spike times of a recorded spike train; $\tau_d$ is the 
 
 ### Figure 3b1 -- Baseline spiking rate can result in differences in fluorescence data, even the activity profiles are identical
 ### Figure 3b2 -- Variability of parameters in Spike-to-Calcium can explain also explain variation of activity profiles from spike to calcium imaging datasets
+<<<<<<< Updated upstream
 ![](../Plot/ModelExampleSpikesWithDiffParams_6s_AAV/S2CModelNeuronIndex_0030.svg)
 
 
 ![](../Plot/ModelCellFits/S2CVariabilityActivityProfile_6s_AAV.png)
+=======
+![](../Plot/ModelExampleSpikesWithDiffParams/S2CModelNeuronIndex_0030.svg)
+
+
+
+
+
+
+
+
+
+
+>>>>>>> Stashed changes
 
 ### Figure 3d Normalized neuronal activity
 ```{r}

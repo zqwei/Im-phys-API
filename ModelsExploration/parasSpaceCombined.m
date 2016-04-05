@@ -29,7 +29,7 @@ groupColor = [         0    0.4470    0.7410
 figure;
 
 timeSeriesData = 0:1/60:2;
-NLx            = 0:1:20;
+NLx            = 0:0.01:3.5;
 
 for nCell   = 1:length(totCell)  
     K       = paras(nCell).K;
@@ -39,8 +39,13 @@ for nCell   = 1:length(totCell)
     Delta_t = max(timeSeriesData-0.05,0);
     linePlot= exp(-Delta_t/tau_d).*(1-exp(-Delta_t/tau_r));
     NLPlot  = NLx.^n./(NLx.^n+K^n);
+    t_frame      = totCell(nCell).CaTime;
+    spk          = totCell(nCell).spk;
+    para_final = [10, K, n, tau_d, tau_r];
+    [~, fitCaTraces] = func_getCaTraces_general_new({spk}, t_frame,para_final);
+
     
-    subplot(1, 2, 1)
+    subplot(1, 3, 1)
     hold on
     plot(timeSeriesData, linePlot./max(linePlot), '-', 'color', groupColor(group(nCell),:));
     title('linear integration')
@@ -48,14 +53,24 @@ for nCell   = 1:length(totCell)
     ylabel('Normalized [Ca++]')
     xlim([0 2])
     
-    subplot(1, 2, 2)
+    subplot(1, 3, 2)
     hold on
     plot(NLx, NLPlot./max(NLPlot), '-', 'color', groupColor(group(nCell),:));
-    title('nonlinear integration')
+    title('nonlinear function')
     xlabel('[Ca++]')
     ylabel('Normalized F')
-    xlim([0 20])   
+    xlim([0 3.5])   
+    
+    subplot(1, 3, 3)
+    hold on
+    [f, xi] = ksdensity(fitCaTraces);
+    plot(xi, f , '-', 'color', groupColor(group(nCell),:))
+    title('Modeled [Ca++] distribution')
+    xlabel('[Ca++]')
+    ylabel('prob. dens.')
+    xlim([-0.5 3.5])
+    ylim([0 2])
 end
 
-setPrint(8*2, 6, [PlotDir 'ModelCellFits/ParamsComparisonCombined'])
-setPrint(8*2, 6, [PlotDir 'ModelCellFits/ParamsComparisonCombined'],'png')
+setPrint(8*3, 6, [PlotDir 'ModelCellFits/ParamsComparisonCombined'])
+setPrint(8*3, 6, [PlotDir 'ModelCellFits/ParamsComparisonCombined'],'png')

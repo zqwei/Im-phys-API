@@ -43,11 +43,18 @@ params.timeWindowIndexRange  = minTimeToAnalysis : maxTimeToAnalysis;
 params.timeSeries      = params.timeWindowIndexRange * params.binsize;
 params.minNumTrialToAnalysis =  minNumTrialToAnalysis;
 params.expression      = 'Transgentic';
+<<<<<<< Updated upstream:ConfoundingFactorAnalysis/generateDatasets.m
 nDataSet               = getCaImagingData(CaImagingShortDelayFastDir, ...
                                           CaImagingShortDelayFastFileList, ...
                                           params.minNumTrialToAnalysis, params); 
 nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
 DataSetList(2).name    = 'ShuffleConfounding_Ca_Fast_Short_Delay';
+=======
+nDataSet               = getCaImagingData(CaImagingShortDelayFastDir, CaImagingShortDelayFastFileList, params.minNumTrialToAnalysis, params); %#ok<NASGU>
+nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
+nDataSet               = nDataSet(~nonActiveNeuronIndex);
+DataSetList(2).name    = 'Shuffle_Ca_Fast_Short_Delay';
+>>>>>>> Stashed changes:Shuffled_Data_Code/Comparison_V1_0.m
 DataSetList(2).params  = params; 
 DataSetList(2).ActiveNeuronIndex = ~nonActiveNeuronIndex;
 save([TempDatDir DataSetList(2).name '.mat'], 'nDataSet');
@@ -65,11 +72,18 @@ params.timeWindowIndexRange  = minTimeToAnalysis : maxTimeToAnalysis;
 params.timeSeries      = params.timeWindowIndexRange * params.binsize;
 params.minNumTrialToAnalysis =  minNumTrialToAnalysis;
 params.expression      = 'Transgentic';
+<<<<<<< Updated upstream:ConfoundingFactorAnalysis/generateDatasets.m
 nDataSet               = getCaImagingData(CaImagingShortDelaySlowDir, ...
                                           CaImagingShortDelaySlowFileList, ...
                                           params.minNumTrialToAnalysis, params); 
 nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
 DataSetList(3).name    = 'ShuffleConfounding_Ca_Slow_Short_Delay';
+=======
+nDataSet               = getCaImagingData(CaImagingShortDelaySlowDir, CaImagingShortDelaySlowFileList, params.minNumTrialToAnalysis, params); %#ok<NASGU>
+nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
+nDataSet               = nDataSet(~nonActiveNeuronIndex);
+DataSetList(3).name    = 'Shuffle_Ca_Slow_Short_Delay';
+>>>>>>> Stashed changes:Shuffled_Data_Code/Comparison_V1_0.m
 DataSetList(3).params  = params; 
 DataSetList(3).ActiveNeuronIndex = ~nonActiveNeuronIndex;
 save([TempDatDir DataSetList(3).name '.mat'], 'nDataSet');
@@ -88,11 +102,18 @@ params.timeWindowIndexRange  = minTimeToAnalysis : maxTimeToAnalysis;
 params.timeSeries      = params.timeWindowIndexRange * params.binsize;
 params.minNumTrialToAnalysis =  minNumTrialToAnalysis;
 params.expression      = 'Transgentic';
+<<<<<<< Updated upstream:ConfoundingFactorAnalysis/generateDatasets.m
 nDataSet               = getCaImagingData(CaImagingLongDelayFastDir, ...
                                           CaImagingLongDelayFastFileList, ...
                                           params.minNumTrialToAnalysis, params); 
 nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
 DataSetList(4).name    = 'ShuffleConfounding_Ca_Fast_Long_Delay';
+=======
+nDataSet               = getCaImagingData(CaImagingLongDelayFastDir, CaImagingLongDelayFastFileList, params.minNumTrialToAnalysis, params); %#ok<NASGU>
+nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
+nDataSet               = nDataSet(~nonActiveNeuronIndex);
+DataSetList(4).name    = 'Shuffle_Ca_Fast_Long_Delay';
+>>>>>>> Stashed changes:Shuffled_Data_Code/Comparison_V1_0.m
 DataSetList(4).params  = params; 
 DataSetList(4).ActiveNeuronIndex = ~nonActiveNeuronIndex;
 save([TempDatDir DataSetList(4).name '.mat'], 'nDataSet');
@@ -110,11 +131,18 @@ params.timeWindowIndexRange  = minTimeToAnalysis : maxTimeToAnalysis;
 params.timeSeries      = params.timeWindowIndexRange * params.binsize;
 params.minNumTrialToAnalysis =  minNumTrialToAnalysis;
 params.expression      = 'Transgentic';
+<<<<<<< Updated upstream:ConfoundingFactorAnalysis/generateDatasets.m
 nDataSet               = getCaImagingData(CaImagingLongDelaySlowDir, ...
                                           CaImagingLongDelaySlowFileList, ...
                                           params.minNumTrialToAnalysis, params); 
 nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
 DataSetList(5).name    = 'SShuffleConfounding_Ca_Slow_Long_Delay';
+=======
+nDataSet               = getCaImagingData(CaImagingLongDelaySlowDir, CaImagingLongDelaySlowFileList, params.minNumTrialToAnalysis, params); %#ok<NASGU>
+nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
+nDataSet               = nDataSet(~nonActiveNeuronIndex);
+DataSetList(5).name    = 'Shuffle_Ca_Slow_Long_Delay';
+>>>>>>> Stashed changes:Shuffled_Data_Code/Comparison_V1_0.m
 DataSetList(5).params  = params; 
 DataSetList(5).ActiveNeuronIndex = ~nonActiveNeuronIndex;
 save([TempDatDir DataSetList(5).name '.mat'], 'nDataSet');
@@ -132,11 +160,18 @@ params.timeWindowIndexRange  = minTimeToAnalysis : maxTimeToAnalysis;
 params.timeSeries      = params.timeWindowIndexRange * params.binsize;
 params.minNumTrialToAnalysis =  minNumTrialToAnalysis;
 params.expression      = 'Virus';
+<<<<<<< Updated upstream:ConfoundingFactorAnalysis/generateDatasets.m
 nDataSet               = getCaImagingData(CaImagingShortDelaySlowVirusDir, ...
                                           CaImagingShortDelaySlowVirusFileList, ...
                                           params.minNumTrialToAnalysis, params);
 nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
 DataSetList(6).name    = 'ShuffleConfounding_Ca_Slow_Short_Delay_Virus';
+=======
+nDataSet               = getCaImagingData(CaImagingShortDelaySlowVirusDir, CaImagingShortDelaySlowVirusFileList, params.minNumTrialToAnalysis, params);
+nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
+nDataSet               = nDataSet(~nonActiveNeuronIndex);
+DataSetList(6).name    = 'Shuffle_Ca_Slow_Short_Delay_Virus';
+>>>>>>> Stashed changes:Shuffled_Data_Code/Comparison_V1_0.m
 DataSetList(6).params  = params; 
 DataSetList(6).ActiveNeuronIndex = ~nonActiveNeuronIndex;
 save([TempDatDir DataSetList(6).name '.mat'], 'nDataSet');

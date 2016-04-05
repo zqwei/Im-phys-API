@@ -25,7 +25,10 @@ function CaImaging    = spikeTimeToImaging(spikeTimes, timeSeriesData, params, r
     n           = params(3);
     tau_decay   = params(4);
     tau_rise    = params(5);
+<<<<<<< Updated upstream
     intNoise    = params(6);
+=======
+>>>>>>> Stashed changes
 
     Ca                        = zeros(length(spikeTimes), length(timeSeriesData));
     
@@ -43,6 +46,11 @@ function CaImaging    = spikeTimeToImaging(spikeTimes, timeSeriesData, params, r
         end
     end
     
+<<<<<<< Updated upstream
     Ca                        = Ca + randn(size(Ca))*intNoise;    
     Ca(Ca<0)                  = 0;    
     CaImaging                 = Fm* Ca.^n ./ (K^n + Ca.^n);
+=======
+    CaImaging                 = Fm* Ca.^n ./ (K^n + Ca.^n);
+%     CaImaging                 = (randn(size(CaImaging))*0.1+1).*CaImaging;
+>>>>>>> Stashed changes

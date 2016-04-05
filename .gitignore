@@ -16,7 +16,17 @@ ModelsExplorationSever
 *.pdf
 *.png
 *.tiff
+<<<<<<< Updated upstream
 *.svg
 *.mat
 *.m~
 S2CParameterExpoloration/
+=======
+*.key
+*.jpeg
+*.pages
+*.html
+*.docx
+*.md
+*.pptx
+>>>>>>> Stashed changes
