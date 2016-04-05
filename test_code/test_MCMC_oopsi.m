@@ -16,7 +16,8 @@ F = P.a*C+P.b + P.sig*randn(T,1);   % observations
 tvec=0:V.dt:(T-1)*V.dt;
 
 figure;
-[cont, constr] = conttime_oopsi(F);
+cont   = conttime_oopsi(F);
+constr = cont.params;
 subplot(211)
 hold on
 plot(tvec,F, 'linewid', 1)

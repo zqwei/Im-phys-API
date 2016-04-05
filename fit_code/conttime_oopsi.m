@@ -375,6 +375,7 @@ function SAMPLES = conttime_oopsi(Y,params)
         SAMPLES.HMC2   = true;
     catch
         SAMPLES        = SAM;
+        SAMPLES.params = params.init;
         SAMPLES.HMC2   = false;
     end
 end
