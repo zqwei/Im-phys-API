@@ -80,6 +80,8 @@ function [SAMPLES, SAM] = conttime_oopsi(Y,params)
         if ~isfield(params,'c1_lb'); params.c1_lb = defparams.c1_lb; end
         if ~isfield(params,'print_flag'); params.print_flag = defparams.print_flag; end
     end
+    
+    %% ZW: compute SAM (no MCMC result as initialization)
     Dt = 1;                                     % length of time bin
     marg_flag = params.marg;
     gam_flag = params.upd_gam;
@@ -97,267 +99,289 @@ function [SAMPLES, SAM] = conttime_oopsi(Y,params)
        fprintf('done. \n');
     end 
     SAM = params.init;
-    g = SAM.g(:)';
-    if g == 0 %#ok<BDSCI>
-        gr = [0.9,0.1];
-        pl = poly(gr);
-        g = -pl(2:end);
-        p = 2;
-    end
-    gr = sort(roots([1,-g(:)']));
-    if p == 1; gr = [0,gr]; end
-    if any(gr<0) || any(~isreal(gr)) || length(gr)>2 || max(gr)>0.998
-        gr = params.defg;
-    end
-    tau = -Dt./log(gr);
-    tau1_std = max(tau(1)/100,params.TauStd(1));
-    tau2_std = min(tau(2)/5,params.TauStd(2)); 
-    ge = max(gr).^(0:T-1)';
-    if p == 1
-        G1 = sparse(1:T,1:T,Inf*ones(T,1));
-    elseif p == 2
-        G1 = spdiags(ones(T,1)*[-min(gr),1],[-1:0],T,T);
-    else
-        error('This order of the AR process is currently not supported');
-    end
-    G2 = spdiags(ones(T,1)*[-max(gr),1],[-1:0],T,T);
-    sg = SAM.sg;
-    SAM = params.init;    
-    spiketimes_ = SAM.spiketimes_;
-    lam_ = SAM.lam_;
-    A_ = SAM.A_*diff(gr);
-    b_ = SAM.b_;
-    C_in = SAM.C_in;        
-    s_1 = sparse(ceil(spiketimes_/Dt),1,exp((spiketimes_ - Dt*ceil(spiketimes_/Dt))/tau(1)),T,1);  
-    s_2 = sparse(ceil(spiketimes_/Dt),1,exp((spiketimes_ - Dt*ceil(spiketimes_/Dt))/tau(2)),T,1);  
-    if ~isfield(params,'prec') % FN % (from Eftychios: prec specifies to what extent you want to discard the long slowly decaying tales of the ca response. Try setting it e.g., to 5e-2 instead of 1e-2 to speed things up.) 
-        prec = 1e-2;     % precision
-    else
-        prec = params.prec; %5e-2; % FN 
-    end
-    ef_d = exp(-(0:T)/tau(2));
-    if p == 1
-        h_max = 1;              % max value of transient    
-        ef_h = [0,0];
-        e_support = find(ef_d<prec*h_max,1,'first');
-        if isempty(e_support);
-            e_support = T;
+    
+    %% ZW: Try if MCMC works
+    try
+        g = SAM.g(:)';
+        if g == 0 %#ok<BDSCI>
+            gr = [0.9,0.1];
+            pl = poly(gr);
+            g = -pl(2:end);
+            p = 2;
         end
-        e_support = min(e_support,T);
-    else
-        t_max = (tau(1)*tau(2))/(tau(2)-tau(1))*log(tau(2)/tau(1)); %time of maximum
-        h_max = exp(-t_max/tau(2)) - exp(-t_max/tau(1));            % max value of transient    
-        ef_h = -exp(-(0:T)/tau(1));
-        e_support = find(ef_d-ef_h<prec*h_max,1,'first');
-        if isempty(e_support);
-            e_support = T;
+        gr = sort(roots([1,-g(:)']));
+        if p == 1; gr = [0,gr]; end
+        if any(gr<0) || any(~isreal(gr)) || length(gr)>2 || max(gr)>0.998
+            gr = params.defg;
         end
-        e_support = min(e_support,T);
-    end
-    ef_h = ef_h(1:min(e_support,length(ef_h)))/diff(gr);
-    ef_d = ef_d(1:e_support)/diff(gr);
-    ef = [{ef_h ef_d};{cumsum(ef_h.^2) cumsum(ef_d.^2)}];
-    B = params.B;
-    N = params.Nsamples + B;
-    if p == 1; G1sp = zeros(T,1); else G1sp = G1\s_1(:); end
-    Gs = (-G1sp(:)+G2\s_2(:))/diff(gr);
-    ss = cell(N,1); 
-    lam = zeros(N,1);
-    Am = zeros(N,1);
-    ns = zeros(N,1);
-    Gam = zeros(N,2);
-    if ~marg_flag
-        Cb = zeros(N,1);
-        Cin = zeros(N,1);
-        SG = zeros(N,1);
-    end
-    Sp = .1*range(Y)*eye(3);                          % prior covariance
-    Ld = inv(Sp);
-    lb = [params.A_lb/h_max*diff(gr),params.b_lb,params.c1_lb]';      % lower bound for [A,Cb,Cin]
-    A_ = max(A_,1.1*lb(1));
-    mu = [A_;b_;C_in];                % prior mean 
-    Ns = 15;                          % Number of HMC samples
-    Ym = Y - ones(T,1)*mu(2) - ge*mu(3);
-    mub = zeros(2,1);
-    Sigb = zeros(2,2);
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % Extra tau-related params
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%
-    tauMoves = [0 0];
-    tau_min = 0;
-    tau_max = 500;
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%
-    for i = 1:N
-        if gam_flag
-            Gam(i,:) = tau;
-        end
-        sg_ = sg;
-        rate = @(t) lambda_rate(t,lam_);
-        [spiketimes, ~]  = get_next_spikes(spiketimes_(:)',A_*Gs',Ym',ef,tau,sg_^2, rate, std_move, add_move, Dt, A_);
-        spiketimes_ = spiketimes;
-        spiketimes(spiketimes<0) = -spiketimes(spiketimes<0);
-        spiketimes(spiketimes>T*Dt) = 2*T*Dt - spiketimes(spiketimes>T*Dt); 
-        trunc_spikes = ceil(spiketimes/Dt);
-        trunc_spikes(trunc_spikes == 0) = 1;
-        s_1 =   sparse(trunc_spikes,1,exp((spiketimes_ - Dt*trunc_spikes)/tau(1)),T,1);
-        s_2 =   sparse(trunc_spikes,1,exp((spiketimes_ - Dt*trunc_spikes)/tau(2)),T,1);  
-        if p == 1; G1sp = zeros(T,1); else G1sp = G1\s_1(:); end
-        Gs = (-G1sp+G2\s_2(:))/diff(gr);
-        ss{i} = spiketimes;
-        nsp = length(spiketimes);
-        ns(i) = nsp;
-        lam(i) = nsp/(T*Dt);
-        lam_ = lam(i);    
-        AM = [Gs,ones(T,1),ge];
-        L = inv(Ld + AM'*AM/sg^2);
-        mu_post = (Ld + AM'*AM/sg^2)\(AM'*Y/sg^2 + Sp\mu);
-        if ~marg_flag
-            x_in = [A_;b_;C_in];
-            if any(x_in < lb)
-                x_in = max(x_in,1.1*lb);
-            end
-            if all(isnan(L(:))) % FN added to avoid error in R = chol(L) in HMC_exact2 due to L not being positive definite. It happens when isnan(det(Ld + AM'*AM/sg^2)), ie when Ld + AM'*AM/sg^2 is singular (not invertible).
-                Am(i) = NaN;
-                Cb(i) = NaN;
-                Cin(i) = NaN';
-            else        
-                [temp,~] = HMC_exact2(eye(3), -lb, L, mu_post, 1, Ns, x_in);
-                Am(i) = temp(1,Ns);
-                Cb(i) = temp(2,Ns);
-                Cin(i) = temp(3,Ns)';
-            end
-            A_ = Am(i);
-            b_ = Cb(i);
-            C_in = Cin(i);
-
-            Ym   = Y - b_ - ge*C_in;
-            res   = Ym - A_*Gs;
-            sg   = 1./sqrt(gamrnd(1+T/2,1/(0.1 + sum((res.^2)/2))));
-            SG(i) = sg;
+        tau = -Dt./log(gr);
+        tau1_std = max(tau(1)/100,params.TauStd(1));
+        tau2_std = min(tau(2)/5,params.TauStd(2)); 
+        ge = max(gr).^(0:T-1)';
+        if p == 1
+            G1 = sparse(1:T,1:T,Inf*ones(T,1));
+        elseif p == 2
+            G1 = spdiags(ones(T,1)*[-min(gr),1], -1:0,T,T);
         else
-            repeat = 1;
-            while repeat
-                A_ = mu_post(1) + sqrt(L(1,1))*randn;
-                repeat = (A_<0);
-            end                
-            Am(i) = A_;
-            if i > B
-               mub = mub + mu_post(2+(0:p));
-               Sigb = Sigb + L(2+(0:p),2+(0:p));
-            end
+            error('This order of the AR process is currently not supported');
         end
-        if gam_flag
-            if mod(i-B,gam_step) == 0  % update time constants
-                if p >= 2       % update rise time constant
-                    logC = -norm(Y(:) - AM*[A_;b_;C_in])^2; 
-                    tau_ = tau;
-                    tau_temp = tau_(1)+(tau1_std*randn); 
-                    while tau_temp >tau(2) || tau_temp<tau_min
-                        tau_temp = tau_(1)+(tau1_std*randn);
-                    end 
-                    tau_(1) = tau_temp;
-                    gr_ = exp(Dt*(-1./tau_));
-                    s_1_ =   sparse(trunc_spikes,1,exp((spiketimes_ - Dt*trunc_spikes)/tau_(1)),T,1);  
-                    G1_ = spdiags(ones(T,1)*[-min(gr_),1],[-1:0],T,T);
-                    Gs_ = (-G1_\s_1_(:)+G2\s_2(:))/diff(gr_);
+        G2 = spdiags(ones(T,1)*[-max(gr),1], -1:0,T,T);
+        sg = SAM.sg;
+        SAM = params.init;    
+        spiketimes_ = SAM.spiketimes_;
+        lam_ = SAM.lam_;
+        A_ = SAM.A_*diff(gr);
+        b_ = SAM.b_;
+        C_in = SAM.C_in;        
+        s_1 = sparse(ceil(spiketimes_/Dt),1,exp((spiketimes_ - Dt*ceil(spiketimes_/Dt))/tau(1)),T,1);  
+        s_2 = sparse(ceil(spiketimes_/Dt),1,exp((spiketimes_ - Dt*ceil(spiketimes_/Dt))/tau(2)),T,1);  
+        if ~isfield(params,'prec') 
+            % FN --
+            % Eftychios: prec specifies to what extent you want to discard 
+            % the long slowly decaying tales of the ca response. Try setting 
+            % it e.g., to 5e-2 instead of 1e-2 to speed things up.
+            prec = 1e-2;     % precision
+        else
+            prec = params.prec;
+        end
+        ef_d = exp(-(0:T)/tau(2));
+        if p == 1
+            h_max = 1; % max value of transient    
+            ef_h = [0,0];
+            e_support = find(ef_d<prec*h_max,1,'first');
+            if isempty(e_support);
+                e_support = T;
+            end
+            e_support = min(e_support,T);
+        else
+            t_max = (tau(1)*tau(2))/(tau(2)-tau(1))*log(tau(2)/tau(1)); %time of maximum
+            h_max = exp(-t_max/tau(2)) - exp(-t_max/tau(1)); % max value of transient    
+            ef_h = -exp(-(0:T)/tau(1));
+            e_support = find(ef_d-ef_h<prec*h_max,1,'first');
+            if isempty(e_support);
+                e_support = T;
+            end
+            e_support = min(e_support,T);
+        end
+        ef_h = ef_h(1:min(e_support,length(ef_h)))/diff(gr);
+        ef_d = ef_d(1:e_support)/diff(gr);
+        ef = [{ef_h ef_d};{cumsum(ef_h.^2) cumsum(ef_d.^2)}];
+        B = params.B;
+        N = params.Nsamples + B;
+        if p == 1; G1sp = zeros(T,1); else G1sp = G1\s_1(:); end
+        Gs = (-G1sp(:)+G2\s_2(:))/diff(gr);
+        ss = cell(N,1); 
+        lam = zeros(N,1);
+        Am = zeros(N,1);
+        ns = zeros(N,1);
+        Gam = zeros(N,2);
+        if ~marg_flag
+            Cb = zeros(N,1);
+            Cin = zeros(N,1);
+            SG = zeros(N,1);
+        end
+        Sp = .1*range(Y)*eye(3);  % prior covariance
+        Ld = inv(Sp);
+        lb = [params.A_lb/h_max*diff(gr),params.b_lb,params.c1_lb]'; % lower bound for [A,Cb,Cin]
+        A_ = max(A_,1.1*lb(1));
+        mu = [A_;b_;C_in]; % prior mean 
+        Ns = 15; % Number of HMC samples
+        Ym = Y - ones(T,1)*mu(2) - ge*mu(3);
+        mub = zeros(2,1);
+        Sigb = zeros(2,2);
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Extra tau-related params
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%
+        tauMoves = [0 0];
+        tau_min = 0;
+        tau_max = 500;
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%
+        for i = 1:N
+            if gam_flag
+                Gam(i,:) = tau;
+            end
+            sg_ = sg;
+            rate = @(t) lambda_rate(t,lam_);
+            [spiketimes, ~]  = get_next_spikes(spiketimes_(:)',A_*Gs',Ym',ef,tau,sg_^2, rate, std_move, add_move, Dt, A_);
+            spiketimes_ = spiketimes;
+            spiketimes(spiketimes<0) = -spiketimes(spiketimes<0);
+            spiketimes(spiketimes>T*Dt) = 2*T*Dt - spiketimes(spiketimes>T*Dt); 
+            trunc_spikes = ceil(spiketimes/Dt);
+            trunc_spikes(trunc_spikes == 0) = 1;
+            s_1 =   sparse(trunc_spikes,1,exp((spiketimes_ - Dt*trunc_spikes)/tau(1)),T,1);
+            s_2 =   sparse(trunc_spikes,1,exp((spiketimes_ - Dt*trunc_spikes)/tau(2)),T,1);  
+            if p == 1; G1sp = zeros(T,1); else G1sp = G1\s_1(:); end
+            Gs = (-G1sp+G2\s_2(:))/diff(gr);
+            ss{i} = spiketimes;
+            nsp = length(spiketimes);
+            ns(i) = nsp;
+            lam(i) = nsp/(T*Dt);
+            lam_ = lam(i);    
+            AM = [Gs,ones(T,1),ge];
+            L = inv(Ld + AM'*AM/sg^2);
+            mu_post = (Ld + AM'*AM/sg^2)\(AM'*Y/sg^2 + Sp\mu);
+            if ~marg_flag
+                x_in = [A_;b_;C_in];
+                if any(x_in < lb)
+                    x_in = max(x_in,1.1*lb);
+                end
+                if all(isnan(L(:))) 
+                    % FN --
+                    % added to avoid error in R = chol(L) in HMC_exact2 due 
+                    % to L not being positive definite. It happens when 
+                    % isnan(det(Ld + AM'*AM/sg^2)), ie when Ld + AM'*AM/sg^2 
+                    % is singular (not invertible).
+                    Am(i) = NaN;
+                    Cb(i) = NaN;
+                    Cin(i) = NaN';
+                else        
+                    [temp,~] = HMC_exact2(eye(3), -lb, L, mu_post, 1, Ns, x_in);
+                    Am(i) = temp(1,Ns);
+                    Cb(i) = temp(2,Ns);
+                    Cin(i) = temp(3,Ns)';
+                end
+                A_ = Am(i);
+                b_ = Cb(i);
+                C_in = Cin(i);
 
-                    logC_ = -norm(Y(:)-A_*Gs-b_-C_in*ge)^2;
+                Ym   = Y - b_ - ge*C_in;
+                res   = Ym - A_*Gs;
+                sg   = 1./sqrt(gamrnd(1+T/2,1/(0.1 + sum((res.^2)/2))));
+                SG(i) = sg;
+            else
+                repeat = 1;
+                while repeat
+                    A_ = mu_post(1) + sqrt(L(1,1))*randn;
+                    repeat = (A_<0);
+                end                
+                Am(i) = A_;
+                if i > B
+                   mub = mub + mu_post(2+(0:p));
+                   Sigb = Sigb + L(2+(0:p),2+(0:p));
+                end
+            end
+            if gam_flag
+                if mod(i-B,gam_step) == 0  % update time constants
+                    if p >= 2       % update rise time constant
+                        logC = -norm(Y(:) - AM*[A_;b_;C_in])^2; 
+                        tau_ = tau;
+                        tau_temp = tau_(1)+(tau1_std*randn); 
+                        while tau_temp >tau(2) || tau_temp<tau_min
+                            tau_temp = tau_(1)+(tau1_std*randn);
+                        end 
+                        tau_(1) = tau_temp;
+                        gr_ = exp(Dt*(-1./tau_));
+                        s_1_ =   sparse(trunc_spikes,1,exp((spiketimes_ - Dt*trunc_spikes)/tau_(1)),T,1);  
+                        G1_ = spdiags(ones(T,1)*[-min(gr_),1],[-1:0],T,T);
+                        Gs_ = (-G1_\s_1_(:)+G2\s_2(:))/diff(gr_);
+
+                        logC_ = -norm(Y(:)-A_*Gs-b_-C_in*ge)^2;
+                        %accept or reject
+                        prior_ratio = 1;
+                %        prior_ratio = gampdf(tau_(2),12,1)/gampdf(tau(2),12,1);
+                        ratio = exp((logC_-logC)/(2*sg^2))*prior_ratio;
+                        if rand < ratio %accept
+                            tau = tau_;
+                            G1 = G1_; %c = c_; 
+                            Gs = Gs_; gr = gr_; s_1 = s_1_;
+                            tauMoves = tauMoves + [1 1];
+                        else
+                            tauMoves = tauMoves + [0 1];
+                        end                
+                    end
+                    %%%%%%%%%%%%%%%%%%%%%%%
+                    % next update decay time constant
+                    %%%%%%%%%%%%%%%%%%%%%%%
+                    %initial logC
+                    logC = -norm(Y(:)-A_*Gs-b_-C_in*ge)^2;
+                    tau_ = tau;
+                    tau_temp = tau_(2)+(tau2_std*randn);
+                    while tau_temp>tau_max || tau_temp<tau_(1)
+                        tau_temp = tau_(2)+(tau2_std*randn);
+                    end  
+                    tau_(2) = tau_temp;
+                    s_2_ =   sparse(trunc_spikes,1,exp((spiketimes_ - Dt*trunc_spikes)/tau_(2)),T,1);  
+                    gr_ = exp(Dt*(-1./tau_));
+                    ge_ = max(gr_).^(0:T-1)';
+                    G2_ = spdiags(ones(T,1)*[-max(gr_),1],[-1:0],T,T);  
+                    if p == 1; G1sp = zeros(T,1); else G1sp = G1\s_1(:); end
+                    Gs_ = (-G1sp+G2_\s_2_(:))/diff(gr_);
+                    logC_ = -norm(Y(:)-A_*Gs_-b_-C_in*ge_)^2;
                     %accept or reject
                     prior_ratio = 1;
-            %        prior_ratio = gampdf(tau_(2),12,1)/gampdf(tau(2),12,1);
-                    ratio = exp((logC_-logC)/(2*sg^2))*prior_ratio;
-                    if rand < ratio %accept
+            %       prior_ratio = gampdf(tau_(2),12,1)/gampdf(tau(2),12,1);
+                    ratio = exp((1./(2*sg^2)).*(logC_-logC))*prior_ratio;
+                    if rand<ratio %accept
                         tau = tau_;
-                        G1 = G1_; %c = c_; 
-                        Gs = Gs_; gr = gr_; s_1 = s_1_;
+                        %c = c_; 
+                        ge = ge_; Gs = Gs_; G2 = G2_; gr = gr_; s_2 = s_2_; %#ok<NASGU>
                         tauMoves = tauMoves + [1 1];
                     else
                         tauMoves = tauMoves + [0 1];
                     end                
-                end
-                %%%%%%%%%%%%%%%%%%%%%%%
-                % next update decay time constant
-                %%%%%%%%%%%%%%%%%%%%%%%
-                %initial logC
-                logC = -norm(Y(:)-A_*Gs-b_-C_in*ge)^2;
-                tau_ = tau;
-                tau_temp = tau_(2)+(tau2_std*randn);
-                while tau_temp>tau_max || tau_temp<tau_(1)
-                    tau_temp = tau_(2)+(tau2_std*randn);
-                end  
-                tau_(2) = tau_temp;
-                s_2_ =   sparse(trunc_spikes,1,exp((spiketimes_ - Dt*trunc_spikes)/tau_(2)),T,1);  
-                gr_ = exp(Dt*(-1./tau_));
-                ge_ = max(gr_).^(0:T-1)';
-                G2_ = spdiags(ones(T,1)*[-max(gr_),1],[-1:0],T,T);  
-                if p == 1; G1sp = zeros(T,1); else G1sp = G1\s_1(:); end
-                Gs_ = (-G1sp+G2_\s_2_(:))/diff(gr_);
-                logC_ = -norm(Y(:)-A_*Gs_-b_-C_in*ge_)^2;
-                %accept or reject
-                prior_ratio = 1;
-        %       prior_ratio = gampdf(tau_(2),12,1)/gampdf(tau(2),12,1);
-                ratio = exp((1./(2*sg^2)).*(logC_-logC))*prior_ratio;
-                if rand<ratio %accept
-                    tau = tau_;
-                    %c = c_; 
-                    ge = ge_; Gs = Gs_; G2 = G2_; gr = gr_; s_2 = s_2_;
-                    tauMoves = tauMoves + [1 1];
-                else
-                    tauMoves = tauMoves + [0 1];
-                end                
-                ef_d = exp(-(0:T)/tau(2));
-                if p == 1
-                    h_max = 1;              % max value of transient    
-                    ef_h = [0,0];
-                    e_support = find(ef_d<prec*h_max,1,'first');
-                    if isempty(e_support);
-                        e_support = T;
+                    ef_d = exp(-(0:T)/tau(2));
+                    if p == 1
+                        h_max = 1; % max value of transient    
+                        ef_h = [0,0];
+                        e_support = find(ef_d<prec*h_max,1,'first');
+                        if isempty(e_support);
+                            e_support = T;
+                        end
+                        e_support = min(e_support,T);
+                    else
+                        t_max = (tau(1)*tau(2))/(tau(2)-tau(1))*log(tau(2)/tau(1)); %time of maximum
+                        h_max = exp(-t_max/tau(2)) - exp(-t_max/tau(1)); % max value of transient    
+                        ef_h = -exp(-(0:T)/tau(1));
+                        e_support = find(ef_d-ef_h<prec*h_max,1,'first');
+                        if isempty(e_support);
+                            e_support = T;
+                        end
+                        e_support = min(e_support,T);
                     end
-                    e_support = min(e_support,T);
-                else
-                    t_max = (tau(1)*tau(2))/(tau(2)-tau(1))*log(tau(2)/tau(1)); %time of maximum
-                    h_max = exp(-t_max/tau(2)) - exp(-t_max/tau(1));            % max value of transient    
-                    ef_h = -exp(-(0:T)/tau(1));
-                    e_support = find(ef_d-ef_h<prec*h_max,1,'first');
-                    if isempty(e_support);
-                        e_support = T;
-                    end
-                    e_support = min(e_support,T);
+                    ef_h = ef_h(1:min(e_support,length(ef_h)))/diff(gr);
+                    ef_d = ef_d(1:e_support)/diff(gr);
+                    ef = [{ef_h ef_d};{cumsum(ef_h.^2) cumsum(ef_d.^2)}];     
                 end
-                ef_h = ef_h(1:min(e_support,length(ef_h)))/diff(gr);
-                ef_d = ef_d(1:e_support)/diff(gr);
-                ef = [{ef_h ef_d};{cumsum(ef_h.^2) cumsum(ef_d.^2)}];     
             end
+            if params.print_flag && mod(i,100)==0
+                fprintf('%i out of total %i samples drawn \n', i, N);
+            end 
         end
-        if params.print_flag && mod(i,100)==0
-            fprintf('%i out of total %i samples drawn \n', i, N);
-        end 
-    end
-    if marg_flag
-        mub = mub/(N-B);
-        Sigb = Sigb/(N-B)^2;
-    end
+        if marg_flag
+            mub = mub/(N-B);
+            Sigb = Sigb/(N-B)^2;
+        end
 
-    if marg_flag
-        SAMPLES.Cb = [mub(1),sqrt(Sigb(1,1))];
-        SAMPLES.Cin = [mub(1+(1:p)),sqrt(diag(Sigb(1+(1:p),1+(1:p))))];
-    else
-        SAMPLES.Cb = Cb(B+1:N);
-        SAMPLES.Cin = Cin(B+1:N,:);
-        SAMPLES.sn2 = SG(B+1:N).^2;
+        if marg_flag
+            SAMPLES.Cb = [mub(1),sqrt(Sigb(1,1))];
+            SAMPLES.Cin = [mub(1+(1:p)),sqrt(diag(Sigb(1+(1:p),1+(1:p))))];
+        else
+            SAMPLES.Cb = Cb(B+1:N);
+            SAMPLES.Cin = Cin(B+1:N,:);
+            SAMPLES.sn2 = SG(B+1:N).^2;
+        end
+        SAMPLES.ns = ns(B+1:N);
+        SAMPLES.ss = ss(B+1:N);
+        SAMPLES.ld = lam(B+1:N);
+        SAMPLES.Am = Am(B+1:N);
+        if gam_flag
+            SAMPLES.g = Gam(B+1:N,:);
+        end
+        SAMPLES.params = params.init;
+        SAMPLES.C_rec  = make_mean_sample(SAMPLES,Y);
+        SAMPLES.F_est  = mean(SAMPLES.C_rec);
+        SAMPLES.spikeRaster = samples_cell2mat(SAMPLES.ss,T);
+        SAMPLES.spk    = mean(SAMPLES.spikeRaster);
+        SAMPLES.HMC2   = true;
+    catch
+        SAMPLES        = SAM;
+        SAMPLES.HMC2   = false;
+        SAMPLES.params = params.init;
+        SAMPLES.C_rec  = make_mean_sample(SAMPLES,Y);
+        SAMPLES.F_est  = mean(SAMPLES.C_rec);
+        SAMPLES.spikeRaster = samples_cell2mat(SAMPLES.ss,T);
+        SAMPLES.spk    = mean(SAMPLES.spikeRaster);
     end
-    SAMPLES.ns = ns(B+1:N);
-    SAMPLES.ss = ss(B+1:N);
-    SAMPLES.ld = lam(B+1:N);
-    SAMPLES.Am = Am(B+1:N);
-    if gam_flag
-        SAMPLES.g = Gam(B+1:N,:);
-    end
-    SAMPLES.params = params.init;
-    SAMPLES.C_rec  = make_mean_sample(SAMPLES,Y);
-    SAMPLES.F_est  = mean(SAMPLES.C_rec);
-    SAMPLES.spikeRaster = samples_cell2mat(SAMPLES.ss,T);
-    SAMPLES.spk    = mean(SAMPLES.spikeRaster);
 end
 
 function SAM = get_initial_sample(Y,params)
@@ -671,7 +695,9 @@ function [Xs, bounce_count] = HMC_exact2(F, g, M, mu_r, cov, L, initial_X)
             last_X = X;
             i= i+1;
         else
-        disp('hmc reject')
+            % disp('hmc reject')
+            % ZW -- 
+            error('hmc reject')
         end 
     end %while (i <= L)
     % transform back to the unwhitened frame
@@ -762,141 +788,6 @@ function [newSpikeTrain, newCalcium, newLL] = addSpike(oldSpikeTrain,oldCalcium,
     newLL = oldLL - ( wk_d^2*ef_nd(length(tmp)) - 2*relevantResidual*(wk_d*ef_d(1:length(tmp))'));
 end
 
-function [samples, addMoves, dropMoves, timeMoves, N_sto]  = sampleSpikes(calciumSignal,ef,tau,b,calciumNoiseVar, p_spike, proposalVar, nsweeps)
-    %addMoves, dropMoves, and timeMoves give acceptance probabilities for each subclass of move
-    %the samples will be a cell array of lists of spike times - the spike times won't be sorted but this shouldn't be a problem.
-    %noise level here matters for the proposal distribution (how much it 
-    %should trust data for proposals vs how much it should mix based on uniform prior)
-    %this is accounted for by calciumNoiseVar    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % initialize some parameters
-    T = length(calciumSignal); %for all of this, units are bins and spiketrains go from 0 to T where T is number of bins
-    % nsweeps = 1e3; %number of sweeps.
-    samples = cell(nsweeps);
-    N_sto = [];
-    objective = [];
-    % start with initial spiketrain and initial predicted calcium 
-    si = []; %initial set of spike times has no spikes - this will not be sorted but that shouldn't be a problem
-    ci = b*ones(1,T); %initial calcium is set to baseline 
-    N = length(si); %number of spikes in spiketrain
-    %initial logC - compute likelihood initially completely - updates to likelihood will be local
-    logC = -(ci-calciumSignal)*(ci-calciumSignal)'; 
-    m = p_spike*T;
-    %flag for uniform vs likelihood proposal (if using likelihood proposal, then time shifts are pure Gibbs)
-    %this really should be split into four cases, 
-    % 1) RW for time shifts with uniform add/drop
-    % 2) RW for time shifts with likelihood proposal add/drop
-    % 3) Gibbs for time shifts with uniform add/drop
-    % 4) Gibbs for time shifts with likelihood proposal add/drop
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% loop over sweeps to generate samples
-    addMoves = [0 0]; %first elem is number successful, second is number total
-    dropMoves = [0 0];
-    timeMoves = [0 0];
-    for i = 1:nsweeps
-        % loop over spikes, perform spike time move (could parallelize here for non-interacting spikes, i.e. spikes that are far enough away)
-        %move
-        for ni = 1:N %possibly go through in a random order (if you like)
-            tmpi = si(ni);
-            tmpi_ = si(ni)+(proposalVar*randn); %with bouncing off edges
-            if tmpi_<0
-                tmpi_ = -(tmpi_);
-            elseif tmpi_>T
-                tmpi_ = T-(tmpi_-T);
-            end
-            %set si_ to set of spikes with the move and ci_ to adjusted calcium and update logC_ to adjusted
-            [si_, ci_, logC_] = removeSpike(si,ci,logC,ef,tau,calciumSignal,tmpi,ni);
-            [si_, ci_, logC_] = addSpike(si_,ci_,logC_,ef,tau,calciumSignal,tmpi_);
-            %accept or reject
-            ratio = exp((1/(2*calciumNoiseVar))*(logC_-logC));
-            if ratio>1 %accept
-                si = si_;
-                ci = ci_;
-                logC = logC_;
-                timeMoves = timeMoves + [1 1];
-            elseif rand<ratio %accept
-                si = si_;
-                ci = ci_;
-                logC = logC_;
-                timeMoves = timeMoves + [1 1];
-            else
-                %reject - do nothing
-                timeMoves = timeMoves + [0 1];
-            end
-        end        
-        N = length(si);
-        % loop over add/drop a few times
-        %define insertion proposal distribution as the likelihood function
-        %define removal proposal distribution as uniform over spikes
-        %perhaps better is to choose smarter removals.
-        for ii = 1:10 
-            % add
-            %propose a uniform add
-            tmpi = T*rand;         
-            [si_, ci_, logC_] = addSpike(si,ci,logC,ef,tau,calciumSignal,tmpi);
-            %forward probability
-            fprob = 1/T;
-            %reverse (remove at that spot) probability
-            rprob = 1/(N+1);
-            %accept or reject
-            ratio = exp((1/(2*calciumNoiseVar))*(logC_ - logC))*(rprob/fprob)*(m/(T-m)); %posterior times reverse prob/forward prob
-            if ratio>1 %accept
-                si = si_;
-                ci = ci_;
-                logC = logC_;
-                addMoves = addMoves + [1 1];
-            elseif rand<ratio %accept
-                si = si_;
-                ci = ci_;
-                logC = logC_;
-                addMoves = addMoves + [1 1];
-            else
-                %reject - do nothing
-                addMoves = addMoves + [0 1];
-            end
-            N = length(si);
-            % delete
-            if N>0                
-                %propose a uniform removal
-                tmpi = randi(N);
-                [si_ ci_, logC_] = removeSpike(si,ci,logC,ef,tau,calciumSignal,si(tmpi),tmpi);
-                %reverse probability
-                rprob = 1/T;
-                %compute forward prob
-                fprob = 1/N;
-                %accept or reject
-                ratio = exp((1/(2*calciumNoiseVar))*(logC_ - logC))*(rprob/fprob)*((T-m)/m); %posterior times reverse prob/forward prob
-                if ratio>1 %accept
-                    si = si_;
-                    ci = ci_;
-                    logC = logC_;
-                    dropMoves = dropMoves + [1 1];
-                elseif rand<ratio %accept
-                    si = si_;
-                    ci = ci_;
-                    logC = logC_;
-                    dropMoves = dropMoves + [1 1];
-                else
-                    %reject - do nothing
-                    dropMoves = dropMoves + [0 1];
-                end
-                N = length(si);
-            
-            end
-        end
-        N_sto = [N_sto N];
-        samples{i} = si;
-        %store overall logliklihood as well
-        objective = [objective logC];        
-        % figure(48)
-        % subplot(211)
-        % plot(N_sto)
-        % subplot(212)
-        % plot(objective)
-        
-        % [addMoves(1)/addMoves(2) dropMoves(1)/dropMoves(2)]
-    end
-end
 
 function C_rec = make_mean_sample(SAMPLES,Y)
     T = length(Y);
@@ -956,6 +847,148 @@ function spikeRaster = samples_cell2mat(sampleCell,T,Dt)
     end
 end
 
+
+% function [samples, addMoves, dropMoves, timeMoves, N_sto]  = sampleSpikes(calciumSignal,ef,tau,b,calciumNoiseVar, p_spike, proposalVar, nsweeps)
+%     % ZW --
+%     % This function is somewhat identical to get_next_spike
+%     %
+%     %
+%     %
+%     %addMoves, dropMoves, and timeMoves give acceptance probabilities for each subclass of move
+%     %the samples will be a cell array of lists of spike times - the spike times won't be sorted but this shouldn't be a problem.
+%     %noise level here matters for the proposal distribution (how much it 
+%     %should trust data for proposals vs how much it should mix based on uniform prior)
+%     %this is accounted for by calciumNoiseVar    
+%     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     % initialize some parameters
+%     T = length(calciumSignal); %for all of this, units are bins and spiketrains go from 0 to T where T is number of bins
+%     % nsweeps = 1e3; %number of sweeps.
+%     samples = cell(nsweeps);
+%     N_sto = [];
+%     objective = [];
+%     % start with initial spiketrain and initial predicted calcium 
+%     si = []; %initial set of spike times has no spikes - this will not be sorted but that shouldn't be a problem
+%     ci = b*ones(1,T); %initial calcium is set to baseline 
+%     N = length(si); %number of spikes in spiketrain
+%     %initial logC - compute likelihood initially completely - updates to likelihood will be local
+%     logC = -(ci-calciumSignal)*(ci-calciumSignal)'; 
+%     m = p_spike*T;
+%     %flag for uniform vs likelihood proposal (if using likelihood proposal, then time shifts are pure Gibbs)
+%     %this really should be split into four cases, 
+%     % 1) RW for time shifts with uniform add/drop
+%     % 2) RW for time shifts with likelihood proposal add/drop
+%     % 3) Gibbs for time shifts with uniform add/drop
+%     % 4) Gibbs for time shifts with likelihood proposal add/drop
+%     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     %% loop over sweeps to generate samples
+%     addMoves = [0 0]; %first elem is number successful, second is number total
+%     dropMoves = [0 0];
+%     timeMoves = [0 0];
+%     for i = 1:nsweeps
+%         % loop over spikes, perform spike time move (could parallelize here for non-interacting spikes, i.e. spikes that are far enough away)
+%         %move
+%         for ni = 1:N %possibly go through in a random order (if you like)
+%             tmpi = si(ni);
+%             tmpi_ = si(ni)+(proposalVar*randn); %with bouncing off edges
+%             if tmpi_<0
+%                 tmpi_ = -(tmpi_);
+%             elseif tmpi_>T
+%                 tmpi_ = T-(tmpi_-T);
+%             end
+%             %set si_ to set of spikes with the move and ci_ to adjusted calcium and update logC_ to adjusted
+%             [si_, ci_, logC_] = removeSpike(si,ci,logC,ef,tau,calciumSignal,tmpi,ni);
+%             [si_, ci_, logC_] = addSpike(si_,ci_,logC_,ef,tau,calciumSignal,tmpi_);
+%             %accept or reject
+%             ratio = exp((1/(2*calciumNoiseVar))*(logC_-logC));
+%             if ratio>1 %accept
+%                 si = si_;
+%                 ci = ci_;
+%                 logC = logC_;
+%                 timeMoves = timeMoves + [1 1];
+%             elseif rand<ratio %accept
+%                 si = si_;
+%                 ci = ci_;
+%                 logC = logC_;
+%                 timeMoves = timeMoves + [1 1];
+%             else
+%                 %reject - do nothing
+%                 timeMoves = timeMoves + [0 1];
+%             end
+%         end        
+%         N = length(si);
+%         % loop over add/drop a few times
+%         %define insertion proposal distribution as the likelihood function
+%         %define removal proposal distribution as uniform over spikes
+%         %perhaps better is to choose smarter removals.
+%         for ii = 1:10 
+%             % add
+%             %propose a uniform add
+%             tmpi = T*rand;         
+%             [si_, ci_, logC_] = addSpike(si,ci,logC,ef,tau,calciumSignal,tmpi);
+%             %forward probability
+%             fprob = 1/T;
+%             %reverse (remove at that spot) probability
+%             rprob = 1/(N+1);
+%             %accept or reject
+%             ratio = exp((1/(2*calciumNoiseVar))*(logC_ - logC))*(rprob/fprob)*(m/(T-m)); %posterior times reverse prob/forward prob
+%             if ratio>1 %accept
+%                 si = si_;
+%                 ci = ci_;
+%                 logC = logC_;
+%                 addMoves = addMoves + [1 1];
+%             elseif rand<ratio %accept
+%                 si = si_;
+%                 ci = ci_;
+%                 logC = logC_;
+%                 addMoves = addMoves + [1 1];
+%             else
+%                 %reject - do nothing
+%                 addMoves = addMoves + [0 1];
+%             end
+%             N = length(si);
+%             % delete
+%             if N>0                
+%                 %propose a uniform removal
+%                 tmpi = randi(N);
+%                 [si_, ci_, logC_] = removeSpike(si,ci,logC,ef,tau,calciumSignal,si(tmpi),tmpi);
+%                 %reverse probability
+%                 rprob = 1/T;
+%                 %compute forward prob
+%                 fprob = 1/N;
+%                 %accept or reject
+%                 ratio = exp((1/(2*calciumNoiseVar))*(logC_ - logC))*(rprob/fprob)*((T-m)/m); %posterior times reverse prob/forward prob
+%                 if ratio>1 %accept
+%                     si = si_;
+%                     ci = ci_;
+%                     logC = logC_;
+%                     dropMoves = dropMoves + [1 1];
+%                 elseif rand<ratio %accept
+%                     si = si_;
+%                     ci = ci_;
+%                     logC = logC_;
+%                     dropMoves = dropMoves + [1 1];
+%                 else
+%                     %reject - do nothing
+%                     dropMoves = dropMoves + [0 1];
+%                 end
+%                 N = length(si);
+%             
+%             end
+%         end
+%         N_sto = [N_sto N];
+%         samples{i} = si;
+%         %store overall logliklihood as well
+%         objective = [objective logC];        
+%         % figure(48)
+%         % subplot(211)
+%         % plot(N_sto)
+%         % subplot(212)
+%         % plot(objective)
+%         
+%         % [addMoves(1)/addMoves(2) dropMoves(1)/dropMoves(2)]
+%     end
+% end
+
 % function [f,grad] = min_gamma(g,s,y)
 %     T = length(s);
 %     prec = 1e-4;
@@ -983,30 +1016,3 @@ end
 %         grad = -((y-Gs)'*[G_g1*s,G_g2*s])';
 %     end
 % end
-
-% function [g,h1] = tau_c2d(tau_r,tau_d,dt)
-%     % convert continuous time constants to discrete with resolution dt
-%     % h(t) = (1-exp(-t/tau_r))*exp(-t/tau_d)
-%     % g: discrete time constants
-%     % h1: h(dt);
-%     % h*s can be written in discrete form as filter(h1,[1,-g],s)
-%     A = [-(2/tau_d+1/tau_r), - (tau_r+tau_d)/(tau_r*tau_d^2); 1 0];
-%     lc = eig(A*dt);
-%     ld = exp(lc);
-%     g = [sum(ld),-prod(ld)];
-%     h1 = (1-exp(-dt/tau_r))*exp(-dt/tau_d);
-% end
-% 
-% function tau = tau_d2c(g,dt)
-%     % convert discrete time constantswith resolution dt to continuous 
-%     % h(t) = (1-exp(-t/tau(1)))*exp(-t/tau(2))
-%     gr = max(roots([1,-g(:)']),0);
-%     p1_continuous = log(min(gr))/dt; 
-%     p2_continuous = log(max(gr))/dt;
-%     tau_1 = -1/p1_continuous;                   %tau h - smaller (tau_d * tau_r)/(tau_d + tau_r)
-%     tau_2 = -1/p2_continuous;                   %tau decay - larger
-% 
-%     tau_rise = 1/(1/tau_1 - 1/tau_2);
-%     tau = [tau_rise,tau_2];   
-% end
-
