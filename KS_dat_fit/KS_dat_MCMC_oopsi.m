@@ -10,6 +10,6 @@ dff     = double(dat.dff);
 % dt      = caTime(2) - caTime(1);
 % fr      = 1/dt;
 
-[cont, constr]   = conttime_oopsi(dff); %#ok<*ASGLU>
-save(['MCMC_oopsi_fit_Cell_' num2str(nCell)], 'cont', 'constr')
+cont   = conttime_oopsi(dff); %#ok<NASGU,*ASGLU>
+save(['MCMC_oopsi_fit_Cell_' num2str(nCell)], 'cont')
 end
