@@ -1,4 +1,4 @@
-function [SAMPLES, SAM] = conttime_oopsi(Y,params)
+function SAMPLES = conttime_oopsi(Y,params)
     % Continuous time sampler
     % Y                     data (normalized in [0,1])
     % P                     intialization parameters (discrete time constant P.g required)
@@ -367,7 +367,7 @@ function [SAMPLES, SAM] = conttime_oopsi(Y,params)
         if gam_flag
             SAMPLES.g = Gam(B+1:N,:);
         end
-        SAMPLES.params = params.init;
+        SAMPLES.params = params.init; % this is SAM
         SAMPLES.C_rec  = make_mean_sample(SAMPLES,Y);
         SAMPLES.F_est  = mean(SAMPLES.C_rec);
         SAMPLES.spikeRaster = samples_cell2mat(SAMPLES.ss,T);
@@ -376,11 +376,6 @@ function [SAMPLES, SAM] = conttime_oopsi(Y,params)
     catch
         SAMPLES        = SAM;
         SAMPLES.HMC2   = false;
-        SAMPLES.params = params.init;
-        SAMPLES.C_rec  = make_mean_sample(SAMPLES,Y);
-        SAMPLES.F_est  = mean(SAMPLES.C_rec);
-        SAMPLES.spikeRaster = samples_cell2mat(SAMPLES.ss,T);
-        SAMPLES.spk    = mean(SAMPLES.spikeRaster);
     end
 end
 
@@ -657,9 +652,9 @@ function [Xs, bounce_count] = HMC_exact2(F, g, M, mu_r, cov, L, initial_X)
                         end                    
                     end
                 end
-                [mt1 ind1] = min(t1);
-                [mt2 ind2] = min(t2);
-                [mt ind12]  = min([mt1 mt2]);
+                [mt1, ind1] = min(t1);
+                [mt2, ind2] = min(t2);
+                [mt, ind12]  = min([mt1 mt2]);
                 if ind12==1
                     m_ind = ind1;
                 else
