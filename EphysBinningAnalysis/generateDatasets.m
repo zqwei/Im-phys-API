@@ -37,7 +37,7 @@ nDataSet               =  getSpikeDataWithEphysTimeAndBoxCar(SpikingDataDir, Spi
 DataSetList(2).name    = 'Shuffle_Spikes_boxcar_067ms';
 DataSetList(2).params  = params; 
 DataSetList(2).ActiveNeuronIndex = findHighFiringUnits(nDataSet, params, minFiringRate);
-save([TempDatDir DataSetList(2).name '.mat'], 'nDataSet');
+save([TempDatDir DataSetList(2).name '.mat'], 'nDataSet', '-v7.3');
 
 
 params.binsize         =  0.100;
@@ -46,7 +46,7 @@ nDataSet               =  getSpikeDataWithEphysTimeAndBoxCar(SpikingDataDir, Spi
 DataSetList(3).name    = 'Shuffle_Spikes_boxcar_100ms';
 DataSetList(3).params  = params; 
 DataSetList(3).ActiveNeuronIndex = findHighFiringUnits(nDataSet, params, minFiringRate);
-save([TempDatDir DataSetList(3).name '.mat'], 'nDataSet');
+save([TempDatDir DataSetList(3).name '.mat'], 'nDataSet', '-v7.3');
 
 params.binsize         =  0.150;
 params.frameRate       =  1/params.binsize;
@@ -54,7 +54,7 @@ nDataSet               =  getSpikeDataWithEphysTimeAndBoxCar(SpikingDataDir, Spi
 DataSetList(4).name    = 'Shuffle_Spikes_boxcar_150ms';
 DataSetList(4).params  = params; 
 DataSetList(4).ActiveNeuronIndex = findHighFiringUnits(nDataSet, params, minFiringRate);
-save([TempDatDir DataSetList(4).name '.mat'], 'nDataSet');
+save([TempDatDir DataSetList(4).name '.mat'], 'nDataSet', '-v7.3');
 
 params.binsize         =  0.200;
 params.frameRate       =  1/params.binsize;
@@ -62,7 +62,7 @@ nDataSet               =  getSpikeDataWithEphysTimeAndBoxCar(SpikingDataDir, Spi
 DataSetList(5).name    = 'Shuffle_Spikes_boxcar_200ms';
 DataSetList(5).params  = params; 
 DataSetList(5).ActiveNeuronIndex = findHighFiringUnits(nDataSet, params, minFiringRate);
-save([TempDatDir DataSetList(5).name '.mat'], 'nDataSet');
+save([TempDatDir DataSetList(5).name '.mat'], 'nDataSet', '-v7.3');
 
 params.binsize         =  0.250;
 params.frameRate       =  1/params.binsize;
@@ -70,7 +70,7 @@ nDataSet               =  getSpikeDataWithEphysTimeAndBoxCar(SpikingDataDir, Spi
 DataSetList(6).name    = 'Shuffle_Spikes_boxcar_250ms';
 DataSetList(6).params  = params; 
 DataSetList(6).ActiveNeuronIndex = findHighFiringUnits(nDataSet, params, minFiringRate);
-save([TempDatDir DataSetList(6).name '.mat'], 'nDataSet');
+save([TempDatDir DataSetList(6).name '.mat'], 'nDataSet', '-v7.3');
 
 
 
