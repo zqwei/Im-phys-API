@@ -15,8 +15,16 @@
 
 function plotMeanActivityImagescRasterOnly (nDataSet, params, maxValue, minValue, ylabels)    
 
-    blankSpace = 10;
+    
+    
     numT       = size(nDataSet(1).unit_yes_trial,2);
+    if numT <= 77
+        blankSpace = 10;
+    else
+        blankSpace = round(10/77*numT);
+    end
+    
+    
     actMat     = nan(length(nDataSet),numT*2+blankSpace);
     
     for nUnit = 1: length(nDataSet)
@@ -79,7 +87,7 @@ function plotMeanActivityImagescRasterOnly (nDataSet, params, maxValue, minValue
     timeSeries                    = params.timeSeries;
     minTime                       = params.timeSeries(1);
     maxTime                       = params.timeSeries(end);
-    betweenSpace                  = blankSpace * params.binsize;
+    betweenSpace                  = blankSpace / params.frameRate;
     constShift                    =  - minTime + maxTime + betweenSpace;
     timeSeries                    = [timeSeries, maxTime + (1:blankSpace)*params.binsize, timeSeries+constShift];
     tMaxTime                      = timeSeries(end);
