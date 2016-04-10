@@ -21,11 +21,13 @@ function SpikeDataSet = getSpikeDataWithEphysTimeAndBoxCar(SpikingDataDir, Spike
                                 'unit_yes_trial', 1, 'unit_no_trial', 1),1000, 1);
     tot_Unit           = 0;
     h                  = waitbar(0,'Initializing data loads...');
-    binSize            = 0.001; % 5 ms bin as the smalles bin to be smoothed over
-    psthTime           = TimeToAnalysis(1)-totbinSize:binSize:TimeToAnalysis(end)+totbinSize;
-    psthStart          = find(psthTime==TimeToAnalysis(1));
-    psthEnd            = find(psthTime==TimeToAnalysis(end));
-    boxCarWindowLength = totbinSize/binSize; % ms
+    binSize            = 0.005; % 5 ms bin as the smalles bin to be smoothed over
+    psthTime           = TimeToAnalysis(1)-totbinSize/2:binSize:TimeToAnalysis(end)+totbinSize/2;
+    psthStart          = find(abs(psthTime-(TimeToAnalysis(1)+totbinSize/2))<0.002);
+    psthEnd            = find(abs(psthTime-(TimeToAnalysis(end)+totbinSize/2))<0.002);
+    if isempty(psthStart); keyboard();end
+    if isempty(psthEnd); keyboard();end
+    boxCarWindowLength = round(totbinSize/binSize); % ms
     boxCarWindow       = ones(1,boxCarWindowLength)/(boxCarWindowLength/1000);
     
     for nfile = 1:length(SpikeFileList)
