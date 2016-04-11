@@ -9,14 +9,10 @@
 
 addpath('../Func');
 setDir;
-load ([TempDatDir 'DataListShuffle.mat']);
-addNoise         = [1 0 0 0];
+load ([TempDatDir 'DataListS2CModel.mat']);
+addNoise         = [0 0 0 0];
 
-if ~exist([PlotDir '/CollectedUnitsDecodabilityEpoch'],'dir')
-    mkdir([PlotDir '/CollectedUnitsDecodabilityEpoch'])
-end
-
-detectThres = 0.2;
+detectThres = 0.3;
 cmap = [ 0    0.4470    0.7410
     0.6350    0.0780    0.1840
     0.4660    0.6740    0.1880];
@@ -33,7 +29,7 @@ testTargets         = testTargets(randperm(numTestTrials));
 totTargets          = [testTargets; trainingTargets];
 
 ROCValue        = 0.5:0.1:0.8;
-nDatas          = [1 3 4];
+nDatas          = 1:length(DataSetList);
 meanDelays      = nan(length(nDatas), length(ROCValue), 3); % #nData, #Roc, #Epoch
 semDelays       = nan(length(nDatas), length(ROCValue), 3);  
 
@@ -95,10 +91,10 @@ for nPlot           = 1:length(labelDelays)
     box off
 end
 
-setPrint(8*3, 6, [PlotDir 'CollectedUnitsDecodabilityEpoch/CollectedUnitsDecodabilityEpochROC'])
+setPrint(8*3, 6, [PlotDir 'S2CModel/CollectedUnitsDecodabilityEpochROC'])
 
 numRandPickUnitsSet     = [20 50 100 200 500];
-nDatas                  = [1 3 4];
+nDatas                  = 1:length(DataSetList);
 meanDelays              = nan(length(nDatas), length(numRandPickUnitsSet), 3); % #nData, #Roc, #Epoch
 semDelays               = nan(length(nDatas), length(numRandPickUnitsSet), 3);  
 
@@ -171,10 +167,10 @@ for nPlot           = 1:length(labelDelays)
     box off
 end
 
-setPrint(8*3, 6, [PlotDir 'CollectedUnitsDecodabilityEpoch/CollectedUnitsDecodabilityEpochNumUnits'])
+setPrint(8*3, 6, [PlotDir 'S2CModel/CollectedUnitsDecodabilityEpochNumUnits'])
 
 
-margNames = {'Spike', 'GP4.3', '6s-AAV'};
+margNames = {'Long decay', 'Short decay'};
 figure;
 hold on
 for nColor = 1:length(margNames)
@@ -184,5 +180,5 @@ end
 xlim([0 10])
 hold off
 axis off
-setPrint(3, 3, [PlotDir 'CollectedUnitsDecodabilityEpoch/CollectedUnitsDecodabilityEpochLabel'])
+setPrint(3, 3, [PlotDir 'S2CModel/CollectedUnitsDecodabilityEpochLabel'])
 close all

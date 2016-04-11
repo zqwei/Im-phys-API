@@ -9,14 +9,10 @@
 
 addpath('../Func');
 setDir;
-load ([TempDatDir 'DataListShuffle.mat']);
-addNoise         = [1 0 0 0];
+load ([TempDatDir 'DataListC2SModel.mat']);
+addNoise         = [0 0 0 0];
 
-if ~exist([PlotDir '/CollectedUnitsDecodabilityEpoch'],'dir')
-    mkdir([PlotDir '/CollectedUnitsDecodabilityEpoch'])
-end
-
-detectThres = 0.2;
+detectThres = 0.4;
 cmap = [ 0    0.4470    0.7410
     0.6350    0.0780    0.1840
     0.4660    0.6740    0.1880];
@@ -33,7 +29,7 @@ testTargets         = testTargets(randperm(numTestTrials));
 totTargets          = [testTargets; trainingTargets];
 
 ROCValue        = 0.5:0.1:0.8;
-nDatas          = [1 3 4];
+nDatas          = 1:length(DataSetList);
 meanDelays      = nan(length(nDatas), length(ROCValue), 3); % #nData, #Roc, #Epoch
 semDelays       = nan(length(nDatas), length(ROCValue), 3);  
 
@@ -50,7 +46,7 @@ for nROCThres   = 1:length(ROCValue)
         decodability          = zeros(numFold, numPeriods, size(nDataSet(1).unit_yes_trial,2));
         for nFold        = 1:numFold
             numUnits     = length(nDataSet);
-            nSessionData = shuffleSessionData(nDataSet(randperm(numUnits, numRandPickUnits)), totTargets, numTestTrials);
+            nSessionData = shuffleSessionDataVec(nDataSet(randperm(numUnits, numRandPickUnits)), totTargets, numTestTrials);
             nSessionData = permute(nSessionData,[1 3 2]);
             EpochIndex   = epochIndex(DataSetList(nData).params);
             EpochIndex   = EpochIndex(:,ones(1,numTrials))';
@@ -95,10 +91,10 @@ for nPlot           = 1:length(labelDelays)
     box off
 end
 
-setPrint(8*3, 6, [PlotDir 'CollectedUnitsDecodabilityEpoch/CollectedUnitsDecodabilityEpochROC'])
+setPrint(8*3, 6, [PlotDir 'C2SModel/CollectedUnitsDecodabilityEpochROC'])
 
 numRandPickUnitsSet     = [20 50 100 200 500];
-nDatas                  = [1 3 4];
+nDatas                  = 1:length(DataSetList);
 meanDelays              = nan(length(nDatas), length(numRandPickUnitsSet), 3); % #nData, #Roc, #Epoch
 semDelays               = nan(length(nDatas), length(numRandPickUnitsSet), 3);  
 
@@ -125,7 +121,7 @@ for nRandPickUnits      = 1:length(numRandPickUnitsSet)
         decodability          = zeros(numFold, numPeriods, size(nDataSet(1).unit_yes_trial,2));
         for nFold        = 1:numFold
             numUnits     = length(nDataSet);
-            nSessionData = shuffleSessionData(nDataSet(randperm(numUnits, numRandPickUnits)), totTargets, numTestTrials);
+            nSessionData = shuffleSessionDataVec(nDataSet(randperm(numUnits, numRandPickUnits)), totTargets, numTestTrials);
             nSessionData = permute(nSessionData,[1 3 2]);
             EpochIndex   = epochIndex(DataSetList(nData).params);
             EpochIndex   = EpochIndex(:,ones(1,numTrials))';
@@ -171,10 +167,10 @@ for nPlot           = 1:length(labelDelays)
     box off
 end
 
-setPrint(8*3, 6, [PlotDir 'CollectedUnitsDecodabilityEpoch/CollectedUnitsDecodabilityEpochNumUnits'])
+setPrint(8*3, 6, [PlotDir 'C2SModel/CollectedUnitsDecodabilityEpochNumUnits'])
 
 
-margNames = {'Spike', 'GP4.3', '6s-AAV'};
+margNames = {'GP4.3', '6s-AAV'};
 figure;
 hold on
 for nColor = 1:length(margNames)
@@ -184,5 +180,5 @@ end
 xlim([0 10])
 hold off
 axis off
-setPrint(3, 3, [PlotDir 'CollectedUnitsDecodabilityEpoch/CollectedUnitsDecodabilityEpochLabel'])
+setPrint(3, 3, [PlotDir 'C2SModel/CollectedUnitsDecodabilityEpochLabel'])
 close all
