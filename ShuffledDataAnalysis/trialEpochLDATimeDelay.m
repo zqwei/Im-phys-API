@@ -16,6 +16,7 @@ if ~exist([PlotDir '/CollectedUnitsDecodabilityEpoch'],'dir')
     mkdir([PlotDir '/CollectedUnitsDecodabilityEpoch'])
 end
 
+detectThres = 0.2;
 cmap = [ 0    0.4470    0.7410
     0.6350    0.0780    0.1840
     0.4660    0.6740    0.1880];
@@ -55,23 +56,29 @@ for nROCThres   = 1:length(ROCValue)
             EpochIndex   = EpochIndex(:,ones(1,numTrials))';
             decodability(nFold,:,:)    = decodabilitySliceDataTaperAccumulated(nSessionData, EpochIndex, 0, addNoise(nData), numTestTrials, numPeriods);
         end
-%         [~, maxIndex] = max(decodability, [], 2);
-%         maxIndex = squeeze(maxIndex);
+        % [~, maxIndex] = max(decodability, [], 2);
+        % maxIndex = squeeze(maxIndex);
         delayTimes = nan(numFold, 3);
         for nEpoch = 1:3
-            delayTimes (:, nEpoch) = sum(maxIndex < nEpoch+1, 2);
+            preEpoch = nEpoch;
+            newEpoch = nEpoch + 1;
+            decodabilityEpoch      = decodability(:, :, timePoints(nEpoch+1):timePoints(nEpoch+2));
+            delayTimes (:, nEpoch) = sum(decodabilityEpoch(:, nEpoch, :)>detectThres, 3);
+            % delayTimes (:, nEpoch) = sum(maxIndex < nEpoch+1, 2);
         end
-        delayTimes = DataSetList(nData).params.timeSeries(delayTimes+1);    
-        epochTime  = [DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0];    
+        % delayTimes = DataSetList(nData).params.timeSeries(delayTimes+1); 
+        delayTimes = delayTimes/DataSetList(nData).params.frameRate; 
+        % epochTime  = [DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0];    
         semDelay   = std(delayTimes)/sqrt(numFold);
-        meanDelay  = mean(delayTimes, 1) - epochTime;
+        % meanDelay  = mean(delayTimes, 1) - epochTime;
+        meanDelay  = mean(delayTimes, 1);
         semDelays(mData, nROCThres, :)  = semDelay*1000;
         meanDelays(mData, nROCThres, :) = meanDelay*1000;
     end
 end
 
 figure;
-labelDelays         = {'Stim.', 'Delay', 'Resp.'};
+labelDelays         = {'Sample', 'Delay', 'Response'};
 for nPlot           = 1:length(labelDelays)
     subplot(1, length(labelDelays), nPlot)
     hold on
@@ -80,7 +87,7 @@ for nPlot           = 1:length(labelDelays)
             squeeze(semDelays(nData, :, nPlot)), {'-','color',cmap(nData, :), 'linewid', 1.0}, 0.5)
     end
     xlim([0.45, 0.85])
-    ylim([-60 400])
+%     ylim([-60 400])
     xlabel('ROC thres.')
     ylabel('latency to epoch change (ms)')
     set(gca, 'TickDir', 'out')
@@ -123,23 +130,30 @@ for nRandPickUnits      = 1:length(numRandPickUnitsSet)
             EpochIndex   = EpochIndex(:,ones(1,numTrials))';
             decodability(nFold,:,:)    = decodabilitySliceDataTaperAccumulated(nSessionData, EpochIndex, 0, addNoise(nData), numTestTrials, numPeriods);
         end
-        [~, maxIndex] = max(decodability, [], 2);
-        maxIndex = squeeze(maxIndex);
+%         [~, maxIndex] = max(decodability, [], 2);
+%         maxIndex = squeeze(maxIndex);
+%         delayTimes = nan(numFold, 3);
+%         for nEpoch = 1:3
+%             delayTimes (:, nEpoch) = sum(maxIndex < nEpoch+1, 2);
+%         end
+%         delayTimes = DataSetList(nData).params.timeSeries(delayTimes+1);    
         delayTimes = nan(numFold, 3);
         for nEpoch = 1:3
-            delayTimes (:, nEpoch) = sum(maxIndex < nEpoch+1, 2);
+            preEpoch = nEpoch;
+            newEpoch = nEpoch + 1;
+            decodabilityEpoch      = decodability(:, :, timePoints(nEpoch+1):timePoints(nEpoch+2));
+            delayTimes (:, nEpoch) = sum(decodabilityEpoch(:, nEpoch, :)>detectThres, 3);
         end
-        delayTimes = DataSetList(nData).params.timeSeries(delayTimes+1);    
-        epochTime  = [DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0];    
+        delayTimes = delayTimes/DataSetList(nData).params.frameRate; 
         semDelay   = std(delayTimes)/sqrt(numFold);
-        meanDelay  = mean(delayTimes, 1) - epochTime;
+        meanDelay  = mean(delayTimes, 1);
         semDelays(mData, nRandPickUnits, :)  = semDelay*1000;
         meanDelays(mData, nRandPickUnits, :) = meanDelay*1000;
     end
 end
 
 figure;
-labelDelays         = {'Stim.', 'Delay', 'Resp.'};
+labelDelays         = {'Sample', 'Delay', 'Response'};
 for nPlot           = 1:length(labelDelays)
     subplot(1, length(labelDelays), nPlot)
     hold on
