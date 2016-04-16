@@ -2,8 +2,8 @@
 function noiseCorrelationEpochs
     addpath('../Func');
     setDir;
-    load ([TempDatDir 'DataListShuffle.mat']);
-    for nData   = [1 3 4]
+    load ([TempDatDir 'DataListC2SModel.mat']);
+    for nData   = 1:length(DataSetList)
         load([TempDatDir DataSetList(nData).name '.mat'])
         [yesTrialSignalCorr, yesTrialNoiseCorr, noTrialSignalCorr, noTrialNoiseCorr, yes_no_pair]...
             = computeSignalCorrAndNoiseCorrEpochs(nDataSet, DataSetList(nData).params);
@@ -68,8 +68,8 @@ function noiseCorrelationEpochs
             
         end
         
-        setPrint(8*3, 6*4, [PlotDir 'SingleUnitsNoiseCorrelation\' DataSetList(nData).name])
-        setPrint(8*3, 6*4, [PlotDir 'SingleUnitsNoiseCorrelation\' DataSetList(nData).name],'png')
+        setPrint(8*3, 6*4, [PlotDir 'C2SModel/SingleUnitsNoiseCorrelation_' DataSetList(nData).name])
+        setPrint(8*3, 6*4, [PlotDir 'C2SModel/SingleUnitsNoiseCorrelation_' DataSetList(nData).name],'png')
         
     end
 end
