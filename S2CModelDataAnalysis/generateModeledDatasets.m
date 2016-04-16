@@ -12,7 +12,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 addpath('../Func');
 setDir;
-
+load('ParamsFitCells_S2CModel_Sim.mat');
+S2Cparams   = params;
+clear params;
+idTauD      = 1;
+idN         = 1;
+idK         = 1;
 minNumTrialToAnalysis  = 20;
 params.frameRate       =  29.68/2;
 params.binsize         =  1/params.frameRate;
@@ -42,10 +47,15 @@ ActiveNeuronIndex = findHighFiringUnits(spikeDataSet, params, minFiringRate);
 % Modeled GCaMP6s
 truncatedNormal        = truncate(makedist('Normal'), -1.5, 1.5);
 params.Fm              = random(truncatedNormal, length(nDataSet), 1) * 10.6673 + 21.3240;
-params.K               = random(truncatedNormal, length(nDataSet), 1) *  5.8337 + 13.9248;
-params.n               = random(truncatedNormal, length(nDataSet), 1) *  0.4106 +  1.7531;
-params.tau_r           = random(truncatedNormal, length(nDataSet), 1) *  0.0344 +  0.0728;
-params.tau_d           = random(truncatedNormal, length(nDataSet), 1) *  0.5055 +  1.4551;
+% params.K               = random(truncatedNormal, length(nDataSet), 1) *  5.8337 + 13.9248;
+% params.n               = random(truncatedNormal, length(nDataSet), 1) *  0.4106 +  1.7531;
+% params.tau_r           = random(truncatedNormal, length(nDataSet), 1) *  0.0344 +  0.0728;
+% params.tau_d           = random(truncatedNormal, length(nDataSet), 1) *  0.5055 +  1.4551;
+std_K                  = min(S2Cparams(idK).K/3, S2Cparams(12).K);
+params.K               = random(truncatedNormal, length(nDataSet), 1) *  std_K               + S2Cparams(idN).K;
+params.n               = random(truncatedNormal, length(nDataSet), 1) *  S2Cparams(12).n     + S2Cparams(idN).n;
+params.tau_r           = random(truncatedNormal, length(nDataSet), 1) *  S2Cparams(12).tau_r + S2Cparams(1).tau_r;
+params.tau_d           = random(truncatedNormal, length(nDataSet), 1) *  S2Cparams(12).tau_d + S2Cparams(idTauD).tau_d;
 params.Fm              = params.Fm;
 params.tau_r           = params.tau_r;
 params.tau_d           = params.tau_d;
@@ -59,12 +69,12 @@ DataSetList(nData).ActiveNeuronIndex = ActiveNeuronIndex;
 save([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet'); 
 
 % Modeled GCaMP6s
-truncatedNormal        = truncate(makedist('Normal'), -1.5, 1.5);
-params.Fm              = random(truncatedNormal, length(nDataSet), 1) * 10.6673 + 21.3240;
-params.K               = random(truncatedNormal, length(nDataSet), 1) *  5.8337 + 13.9248;
-params.n               = random(truncatedNormal, length(nDataSet), 1) *  0.4106 +  1.7531;
-params.tau_r           = random(truncatedNormal, length(nDataSet), 1) *  0.0344 +  0.0728;
-params.tau_d           = random(truncatedNormal, length(nDataSet), 1) *  0.5055 +  1.4551;
+% truncatedNormal        = truncate(makedist('Normal'), -1.5, 1.5);
+% params.Fm              = random(truncatedNormal, length(nDataSet), 1) * 10.6673 + 21.3240;
+% params.K               = random(truncatedNormal, length(nDataSet), 1) *  5.8337 + 13.9248;
+% params.n               = random(truncatedNormal, length(nDataSet), 1) *  0.4106 +  1.7531;
+% params.tau_r           = random(truncatedNormal, length(nDataSet), 1) *  0.0344 +  0.0728;
+% params.tau_d           = random(truncatedNormal, length(nDataSet), 1) *  0.5055 +  1.4551;
 params.Fm              = params.Fm;
 params.tau_r           = params.tau_r;
 params.tau_d           = params.tau_d/7;

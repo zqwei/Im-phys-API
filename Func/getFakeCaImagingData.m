@@ -22,21 +22,14 @@ function nDataSet = getFakeCaImagingData(spikeDataSet, params)
                             
     timePoints         = timePointTrialPeriod(params.polein, params.poleout, params.timeSeries);
     timeSeriesData     = params.timeSeries;
-<<<<<<< Updated upstream
-    constFMean         = 0.1; %2
+    constFMean         = 0.1;
     intNoise           = params.intNoise;
     constNoise         = params.extNoise;
+    % constFMean         = 0;
+    % linearNoise        = params.linearNoise;
     
     for nData          = 1:length(spikeDataSet)
         paramsSet                                = [params.Fm(nData), params.K(nData), params.n(nData), params.tau_d(nData), params.tau_r(nData), intNoise];
-=======
-    constFMean         = 0; %2
-    linearNoise        = params.linearNoise;
-    constNoise         = params.constNoise;
-    
-    for nData          = 1:length(spikeDataSet)
-        paramsSet                                = [params.Fm(nData), params.K(nData), params.n(nData), params.tau_d(nData), params.tau_r(nData)];
->>>>>>> Stashed changes
         nDataSet(nData).sessionIndex             = spikeDataSet(nData).sessionIndex;
         nDataSet(nData).nUnit                    = spikeDataSet(nData).nUnit;
         allTrialFirngAct_correct                 = [spikeDataSet(nData).unit_yes_trial; spikeDataSet(nData).unit_no_trial];
@@ -50,31 +43,24 @@ function nDataSet = getFakeCaImagingData(spikeDataSet, params)
         fMean                                    = mean(mean(allTrial_correct(:,timePoints(1):timePoints(2))));
         nDataSet(nData).unit_yes_trial           = (nDataSet(nData).unit_yes_trial - fMean)/(fMean+constFMean);
         nDataSet(nData).unit_no_trial            = (nDataSet(nData).unit_no_trial - fMean)/(fMean+constFMean);
-<<<<<<< Updated upstream
         nDataSet(nData).unit_yes_trial           = nDataSet(nData).unit_yes_trial + randn(size(nDataSet(nData).unit_yes_trial))*constNoise;
         nDataSet(nData).unit_no_trial            = nDataSet(nData).unit_no_trial  + randn(size(nDataSet(nData).unit_no_trial))*constNoise;
-=======
-        nDataSet(nData).unit_yes_trial           = nDataSet(nData).unit_yes_trial.*(randn(size(nDataSet(nData).unit_yes_trial))*linearNoise+1)...
-                                                    +randn(size(nDataSet(nData).unit_yes_trial))*constNoise;
-        nDataSet(nData).unit_no_trial            = nDataSet(nData).unit_no_trial.*(randn(size(nDataSet(nData).unit_no_trial))*linearNoise+1)...
-                                                    +randn(size(nDataSet(nData).unit_no_trial))*constNoise;
->>>>>>> Stashed changes
-        
+%         nDataSet(nData).unit_yes_trial           = nDataSet(nData).unit_yes_trial.*(randn(size(nDataSet(nData).unit_yes_trial))*linearNoise+1)...
+%                                                     +randn(size(nDataSet(nData).unit_yes_trial))*constNoise;
+%         nDataSet(nData).unit_no_trial            = nDataSet(nData).unit_no_trial.*(randn(size(nDataSet(nData).unit_no_trial))*linearNoise+1)...
+%                                                     +randn(size(nDataSet(nData).unit_no_trial))*constNoise;        
         nDataSet(nData).unit_yes_error           = spikeTimeToImaging(spikeDataSet(nData).unit_yes_error_spk_time, timeSeriesData, paramsSet, rMean);
         nDataSet(nData).unit_yes_error_index     = spikeDataSet(nData).unit_yes_error_index;
         nDataSet(nData).unit_no_error            = spikeTimeToImaging(spikeDataSet(nData).unit_no_error_spk_time, timeSeriesData, paramsSet, rMean);
         nDataSet(nData).unit_no_error_index      = spikeDataSet(nData).unit_no_error_index;  
         nDataSet(nData).unit_yes_error           = (nDataSet(nData).unit_yes_error - fMean)/(fMean+constFMean);
         nDataSet(nData).unit_no_error            = (nDataSet(nData).unit_no_error - fMean)/(fMean+constFMean);
-<<<<<<< Updated upstream
         nDataSet(nData).unit_yes_error           = nDataSet(nData).unit_yes_error+ randn(size(nDataSet(nData).unit_yes_error))*constNoise;
         nDataSet(nData).unit_no_error            = nDataSet(nData).unit_no_error + randn(size(nDataSet(nData).unit_no_error))*constNoise;
-=======
-        nDataSet(nData).unit_yes_error           = nDataSet(nData).unit_yes_error.*(randn(size(nDataSet(nData).unit_yes_error))*linearNoise+1)...
-                                                    +randn(size(nDataSet(nData).unit_yes_error))*constNoise;
-        nDataSet(nData).unit_no_error            = nDataSet(nData).unit_no_error.*(randn(size(nDataSet(nData).unit_no_error))*linearNoise+1)...
-                                                    +randn(size(nDataSet(nData).unit_no_error))*constNoise;
->>>>>>> Stashed changes
+%         nDataSet(nData).unit_yes_error           = nDataSet(nData).unit_yes_error.*(randn(size(nDataSet(nData).unit_yes_error))*linearNoise+1)...
+%                                                     +randn(size(nDataSet(nData).unit_yes_error))*constNoise;
+%         nDataSet(nData).unit_no_error            = nDataSet(nData).unit_no_error.*(randn(size(nDataSet(nData).unit_no_error))*linearNoise+1)...
+%                                                     +randn(size(nDataSet(nData).unit_no_error))*constNoise;
         nDataSet(nData).depth_in_um              = spikeDataSet(nData).depth_in_um;
         nDataSet(nData).AP_in_um                 = spikeDataSet(nData).AP_in_um;
         nDataSet(nData).ML_in_um                 = spikeDataSet(nData).ML_in_um;
