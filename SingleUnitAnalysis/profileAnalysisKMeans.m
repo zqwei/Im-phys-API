@@ -2,7 +2,7 @@
 % profileAnalysis
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function profileAnalysis
+function profileAnalysisKMeans
     addpath('../Func');
     setDir;
     load ([TempDatDir 'DataListShuffle.mat']);
