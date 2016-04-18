@@ -16,12 +16,11 @@ ModelsExplorationSever
 *.pdf
 *.png
 *.tiff
-<<<<<<< Updated upstream
+*.ai
 *.svg
 *.mat
 *.m~
 S2CParameterExpoloration/
-=======
 *.key
 *.jpeg
 *.pages
@@ -29,4 +28,4 @@ S2CParameterExpoloration/
 *.docx
 *.md
 *.pptx
->>>>>>> Stashed changes
+
