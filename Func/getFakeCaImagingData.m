@@ -35,9 +35,9 @@ function nDataSet = getFakeCaImagingData(spikeDataSet, params)
         allTrialFirngAct_correct                 = [spikeDataSet(nData).unit_yes_trial; spikeDataSet(nData).unit_no_trial];
         rMean                                    = mean(mean(allTrialFirngAct_correct(:,timePoints(1):timePoints(2))));
         if rMean == 0; rMean = rand(); end % pre-sample is 0.5 sec, if there is one spike, then the minimal rate is 2 Hz.
-        nDataSet(nData).unit_yes_trial           = spikeTimeToImaging(spikeDataSet(nData).unit_yes_trial_spk_time, timeSeriesData, paramsSet, rMean);
+        [nDataSet(nData).unit_yes_trial, nDataSet(nData).unit_yes_trial_linear]  = spikeTimeToImaging(spikeDataSet(nData).unit_yes_trial_spk_time, timeSeriesData, paramsSet, rMean);
         nDataSet(nData).unit_yes_trial_index     = spikeDataSet(nData).unit_yes_trial_index;
-        nDataSet(nData).unit_no_trial            = spikeTimeToImaging(spikeDataSet(nData).unit_no_trial_spk_time, timeSeriesData, paramsSet, rMean);
+        [nDataSet(nData).unit_no_trial, nDataSet(nData).unit_no_trial_linear] = spikeTimeToImaging(spikeDataSet(nData).unit_no_trial_spk_time, timeSeriesData, paramsSet, rMean);
         nDataSet(nData).unit_no_trial_index      = spikeDataSet(nData).unit_no_trial_index;
         allTrial_correct                         = [nDataSet(nData).unit_yes_trial; nDataSet(nData).unit_no_trial];
         fMean                                    = mean(mean(allTrial_correct(:,timePoints(1):timePoints(2))));
