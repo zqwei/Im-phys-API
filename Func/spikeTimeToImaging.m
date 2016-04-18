@@ -18,7 +18,7 @@
 % weiz@janelia.hhmi.org
 % 
 
-function CaImaging    = spikeTimeToImaging(spikeTimes, timeSeriesData, params, rMean)
+function [CaImaging, Ca]    = spikeTimeToImaging(spikeTimes, timeSeriesData, params, rMean)
     
     Fm          = params(1);
     K           = params(2);
@@ -27,7 +27,7 @@ function CaImaging    = spikeTimeToImaging(spikeTimes, timeSeriesData, params, r
     tau_rise    = params(5);
     intNoise    = params(6);
     Ca                        = zeros(length(spikeTimes), length(timeSeriesData));    
-    preSamplePoints           = exprnd(1/rMean, length(spikeTimes), 100);
+    preSamplePoints           = exprnd(1/rMean, length(spikeTimes), 20);
     preSamplePoints           = cumsum(preSamplePoints, 2);
     
     for nTrial                = 1:length(spikeTimes)
