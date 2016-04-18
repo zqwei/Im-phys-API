@@ -47,7 +47,7 @@ function profileAnalysisKMeans
             hold off
             box off
         end
-        setPrint(8*m, 6*m, [PlotDir 'ActivityProfileKMeans/CentriodActivityProfileKMeans_K_' num2str(k, '%03d') '_' DataSetList(nData).name])
+        setPrint(8*m, 6*m, [PlotDir 'SingleUnitsActivityProfileKMeans/CentriodActivityProfileKMeans_K_' num2str(k, '%03d') '_' DataSetList(nData).name])
     end
     
     close all
