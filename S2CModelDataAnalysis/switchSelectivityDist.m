@@ -30,7 +30,7 @@ for nData      = 1:length(DataSetList)
     pie(sizeGroup)
     colormap(cmap)
     set(gca, 'TickDir', 'out')
-    setPrint(8, 6, [PlotDir 'S2CModel/SingleUnitsTscore_' DataSetList(nData).name], 'svg')
+    setPrint(8, 6, [PlotDir 'S2CModel/SingleUnitsTscore_' DataSetList(nData).name])
 end
 
 figure;

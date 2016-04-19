@@ -40,7 +40,7 @@ for nData     = 1:length(DataSetList)
     ylabel('% Max peak')
     xlabel('Time')
     hold off
-    setPrint(8*2, 6, [PlotDir 'S2CModel\SingleUnitsMaxLocation_' DataSetList(nData).name])
+    setPrint(8, 3, [PlotDir 'S2CModel\SingleUnitsMaxLocation_' DataSetList(nData).name])
 end
 
 close all

@@ -28,15 +28,15 @@ function activityProfileChangeOnEpochsStats
         
         figure
         hold on
-        plot(timeStep, mean(peakMat(:, 1:numTime))*100, '-r', 'linewid', 1.0)
-        plot(timeStep, mean(peakMat(:, numTime+1:end))*100, '-b', 'linewid', 1.0)
-        ylabel('% neurons')
+        plot(timeStep, mean(peakMat(:, 1:numTime))*100, '-', 'linewid', 1.0, 'color', [0.7 0 0])
+        plot(timeStep, mean(peakMat(:, numTime+1:end))*100, '-', 'linewid', 1.0, 'color', [0 0 0.7])
+        ylabel('% change')
         xlabel('Time')
         ylim([0 2.5])
         xlim([timeStep(1) timeStep(end)])
         gridxy ([polein, poleout, 0],[], 'Color','k','Linestyle','--','linewid', 1.0)
         box off
-        setPrint(8*2, 6, [PlotDir 'S2CModel/SingleUnitsPeakFinderStats_' DataSetList(nData).name])
+        setPrint(8, 3, [PlotDir 'S2CModel/SingleUnitsPeakFinderStats_' DataSetList(nData).name])
     end
 end
 

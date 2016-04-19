@@ -28,7 +28,7 @@ sizeGroup      = histcounts(unitGroup, 0:3);
 pie(sizeGroup)
 colormap(cmap)
 disp(sum(sizeGroup))
-setPrint(8, 6, [PlotDir 'ConfoundingFactorTscore/SingleUnitsTscoreAPML_Pop_' DataSetList(nData).name], 'svg')
+setPrint(8, 6, [PlotDir 'ConfoundingFactorTscore/SingleUnitsTscoreAPML_Pop_' DataSetList(nData).name])
 
 figure;
 APLoc          = [DataSetList(nData).cellinfo.AP_axis];
@@ -38,7 +38,7 @@ groupNames     = {'Non.', 'Homo.', 'Dynamicial'};
 pie(sizeGroup)
 colormap(cmap)
 disp(sum(sizeGroup))
-setPrint(8, 6, [PlotDir 'ConfoundingFactorTscore/SingleUnitsTscoreAPML_Sub_' DataSetList(nData).name], 'svg')
+setPrint(8, 6, [PlotDir 'ConfoundingFactorTscore/SingleUnitsTscoreAPML_Sub_' DataSetList(nData).name])
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Comparison across animals
@@ -62,7 +62,7 @@ for nData      = DataSetToAnalysis
     groupCounts = groupCounts(~zeroGroups, :);
     groupPerCounts = bsxfun(@rdivide, groupCounts, sum(groupCounts, 2));
     figure
-    subplot(1, 2, 1)
+    subplot(2, 1, 1)
     barh(groupPerCounts, 'stack', 'edgecolor', 'none');
     colormap(cmap)
 %     caxis([1 8])
@@ -72,13 +72,13 @@ for nData      = DataSetToAnalysis
     ylabel('Animal index')
     set(gca, 'yTickLabel', {})
 
-    subplot(1, 2, 2)
+    subplot(2, 1, 2)
     barh(sum(groupCounts,2), 'k')
     xlabel('# cells')
     ylabel('Animal index')
     set(gca, 'yTickLabel', {})
     
-    setPrint(8*2, 6, [PlotDir 'ConfoundingFactorTscore/SingleUnitsTscoreANM_' DataSetList(nData).name], 'svg')
+    setPrint(8, 6*2, [PlotDir 'ConfoundingFactorTscore/SingleUnitsTscoreANM_' DataSetList(nData).name])
     
 end
 

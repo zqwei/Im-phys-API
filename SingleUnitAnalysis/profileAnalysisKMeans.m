@@ -54,28 +54,28 @@ function profileAnalysisKMeans
 end
 
 
-function actMat      = computeMeanActivityMatrix(nDataSet, timeBinLength)
-    numTimeBin       = floor(size(nDataSet(1).unit_yes_trial, 2)/timeBinLength);
-    trunctSize       = mod(size(nDataSet(1).unit_yes_trial, 2), timeBinLength);
-    yesProfileMatrix = nan(length(nDataSet), numTimeBin);
-    noProfileMatrix  = yesProfileMatrix;
-    
-    for nUnit        = 1:length(nDataSet)
-        yesData      = mean(nDataSet(nUnit).unit_yes_trial(:, 1:end-trunctSize));
-        noData       = mean(nDataSet(nUnit).unit_no_trial(:, 1:end-trunctSize));
-        maxData      = max([yesData, noData]);
-        minData      = min([yesData, noData]);
-        yesData      = (yesData - minData)/(maxData - minData);
-        yesData      = reshape(yesData, [timeBinLength, numTimeBin]);
-        yesProfileMatrix(nUnit, :) = mean(yesData);
+% function actMat      = computeMeanActivityMatrix(nDataSet, timeBinLength)
+%     numTimeBin       = floor(size(nDataSet(1).unit_yes_trial, 2)/timeBinLength);
+%     trunctSize       = mod(size(nDataSet(1).unit_yes_trial, 2), timeBinLength);
+%     yesProfileMatrix = nan(length(nDataSet), numTimeBin);
+%     noProfileMatrix  = yesProfileMatrix;
+%     
+%     for nUnit        = 1:length(nDataSet)
+%         yesData      = mean(nDataSet(nUnit).unit_yes_trial(:, 1:end-trunctSize));
+%         noData       = mean(nDataSet(nUnit).unit_no_trial(:, 1:end-trunctSize));
 %         maxData      = max([yesData, noData]);
 %         minData      = min([yesData, noData]);
-        noData       = (noData - minData)/(maxData - minData);
-        noData       = reshape(noData, [timeBinLength, numTimeBin]);
-        noProfileMatrix(nUnit, :) = mean(noData);
-    end
-    
-    actMat  = [yesProfileMatrix, noProfileMatrix];
-    
-end
+%         yesData      = (yesData - minData)/(maxData - minData);
+%         yesData      = reshape(yesData, [timeBinLength, numTimeBin]);
+%         yesProfileMatrix(nUnit, :) = mean(yesData);
+% %         maxData      = max([yesData, noData]);
+% %         minData      = min([yesData, noData]);
+%         noData       = (noData - minData)/(maxData - minData);
+%         noData       = reshape(noData, [timeBinLength, numTimeBin]);
+%         noProfileMatrix(nUnit, :) = mean(noData);
+%     end
+%     
+%     actMat  = [yesProfileMatrix, noProfileMatrix];
+%     
+% end
 

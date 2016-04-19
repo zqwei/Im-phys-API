@@ -4,7 +4,8 @@ function setPrint(width, height, fname, printType)
 %     set(h1, 'Interpreter','none','fontsize',4)
 
     if nargin == 3
-        printType = 'svg';
+        % printType = 'svg';
+        printType = 'tif';
     end
 
     set(gcf,'PaperUnits','centimeters');

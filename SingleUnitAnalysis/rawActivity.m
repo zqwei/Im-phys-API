@@ -28,7 +28,7 @@ end
 for nData             = 1:length(DataSetList)-1
     load([TempDatDir DataSetList(nData).name '.mat'])
     plotMeanActivityImagescRasterOnly(nDataSet, DataSetList(nData).params, [], [], ylabels{nData}); 
-    setPrint(6*2, 3*3, [PlotDir 'SingleUnitsImagescWithSort/SingleUnitsImagescRasterOnly_' DataSetList(nData).name], 'svg')
+    setPrint(6*2, 3*3, [PlotDir 'SingleUnitsImagescWithSort/SingleUnitsImagescRasterOnly_' DataSetList(nData).name])
 end
 
 

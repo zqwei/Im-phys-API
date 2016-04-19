@@ -151,6 +151,7 @@ for nData      = 1:length(DataSetList)
         ylabel('DF/F');
         xlabel('Time (s)');
         xlim([DataSetList(nData).params.timeSeries(1) DataSetList(nData).params.timeSeries(end)]);
+        title(num2str(neuronIndex))
     end
     
     setPrint(8*5, 6*8, [PlotDir 'S2CModel/SingleUnitsTscoreExampleNeuron_' DataSetList(nData).name])

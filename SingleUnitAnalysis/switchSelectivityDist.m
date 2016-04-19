@@ -38,7 +38,7 @@ for nData      = 1:length(DataSetList)-1
 %     title('Distribution of cell types')
     colormap(cmap)
     set(gca, 'TickDir', 'out')
-    setPrint(8, 6, [PlotDir 'SingleUnitsTscore/SingleUnitsTscore_' DataSetList(nData).name], 'svg')
+    setPrint(8, 6, [PlotDir 'SingleUnitsTscore/SingleUnitsTscore_' DataSetList(nData).name])
     
     depth                        = [DataSetList(nData).cellinfo(:).depth];    
     depthStart                   = 100;
@@ -70,7 +70,7 @@ for nData      = 1:length(DataSetList)-1
     groupPerCounts = bsxfun(@rdivide, groupCounts, sum(groupCounts, 2));
     
     figure('Visible', 'off');
-    subplot(1, 2, 1)
+    subplot(2, 1, 1)
     barh(uniqueDepth, groupPerCounts, 'stack', 'edgecolor', 'none');
 %     caxis([0 3])
     xlim([0 1])
@@ -81,14 +81,14 @@ for nData      = 1:length(DataSetList)-1
     colormap(cmap)
     set(gca, 'yTick', 0:300:900)
     
-    subplot(1, 2, 2)
+    subplot(2, 1, 2)
     barh(uniqueDepth, sum(groupCounts,2),'k')
     xlabel('# cells')
     ylabel('Depth (um)')
     ylim([0 950])
     set(gca, 'yTick', 0:300:900)
     set(gca, 'TickDir', 'out')
-    setPrint(8*2, 6, [PlotDir 'SingleUnitsTscore/SingleUnitsTscoreDepth_' DataSetList(nData).name], 'svg')
+    setPrint(8, 6*2, [PlotDir 'SingleUnitsTscore/SingleUnitsTscoreDepth_' DataSetList(nData).name])
 end
 
 figure;
