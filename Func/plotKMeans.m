@@ -1,4 +1,4 @@
-function plotKMeans(dataStruct)
+function plotKMeans(dataStruct, k, params)
     neuronNum = size(dataStruct,1);
     timePointNum = size(dataStruct(1).unit_yes_trial,2);
     shapeMat = zeros(neuronNum,timePointNum*2);
@@ -12,10 +12,10 @@ function plotKMeans(dataStruct)
 
     % shapeMat = shapeMat./repmat(max(shapeMat,[],2),1,timePointNum*2);
 
-    pcNum = 8;
-    [pc,score,~,~] = pca(shapeMat);
+    pcNum = k-1;
+    [pc,score,~,~] = pca(shapeMat,'Algorithm','eig','Economy',false);
 
-    clusterNum = 9;
+    clusterNum = k;
     [idx,C,~,~] = kmeans(score(:,1:pcNum),clusterNum);
 
     neuronsPerCluster = zeros(1,clusterNum);
@@ -36,10 +36,11 @@ function plotKMeans(dataStruct)
         centroids(:,ii) = -centroids(:,ii);
       end
       subplot(squareNum,squareNum,ii);
-      plot(centroids(1:timePointNum,ii));
-      hold on, plot(centroids((timePointNum+1):end,ii),'r')
-      set(gca,'xlim',[0 timePointNum])
-      title(['Perc. neurons ' num2str(100*neuronsPerCluster(ii)/neuronNum)])
+      plot(params.timeSeries(1:timePointNum), centroids(1:timePointNum,ii), '-', 'linewid', 1.0, 'color', [0.7 0 0]);
+      hold on, plot(params.timeSeries(1:timePointNum), centroids((timePointNum+1):end,ii), '-', 'linewid', 1.0, 'color', [0 0 0.7])
+      set(gca,'xlim',[params.timeSeries(1) params.timeSeries(end-1)])
+      gridxy ([params.polein, params.poleout, 0],[], 'Color','k','Linestyle','--','linewid', 1.0)
+      title(['% neurons ' num2str(100*neuronsPerCluster(ii)/neuronNum)])
     end
 
 end
