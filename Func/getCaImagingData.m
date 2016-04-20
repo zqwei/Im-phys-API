@@ -49,14 +49,14 @@ function CaImagingDataSet    = getCaImagingData(CaImagingDir, CaImagingFileList,
                 CaImagingDataSet(tot_Unit).unit_yes_error_index = find(errorRightTrial);
                 if sum(errorRightTrial) == 1
                     CaImagingDataSet(tot_Unit).unit_yes_error   = CaImagingDataSet(tot_Unit).unit_yes_error';
-                    CaImagingDataSet(tot_Unit).unit_yes_error_raw= CaImagingDataSet(tot_Unit).unit_yes_error_raw';
+%                     CaImagingDataSet(tot_Unit).unit_yes_error_raw= CaImagingDataSet(tot_Unit).unit_yes_error_raw';
                 end
                 CaImagingDataSet(tot_Unit).unit_no_error        = squeeze(dFF(nUnit,:,errorLeftTrial))';   
 %                 CaImagingDataSet(tot_Unit).unit_no_error_raw    = squeeze(rawNeuralData(nUnit,:,errorLeftTrial))';   
                 CaImagingDataSet(tot_Unit).unit_no_error_index  = find(errorLeftTrial);
                 if sum(errorLeftTrial) == 1
                     CaImagingDataSet(tot_Unit).unit_no_error    = CaImagingDataSet(tot_Unit).unit_no_error';
-                    CaImagingDataSet(tot_Unit).unit_no_error_raw= CaImagingDataSet(tot_Unit).unit_no_error_raw';
+%                     CaImagingDataSet(tot_Unit).unit_no_error_raw= CaImagingDataSet(tot_Unit).unit_no_error_raw';
                 end
                 
                 switch paramsROI.expression
