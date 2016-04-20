@@ -19,7 +19,7 @@
 % 
 
 
-function [dFF, rawNeuralData, correctRightTrial, correctLeftTrial, errorRightTrial, errorLeftTrial] = ...
+function [dFF, mean_F, correctRightTrial, correctLeftTrial, errorRightTrial, errorLeftTrial] = ...
     extractALMImagingData (ROI_list, trial, nimage, params)
     
     if isfield(params, 'timeWindowIndexRange')
@@ -74,7 +74,7 @@ function [dFF, rawNeuralData, correctRightTrial, correctLeftTrial, errorRightTri
     
 %     mean_F             = squeeze(mean(mean(alignedNeuralData(:,timePoints(1):timePoints(2),correctRightTrial|correctLeftTrial),3),2));
     mean_F             = squeeze(mean(mean(alignedNeuralData(:,timePoints(1):timePoints(2),:),3),2));
-    rawNeuralData      = alignedNeuralData;
+%     rawNeuralData      = alignedNeuralData;
     alignedNeuralData  = alignedNeuralData - repmat(mean_F,1,timePointNum,trialNum);
     dFF                = alignedNeuralData./repmat(mean_F,1,timePointNum,trialNum);
 
