@@ -26,9 +26,9 @@ function CaImagingDataSet    = getCaImagingData(CaImagingDir, CaImagingFileList,
         fname               = CaImagingFileList(nfile).name;
         load([CaImagingDir fname])
         
-        [dFF, rawNeuralData, correctRightTrial, correctLeftTrial, errorRightTrial, errorLeftTrial] = ...
+        [dFF, mean_F, correctRightTrial, correctLeftTrial, errorRightTrial, errorLeftTrial] = ...
                     extractALMImagingData...
-                    (ROI_list, trial, nimage, paramsROI); %#ok<ASGLU>
+                    (ROI_list, trial, nimage, paramsROI);
                 
         if sum(correctRightTrial) > minNumTrialToAnalysis && sum(correctLeftTrial) > minNumTrialToAnalysis
             numUnit         = size(dFF, 1);
@@ -38,26 +38,21 @@ function CaImagingDataSet    = getCaImagingData(CaImagingDir, CaImagingFileList,
                 CaImagingDataSet(tot_Unit).sessionIndex         = nfile;
                 CaImagingDataSet(tot_Unit).nUnit                = nUnit;
                 CaImagingDataSet(tot_Unit).unit_yes_trial       = squeeze(dFF(nUnit,:,correctRightTrial))';
-%                 CaImagingDataSet(tot_Unit).unit_yes_trial_raw   = squeeze(rawNeuralData(nUnit,:,correctRightTrial))';
                 CaImagingDataSet(tot_Unit).unit_yes_trial_index = find(correctRightTrial);
                 CaImagingDataSet(tot_Unit).unit_no_trial        = squeeze(dFF(nUnit,:,correctLeftTrial))';
-%                 CaImagingDataSet(tot_Unit).unit_no_trial_raw    = squeeze(rawNeuralData(nUnit,:,correctLeftTrial))';
                 CaImagingDataSet(tot_Unit).unit_no_trial_index  = find(correctLeftTrial);
                 
                 CaImagingDataSet(tot_Unit).unit_yes_error       = squeeze(dFF(nUnit,:,errorRightTrial))';
-%                 CaImagingDataSet(tot_Unit).unit_yes_error_raw   = squeeze(rawNeuralData(nUnit,:,errorRightTrial))';
                 CaImagingDataSet(tot_Unit).unit_yes_error_index = find(errorRightTrial);
                 if sum(errorRightTrial) == 1
                     CaImagingDataSet(tot_Unit).unit_yes_error   = CaImagingDataSet(tot_Unit).unit_yes_error';
-%                     CaImagingDataSet(tot_Unit).unit_yes_error_raw= CaImagingDataSet(tot_Unit).unit_yes_error_raw';
                 end
                 CaImagingDataSet(tot_Unit).unit_no_error        = squeeze(dFF(nUnit,:,errorLeftTrial))';   
-%                 CaImagingDataSet(tot_Unit).unit_no_error_raw    = squeeze(rawNeuralData(nUnit,:,errorLeftTrial))';   
                 CaImagingDataSet(tot_Unit).unit_no_error_index  = find(errorLeftTrial);
                 if sum(errorLeftTrial) == 1
                     CaImagingDataSet(tot_Unit).unit_no_error    = CaImagingDataSet(tot_Unit).unit_no_error';
-%                     CaImagingDataSet(tot_Unit).unit_no_error_raw= CaImagingDataSet(tot_Unit).unit_no_error_raw';
                 end
+                CaImagingDataSet(tot_Unit).baseline             = mean_F(nUnit);
                 
                 switch paramsROI.expression
                     case 'Virus'
