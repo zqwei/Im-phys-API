@@ -1,6 +1,6 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % dPCA and PCA across trials
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 addpath('../Func');
 setDir;
@@ -51,9 +51,45 @@ for nData              = [1 3 4]
     colormap(cmap(1:3, :))
     set(gca, 'xTick', 0:5:10)
     set(gca, 'TickDir', 'out')
-    setPrint(8, 6, [PlotDir 'CollectedUnitsPCA/CollectedUnitsPCA_' DataSetList(nData).name])
+    setPrint(8, 6, [PlotDir 'CollectedUnitsPCA/CollectedUnitsPCA_' DataSetList(nData).name])    
+end
+
+ROCThres = 0.55;
+% different ROC
+for nData              = [1 3 4]
+    load([TempDatDir DataSetList(nData).name '.mat']);
+    selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';
+    selectedNeuronalIndex = selectedHighLocalROCneurons(nDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);
+    nDataSet              = nDataSet(selectedNeuronalIndex);
+    evMat              = zeros(numFold, length(combinedParams), numComps);
+    firingRates        = generateDPCAData(nDataSet, numTrials);
+    firingRatesAverage = nanmean(firingRates, ndims(firingRates));
+    pcaX               = firingRatesAverage(:,:);
+    firingRatesAverage = bsxfun(@minus, firingRatesAverage, mean(pcaX,2));
+    pcaX               = bsxfun(@minus, pcaX, mean(pcaX,2));
+    Xmargs             = dpca_marginalize(firingRatesAverage, 'combinedParams', combinedParams, 'ifFlat', 'yes');
+    totalVar           = sum(sum(pcaX.^2));
+    [~, ~, Wpca] = svd(pcaX');
+    PCAmargVar         = zeros(length(combinedParams), length(nDataSet));
+    for i=1:length(Xmargs)
+        PCAmargVar(i,:) = sum((Wpca' * Xmargs{i}).^2, 2)' / totalVar;
+    end
+    
+    figure;
+    bar(1:numComps, PCAmargVar(:, 1:numComps)','stacked')
+    box off
+    xlim([0 numComps+0.5])
+    ylim([0 0.6])
+    xlabel('Component index')
+    ylabel('frac. EV per PC')
+    colormap(cmap(1:3, :))
+    set(gca, 'xTick', 0:5:10)
+    set(gca, 'TickDir', 'out')
+    setPrint(8, 6, [PlotDir 'CollectedUnitsPCA/CollectedUnitsPCALOCROC_' DataSetList(nData).name])
     
 end
+
+
 
 figure;
 hold on
@@ -235,5 +271,6 @@ for nData              = [1 3 4]
     setPrint(8*4, 6, [PlotDir 'CollectedUnitsPCA/CollectedSubUnitsPCA_' DataSetList(nData).name])
     
 end
+
 
 close all
