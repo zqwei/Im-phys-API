@@ -16,18 +16,18 @@ end
 
 cmap = cbrewer('qual', 'Set1', 3, 'cubic');
 
-for nData      = 1:length(DataSetList)-1
+for nData      = [1 3 4]
     load([TempDatDir DataSetList(nData).name '.mat'])
-%     logPValueEpoch= getLogPValueTscoreSpikeEpoch(nDataSet, DataSetList(nData).params);
-%     save([TempDatDir 'LogPValueTscore_' DataSetList(nData).name '.mat'], 'logPValueEpoch')
-    load([TempDatDir 'LogPValueTscore_' DataSetList(nData).name '.mat'], 'logPValue', 'logPValueEpoch')
+    logPValueEpoch= getLogPValueTscoreSpikeEpoch(nDataSet, DataSetList(nData).params);
+% %     save([TempDatDir 'LogPValueTscore_' DataSetList(nData).name '.mat'], 'logPValueEpoch')
+%     load([TempDatDir 'LogPValueTscore_' DataSetList(nData).name '.mat'], 'logPValue', 'logPValueEpoch')
     unitGroup = plotTtestLogPSpikeEpoch (logPValueEpoch);
     
-    for nUnit = 1:length(nDataSet)
-        nDataSet(nUnit).selectivity = unitGroup(nUnit); %#ok<SAGROW>
-    end
-    
-    save([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet')
+%     for nUnit = 1:length(nDataSet)
+%         nDataSet(nUnit).selectivity = unitGroup(nUnit); %#ok<SAGROW>
+%     end
+%     
+%     save([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet')
     
     
     sizeGroup = histcounts(unitGroup, 0:3);
