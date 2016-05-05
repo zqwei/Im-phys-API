@@ -17,7 +17,7 @@ end
 cmap = cbrewer('qual', 'Set1', 3, 'cubic');
 
 for nData      = 1:length(DataSetList)
-    load([TempDatDir DataSetList(nData).name '.mat'])    
+    load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])    
     logPValueEpoch= getLogPValueTscoreSpikeEpoch(nDataSet, DataSetList(nData).params);
     unitGroup = plotTtestLogPSpikeEpoch (logPValueEpoch);
     sizeGroup = histcounts(unitGroup, 0:3);
@@ -26,7 +26,7 @@ for nData      = 1:length(DataSetList)
     pie(sizeGroup)
     colormap(cmap)
     set(gca, 'TickDir', 'out')
-    setPrint(8, 6, [PlotDir 'C2SModel/SingleUnitsTscore_' DataSetList(nData).name], 'svg')
+    setPrint(8, 6, [PlotDir 'C2SModel/SingleUnitsTscore_' DataSetList(nData).name '_withOLRemoval'])
 end
 
 figure;

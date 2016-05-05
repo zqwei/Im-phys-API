@@ -27,7 +27,7 @@ cmap = [         0    0.4470    0.7410
 
 
 for nData              = 1:length(DataSetList)
-    load([TempDatDir DataSetList(nData).name '.mat']);
+    load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat']);
     evMat              = zeros(numFold, length(combinedParams), numComps);
     firingRates        = generateDPCADataVec(nDataSet, numTrials);
     firingRatesAverage = nanmean(firingRates, ndims(firingRates));
@@ -52,7 +52,7 @@ for nData              = 1:length(DataSetList)
     colormap(cmap(1:3, :))
     set(gca, 'xTick', 0:5:10)
     set(gca, 'TickDir', 'out')
-    setPrint(8, 6, [PlotDir 'C2SModel/CollectedUnitsPCA_' DataSetList(nData).name])
+    setPrint(8, 6, [PlotDir 'C2SModel/CollectedUnitsPCA_' DataSetList(nData).name '_withOLRemoval'])
     
 end
 

@@ -11,7 +11,7 @@ function activityProfileChangeOnEpochsStats
     ttestThres    = 0.1;
     spThres       = 0.2;
     for nData     = 1:length(DataSetList)
-        load([TempDatDir DataSetList(nData).name '.mat'])
+        load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
         [actMat, splineActMat, stdActMat] = smoothedMeanActivityMatrix(nDataSet, smoothedBinsize);
         peakMat   = false(size(actMat));
         timeStep  = DataSetList(nData).params.timeSeries;
@@ -36,7 +36,7 @@ function activityProfileChangeOnEpochsStats
         xlim([timeStep(1) timeStep(end)])
         gridxy ([polein, poleout, 0],[], 'Color','k','Linestyle','--','linewid', 1.0)
         box off
-        setPrint(8*2, 6, [PlotDir 'C2SModel/SingleUnitsPeakFinderStats_' DataSetList(nData).name])
+        setPrint(8*2, 6, [PlotDir 'C2SModel/SingleUnitsPeakFinderStats_' DataSetList(nData).name '_withOLRemoval'])
     end
 end
 

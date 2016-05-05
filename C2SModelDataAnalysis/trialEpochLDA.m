@@ -30,8 +30,8 @@ ROCThres            = 0.5;
 numFold             = 30;
 
 for nData           = 1:length(DataSetList)
-    load([TempDatDir DataSetList(nData).name '.mat'])   
-    selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';
+    load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])   
+    selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex(~neuronRemoveList)';
     selectedNeuronalIndex = selectedHighROCneurons(nDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);
     nDataSet              = nDataSet(selectedNeuronalIndex);
     figure;
@@ -66,7 +66,7 @@ for nData           = 1:length(DataSetList)
     xlabel('Time (s)')
     colormap(cmap(1:4, :));
     
-    setPrint(8, 6, [PlotDir 'C2SModel/CollectedUnitsDecodabilityEpoch_0_5_' DataSetList(nData).name])
+    setPrint(8, 6, [PlotDir 'C2SModel/CollectedUnitsDecodabilityEpoch_0_5_' DataSetList(nData).name '_withOLRemoval'])
 end
 
 
@@ -74,8 +74,8 @@ ROCThres            = 0.7;
 numFold             = 30;
 
 for nData           = 1:length(DataSetList)
-    load([TempDatDir DataSetList(nData).name '.mat'])   
-    selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';
+    load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])   
+    selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex(~neuronRemoveList)';
     selectedNeuronalIndex = selectedHighROCneurons(nDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);
     nDataSet              = nDataSet(selectedNeuronalIndex);
     figure;
@@ -110,7 +110,7 @@ for nData           = 1:length(DataSetList)
     xlabel('Time (s)')
     colormap(cmap(1:4, :));
     
-    setPrint(8, 6, [PlotDir 'C2SModel/CollectedUnitsDecodabilityEpoch_0_7_' DataSetList(nData).name])
+    setPrint(8, 6, [PlotDir 'C2SModel/CollectedUnitsDecodabilityEpoch_0_7_' DataSetList(nData).name '_withOLRemoval'])
 end
 
 close all

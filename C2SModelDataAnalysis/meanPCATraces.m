@@ -17,7 +17,7 @@ if ~exist([PlotDir 'C2SModel'],'dir')
 end
 
 for nData              = 1:length(DataSetList)
-    load([TempDatDir DataSetList(nData).name '.mat']);
+    load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat']);
     firingRates        = generateDPCADataVec(nDataSet, numTrials);
     firingRatesAverage = nanmean(firingRates, ndims(firingRates));
     pcaFiringRatesAverage = zeros(numComps, 2, 77);
@@ -40,7 +40,7 @@ for nData              = 1:length(DataSetList)
         ylabel(['PC' num2str(nPlot) ' score'])  
     end
     
-    setPrint(8*3, 6, [PlotDir 'C2SModel/CollectedUnitsPCATrace_' DataSetList(nData).name])
+    setPrint(8*3, 6, [PlotDir 'C2SModel/CollectedUnitsPCATrace_' DataSetList(nData).name '_withOLRemoval'])
     
 end
 

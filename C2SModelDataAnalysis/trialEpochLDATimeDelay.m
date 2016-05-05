@@ -10,7 +10,7 @@
 addpath('../Func');
 setDir;
 load ([TempDatDir 'DataListC2SModel.mat']);
-addNoise         = [0 0 0 0];
+addNoise         = [1 1];
 
 detectThres = 0.4;
 cmap = [ 0    0.4470    0.7410
@@ -19,8 +19,9 @@ cmap = [ 0    0.4470    0.7410
 
 numRandPickUnits    = 100;
 numTestTrials       = 200;
-numFold             = 30;
+numFold             = 10;
 numTrials           = numRandPickUnits * 3 + numTestTrials;
+numTrials           = max(numTrials, 1000);
 numTrainingTrials   = numTrials - numTestTrials;
 trainingTargets     = [true(numTrainingTrials/2,1); false(numTrainingTrials/2,1)];
 trainingTargets     = trainingTargets(randperm(numTrainingTrials));
@@ -28,7 +29,7 @@ testTargets         = [true(numTestTrials/2,1); false(numTestTrials/2,1)];
 testTargets         = testTargets(randperm(numTestTrials));
 totTargets          = [testTargets; trainingTargets];
 
-ROCValue        = 0.5:0.1:0.8;
+ROCValue        = 0.5:0.05:0.75;
 nDatas          = 1:length(DataSetList);
 meanDelays      = nan(length(nDatas), length(ROCValue), 3); % #nData, #Roc, #Epoch
 semDelays       = nan(length(nDatas), length(ROCValue), 3);  
@@ -37,8 +38,8 @@ for nROCThres   = 1:length(ROCValue)
     ROCThres    = ROCValue(nROCThres);
     for mData   = 1:length(nDatas)
         nData   = nDatas(mData);
-        load([TempDatDir DataSetList(nData).name '.mat'])   
-        selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';
+        load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])   
+        selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex(~neuronRemoveList)';
         selectedNeuronalIndex = selectedHighROCneurons(nDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);
         nDataSet              = nDataSet(selectedNeuronalIndex);
         timePoints            = timePointTrialPeriod(DataSetList(nData).params.polein, DataSetList(nData).params.poleout, DataSetList(nData).params.timeSeries);
@@ -82,7 +83,7 @@ for nPlot           = 1:length(labelDelays)
         shadedErrorBar(ROCValue, squeeze(meanDelays(nData, :, nPlot)), ...
             squeeze(semDelays(nData, :, nPlot)), {'-','color',cmap(nData, :), 'linewid', 1.0}, 0.5)
     end
-    xlim([0.45, 0.85])
+    xlim([0.45, 0.80])
 %     ylim([-60 400])
     xlabel('ROC thres.')
     ylabel('latency to epoch change (ms)')
@@ -112,8 +113,8 @@ for nRandPickUnits      = 1:length(numRandPickUnitsSet)
     totTargets          = [testTargets; trainingTargets];
     for mData           = 1:length(nDatas)
         nData           = nDatas(mData);
-        load([TempDatDir DataSetList(nData).name '.mat'])   
-        selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';
+        load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])   
+        selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex(~neuronRemoveList)';
         selectedNeuronalIndex = selectedHighROCneurons(nDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);
         nDataSet              = nDataSet(selectedNeuronalIndex);
         timePoints            = timePointTrialPeriod(DataSetList(nData).params.polein, DataSetList(nData).params.poleout, DataSetList(nData).params.timeSeries);

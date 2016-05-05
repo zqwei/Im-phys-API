@@ -4,7 +4,7 @@ load ([TempDatDir 'DataListC2SModel.mat']);
 
 
 for nData     = 1:length(DataSetList)
-    load([TempDatDir DataSetList(nData).name '.mat'])
+    load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
     numTimeBin          = size(nDataSet(1).unit_yes_trial, 2);
     yesProfileMatrix    = nan(length(nDataSet), numTimeBin);
     noProfileMatrix     = yesProfileMatrix;
@@ -40,7 +40,7 @@ for nData     = 1:length(DataSetList)
     ylabel('% Max peak')
     xlabel('Time')
     hold off
-    setPrint(8*2, 6, [PlotDir 'C2SModel\SingleUnitsMaxLocation_' DataSetList(nData).name])
+    setPrint(8*2, 6, [PlotDir 'C2SModel\SingleUnitsMaxLocation_' DataSetList(nData).name '_withOLRemoval'])
 end
 
 close all
