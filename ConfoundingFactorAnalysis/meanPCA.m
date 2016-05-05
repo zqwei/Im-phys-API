@@ -9,7 +9,7 @@ load ([TempDatDir 'DataListShuffleConfounding.mat']);
 combinedParams = {{1}, {2}, {[1 2]}};
 margNames      = {'Stim', 'Time', 'Inter'};
 numTrials      = 100;
-numComps       = 5;
+numComps       = 3;
 if ~exist([PlotDir 'ConfoundingFactorPCA'],'dir')
     mkdir([PlotDir 'ConfoundingFactorPCA'])
 end
@@ -22,8 +22,9 @@ cmap = [         0    0.4470    0.7410
     0.3010    0.7450    0.9330
     0.6350    0.0780    0.1840];
 
-DataSetToAnalysis = [1 3 6];
 
+% depth
+DataSetToAnalysis = [1 3 6];
 for nData                        = DataSetToAnalysis
     load([TempDatDir DataSetList(nData).name '.mat']);
     depth                        = [DataSetList(nData).cellinfo(:).depth];    
@@ -59,8 +60,8 @@ for nData                        = DataSetToAnalysis
     end
     
     for nComps         = 1:numComps
-        subplot(2, 3, nComps)
-        barh(uniqueDepth, squeeze(perMat(:, :, nComps)),'stacked', 'edgecolor', 'none')
+        subplot(1, 4, nComps)
+        barh(uniqueDepth, squeeze(perMat(:, :, nComps)),'stacked', 'edgecolor', 'k')
         colormap(cmap(1:3, :))
         title(['PC' num2str(nComps)]);
         box off
@@ -72,7 +73,7 @@ for nData                        = DataSetToAnalysis
         set(gca, 'TickDir', 'out')
     end
     
-    subplot(2, 3, 6)
+    subplot(1, 4, 4)
     barh(uniqueDepth, numMat,'k')
     title('# Units')
     box off
@@ -81,11 +82,11 @@ for nData                        = DataSetToAnalysis
     ylabel('Depth (um)')
     colormap(cmap(1:3, :))
     set(gca, 'TickDir', 'out')
-    setPrint(8*3, 6*2, [PlotDir 'ConfoundingFactorPCA/CollectedUnitsPCADepth_' DataSetList(nData).name])
+    setPrint(8*4, 6, [PlotDir 'ConfoundingFactorPCA/CollectedUnitsPCADepth_' DataSetList(nData).name])
 end
 
 
- 
+% area 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % All area vs area of spiking recording
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -104,7 +105,7 @@ for i=1:length(Xmargs)
     PCAmargVar(i,:)= sum((Wpca' * Xmargs{i}).^2, 2)' / totalVar;
 end
 figure;
-bar(1:numComps, PCAmargVar(:, 1:numComps)','stacked', 'edgecolor', 'none')
+bar(1:numComps, PCAmargVar(:, 1:numComps)','stacked', 'edgecolor', 'k')
 box off
 xlim([0 numComps+0.5])
 ylim([0 0.4])
@@ -130,7 +131,7 @@ for i=1:length(Xmargs)
     PCAmargVar(i,:)= sum((Wpca' * Xmargs{i}).^2, 2)' / totalVar;
 end
 figure;
-bar(1:numComps, PCAmargVar(:, 1:numComps)','stacked', 'edgecolor', 'none')
+bar(1:numComps, PCAmargVar(:, 1:numComps)','stacked', 'edgecolor', 'k')
 box off
 xlim([0 numComps+0.5])
 ylim([0 0.4])
@@ -142,7 +143,7 @@ setPrint(8, 6, [PlotDir 'ConfoundingFactorPCA/CollectedUnitsPCA_Sub_' DataSetLis
 
 
 
-
+% animal
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Comparison across animals
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -180,8 +181,8 @@ for nData              = DataSetToAnalysis
     numMat             = numMat(isAnm);
     
     for nComps         = 1:numComps
-        subplot(2, 3, nComps)
-        barh(1:sum(isAnm), squeeze(perMat(:, :, nComps)),'stacked', 'edgecolor', 'none')
+        subplot(1, 4, nComps)
+        barh(1:sum(isAnm), squeeze(perMat(:, :, nComps)),'stacked', 'edgecolor', 'k')
         colormap(cmap(1:3, :))
         title(['PC' num2str(nComps)]);
         box off
@@ -193,7 +194,7 @@ for nData              = DataSetToAnalysis
         set(gca, 'TickDir', 'out')
     end
     
-    subplot(2, 3, 6)
+    subplot(1, 4, 4)
     barh(1:sum(isAnm), numMat,'k')
     title('# Units')
     box off
@@ -202,7 +203,7 @@ for nData              = DataSetToAnalysis
     ylabel('Animal index')
     colormap(cmap(1:3, :))
     set(gca, 'TickDir', 'out')
-    setPrint(8*3, 6*2, [PlotDir 'ConfoundingFactorPCA/CollectedUnitsPCAAnm_' DataSetList(nData).name])
+    setPrint(8*4, 6, [PlotDir 'ConfoundingFactorPCA/CollectedUnitsPCAAnm_' DataSetList(nData).name])
     
 end
 
