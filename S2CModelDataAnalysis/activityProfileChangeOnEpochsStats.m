@@ -10,7 +10,7 @@ function activityProfileChangeOnEpochsStats
     stdThres      = 3;
     ttestThres    = 0.1;
     spThres       = 0.2;
-    for nData     = 1:length(DataSetList)
+    for nData     = [1 2]
         load([TempDatDir DataSetList(nData).name '.mat'])
         [actMat, splineActMat, stdActMat] = smoothedMeanActivityMatrix(nDataSet, smoothedBinsize);
         peakMat   = false(size(actMat));

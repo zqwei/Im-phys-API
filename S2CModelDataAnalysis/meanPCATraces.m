@@ -12,17 +12,13 @@ numTrials      = 100;
 numComps       = 3;
 
 
-if ~exist([PlotDir 'S2CModel'],'dir')
-    mkdir([PlotDir 'S2CModel'])
-end
-
-for nData              = 1:length(DataSetList)
+for nData              = [3 4]
     load([TempDatDir DataSetList(nData).name '.mat']);
     firingRates        = generateDPCAData(nDataSet, numTrials);
     firingRatesAverage = nanmean(firingRates, ndims(firingRates));
     pcaFiringRatesAverage = zeros(numComps, 2, 77);
     firingRatesAverage = [squeeze(firingRatesAverage(:, 1, :)), squeeze(firingRatesAverage(:, 2, :));];
-    [~,score,~]        = pca(firingRatesAverage', 'NumComponents', numComps);
+    [coeffs,score,latent]        = pca(firingRatesAverage', 'NumComponents', numComps);
     pcaFiringRatesAverage(:, 1, :) = score(1:77, :)';
     pcaFiringRatesAverage(:, 2, :) = score(78:end, :)';
     
@@ -43,5 +39,6 @@ for nData              = 1:length(DataSetList)
     setPrint(8*3, 6, [PlotDir 'S2CModel/CollectedUnitsPCATrace_' DataSetList(nData).name])
     
 end
+
 
 close all

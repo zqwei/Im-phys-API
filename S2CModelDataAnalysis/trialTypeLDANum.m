@@ -16,7 +16,7 @@ numTrainingTrials   = numTrials - numTestTrials;
 ROCThres            = 0.5;
 
 load ([TempDatDir 'DataListS2CModel.mat']);
-addNoise            = [1 0 0 0];
+addNoise            = [0 0 0 0];
 
 cmap                = cbrewer('div', 'Spectral', 128, 'cubic');
 

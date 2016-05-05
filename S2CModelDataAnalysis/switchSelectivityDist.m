@@ -16,7 +16,7 @@ end
 
 cmap = cbrewer('qual', 'Set1', 3, 'cubic');
 
-for nData      = 1:length(DataSetList)
+for nData      = [3 4]
     load([TempDatDir DataSetList(nData).name '.mat'])    
     logPValueEpoch= getLogPValueTscoreSpikeEpoch(nDataSet, DataSetList(nData).params);
     unitGroup = plotTtestLogPSpikeEpoch (logPValueEpoch);

@@ -26,7 +26,7 @@ cmap = [         0    0.4470    0.7410
     0.6350    0.0780    0.1840];
 
 
-for nData              = 1:length(DataSetList)
+for nData              = [3 4]
     load([TempDatDir DataSetList(nData).name '.mat']);
     evMat              = zeros(numFold, length(combinedParams), numComps);
     firingRates        = generateDPCAData(nDataSet, numTrials);

@@ -17,7 +17,7 @@ cmap = [ 0    0.4470    0.7410
     0.6350    0.0780    0.1840
     0.4660    0.6740    0.1880];
 
-numRandPickUnits    = 290;
+numRandPickUnits    = 100;
 numTestTrials       = 200;
 numFold             = 30;
 numTrials           = numRandPickUnits * 3 + numTestTrials;
@@ -29,7 +29,7 @@ testTargets         = [true(numTestTrials/2,1); false(numTestTrials/2,1)];
 testTargets         = testTargets(randperm(numTestTrials));
 totTargets          = [testTargets; trainingTargets];
 
-ROCValue        = 0.5:0.05:0.65;
+ROCValue        = 0.5:0.10:0.80;
 nDatas          = 1:length(DataSetList);
 meanDelays      = nan(length(nDatas), length(ROCValue), 3); % #nData, #Roc, #Epoch
 semDelays       = nan(length(nDatas), length(ROCValue), 3);  
@@ -79,7 +79,7 @@ labelDelays         = {'Sample', 'Delay', 'Response'};
 for nPlot           = 1:length(labelDelays)
     subplot(1, length(labelDelays), nPlot)
     hold on
-    for nData       = 1:size(meanDelays, 1)
+    for nData       = [1 2]
         shadedErrorBar(ROCValue, squeeze(meanDelays(nData, :, nPlot)), ...
             squeeze(semDelays(nData, :, nPlot)), {'-','color',cmap(nData, :), 'linewid', 1.0}, 0.5)
     end
@@ -155,7 +155,7 @@ labelDelays         = {'Sample', 'Delay', 'Response'};
 for nPlot           = 1:length(labelDelays)
     subplot(1, length(labelDelays), nPlot)
     hold on
-    for nData       = 1:size(meanDelays, 1)
+    for nData       = [1 2]
         shadedErrorBar(numRandPickUnitsSet, squeeze(meanDelays(nData, :, nPlot)), ...
             squeeze(semDelays(nData, :, nPlot)), {'-','color',cmap(nData, :), 'linewid', 1.0}, 0.5)
     end

@@ -17,7 +17,7 @@ if ~exist([PlotDir 'S2CModel'],'dir')
 end
 
 
-for nData                     = 1:length(DataSetList)
+for nData                     = [3 4]
     load([TempDatDir DataSetList(nData).name '.mat']);
     numUnits                  = length(nDataSet);
     pValue                    = applyFuncToCompareTrialType(nDataSet, @pValueTTest2);

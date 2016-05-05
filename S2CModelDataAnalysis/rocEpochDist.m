@@ -12,18 +12,11 @@ if ~exist([PlotDir 'S2CModel'],'dir')
 end
 
 
-for nData             = 1:length(DataSetList)
-    load([TempDatDir DataSetList(nData).name '.mat'])
-    plotROCPopAccLines(nDataSet, DataSetList(nData).params); 
-    set(gca, 'TickDir', 'out')
-    setPrint(8, 6, [PlotDir 'S2CModel/SingleUnitsROC_' DataSetList(nData).name], 'svg')
-end
 
-for nData             = 1:length(DataSetList)
+for nData             = [3 4]
     load([TempDatDir DataSetList(nData).name '.mat'])
-    plotROCPopAccLines(nDataSet(DataSetList(nData).ActiveNeuronIndex), DataSetList(nData).params); 
-    set(gca, 'TickDir', 'out')
-    setPrint(8, 6, [PlotDir 'S2CModel/SingleActUnitsROC_' DataSetList(nData).name], 'svg')
+    plotROCPopLines(nDataSet(DataSetList(nData).ActiveNeuronIndex), DataSetList(nData).params); 
+    setPrint(8*3, 6, [PlotDir 'S2CModel/SingleActUnitsROCNoAcc_' DataSetList(nData).name])
 end
 
 
