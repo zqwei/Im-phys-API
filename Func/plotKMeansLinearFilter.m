@@ -1,10 +1,10 @@
-function plotKMeans(dataStruct, k, params)
+function plotKMeansLinearFilter(dataStruct, k, params)
     neuronNum = size(dataStruct,1);
-    timePointNum = size(dataStruct(1).unit_yes_trial,2);
+    timePointNum = size(dataStruct(1).unit_yes_trial_linear,2);
     shapeMat = zeros(neuronNum,timePointNum*2);
     for ii=1:neuronNum
-      shapeMat(ii,1:timePointNum) = mean(dataStruct(ii).unit_yes_trial);
-      shapeMat(ii,(timePointNum+1):end) = mean(dataStruct(ii).unit_no_trial);
+      shapeMat(ii,1:timePointNum) = mean(dataStruct(ii).unit_yes_trial_linear);
+      shapeMat(ii,(timePointNum+1):end) = mean(dataStruct(ii).unit_no_trial_linear);
     end
     shapeMat(:,end) = [];
     shapeMat(:,timePointNum) = [];

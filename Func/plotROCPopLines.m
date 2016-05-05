@@ -39,14 +39,18 @@ function plotROCPopLines(nDataSet, params)
         histFreq(:,nPeriods) = histFreq(:,nPeriods)/sum(histFreq(:,nPeriods));
     end
     
-    plot(histXout, histFreq,'-', 'linewid', 2.0);
-    ylabel('% Units')
-    xlabel('Area under ROC');
-    xlim([0 1])
-    ylim([0 0.2])
-    legend({'pre-sample','sample','delay','response'},'location','northeast')
-    legend('boxoff')
-    box off
+    titleNames  = {'pre-sample','sample','delay','response'};
+    figure;
+    for nPeriod = 2:4
+        subplot(1, 3, nPeriod-1)
+        plot(histXout, histFreq(:, nPeriod),'-k', 'linewid', 2.0);
+        ylabel('% Units')
+        xlabel('Area under ROC');
+        xlim([0 1])
+        ylim([0 0.11])
+        title(titleNames{nPeriod});
+        box off
+    end
 end
 
 

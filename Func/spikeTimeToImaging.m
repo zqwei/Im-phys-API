@@ -26,12 +26,13 @@ function [CaImaging, Ca]    = spikeTimeToImaging(spikeTimes, timeSeriesData, par
     tau_decay   = params(4);
     tau_rise    = params(5);
     intNoise    = params(6);
-    Ca                        = zeros(length(spikeTimes), length(timeSeriesData));    
-    preSamplePoints           = exprnd(1/rMean, length(spikeTimes), 20);
+    Ca                        = zeros(length(spikeTimes), length(timeSeriesData));  
+    nPreSamplePoints          = 100;
+    preSamplePoints           = exprnd(1/rMean, length(spikeTimes), nPreSamplePoints);
     preSamplePoints           = cumsum(preSamplePoints, 2);
     
     for nTrial                = 1:length(spikeTimes)
-        % adding 100 pre-sample points
+        % adding n_Pre_Sample_Points
         tSpikeTimes           = spikeTimes{nTrial};
         tPreSamplePoints      = tSpikeTimes(1) - preSamplePoints(nTrial, :);
         tSpikeTimes           = [tPreSamplePoints(end:-1:1), tSpikeTimes'];
@@ -41,6 +42,6 @@ function [CaImaging, Ca]    = spikeTimeToImaging(spikeTimes, timeSeriesData, par
         end
     end
     
-    Ca                        = Ca + randn(size(Ca))*intNoise;    
-    Ca(Ca<0)                  = 0;    
-    CaImaging                 = Fm* Ca.^n ./ (K^n + Ca.^n);
+    CaIntNoise                = Ca + randn(size(Ca))*intNoise;    
+    CaIntNoise(CaIntNoise<0)  = 0;    
+    CaImaging                 = Fm* CaIntNoise.^n ./ (K^n + CaIntNoise.^n);

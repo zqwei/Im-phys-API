@@ -49,9 +49,9 @@ function nDataSet = getFakeCaImagingData(spikeDataSet, params)
 %                                                     +randn(size(nDataSet(nData).unit_yes_trial))*constNoise;
 %         nDataSet(nData).unit_no_trial            = nDataSet(nData).unit_no_trial.*(randn(size(nDataSet(nData).unit_no_trial))*linearNoise+1)...
 %                                                     +randn(size(nDataSet(nData).unit_no_trial))*constNoise;        
-        nDataSet(nData).unit_yes_error           = spikeTimeToImaging(spikeDataSet(nData).unit_yes_error_spk_time, timeSeriesData, paramsSet, rMean);
+        [nDataSet(nData).unit_yes_error, nDataSet(nData).unit_yes_error_linear] = spikeTimeToImaging(spikeDataSet(nData).unit_yes_error_spk_time, timeSeriesData, paramsSet, rMean);
         nDataSet(nData).unit_yes_error_index     = spikeDataSet(nData).unit_yes_error_index;
-        nDataSet(nData).unit_no_error            = spikeTimeToImaging(spikeDataSet(nData).unit_no_error_spk_time, timeSeriesData, paramsSet, rMean);
+        [nDataSet(nData).unit_no_error , nDataSet(nData).unit_no_error_linear]  = spikeTimeToImaging(spikeDataSet(nData).unit_no_error_spk_time, timeSeriesData, paramsSet, rMean);
         nDataSet(nData).unit_no_error_index      = spikeDataSet(nData).unit_no_error_index;  
         nDataSet(nData).unit_yes_error           = (nDataSet(nData).unit_yes_error - fMean)/(fMean+constFMean);
         nDataSet(nData).unit_no_error            = (nDataSet(nData).unit_no_error - fMean)/(fMean+constFMean);
@@ -64,5 +64,11 @@ function nDataSet = getFakeCaImagingData(spikeDataSet, params)
         nDataSet(nData).depth_in_um              = spikeDataSet(nData).depth_in_um;
         nDataSet(nData).AP_in_um                 = spikeDataSet(nData).AP_in_um;
         nDataSet(nData).ML_in_um                 = spikeDataSet(nData).ML_in_um;
-        nDataSet(nData).cell_type                = spikeDataSet(nData).cell_type;
+        if strcmp(spikeDataSet(nData).cell_type, 'putative_interneuron')
+            nDataSet(nData).cell_type                = 0;
+        elseif strcmp(spikeDataSet(nData).cell_type, 'putative_pyramidal')
+            nDataSet(nData).cell_type                = 1;
+        else
+            nDataSet(nData).cell_type                = nan;
+        end
     end
