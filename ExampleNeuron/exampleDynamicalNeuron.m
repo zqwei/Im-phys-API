@@ -12,7 +12,7 @@ function exampleDynamicalNeuron
     load([TempDatDir DataSetList(nData).name '.mat'])
     caDataSet    = nDataSet;
     load ([TempDatDir 'DataListS2CModel.mat']);    
-    nData = 1; % plot s2c model
+    nData = 4; % plot s2c model
     load([TempDatDir DataSetList(nData).name '.mat'])
     s2cDataSet   = nDataSet;
      
@@ -36,6 +36,7 @@ function exampleDynamicalNeuron
         plotPSTH(s2cDataSet(nCell), params, 'DF/F');
         
         mCell = findSimilarCellToS2CModel(meanS2CDataSet(nCell,:), meanCaDataSet);
+        disp(mCell)
         subplot(2, 3, 2)
         plotDff(caDataSet(mCell), params)
         subplot(2, 3, 5)
@@ -97,7 +98,7 @@ function plotDff(spikeDataSet, params)
     colormap(gray)
     
     caxis([cmin, cmax]);
-    colorbar
+%     colorbar
     xlim([params.timeSeries(1) params.timeSeries(end)]);
     axis off
 end
