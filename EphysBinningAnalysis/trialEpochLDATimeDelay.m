@@ -69,17 +69,19 @@ end
 figure;
 labelDelays         = {'Sample', 'Delay', 'Response'};
 for nPlot           = 1:length(labelDelays)
-    subplot(1, length(labelDelays), nPlot)
+%     subplot(length(labelDelays), 1, nPlot)
+    figure;
     errorbar(nDatas, meanDelays(:, nPlot), semDelays(:, nPlot), 'ok')
     xlim([0.5 6.5])
-    xlabel('Ephy boxcar filter (ms)')
-    ylabel('latency to epoch change (ms)')
+%     xlabel('Ephy boxcar filter (ms)')
+%     ylabel('latency to epoch change (ms)')
     set(gca, 'XTick', nDatas, 'XTickLabel', {'no 67', '70', '100', '150', '200', '250'})
     xticklabel_rotate([],30)
     set(gca, 'TickDir', 'out')
     title(labelDelays{nPlot});
     box off
+    setPrint(8, 6, [PlotDir 'EphysBinningTest/CollectedUnitsDecodabilityEpochVec' labelDelays{nPlot}])
 end
 
-setPrint(8*3, 6, [PlotDir 'EphysBinningTest/CollectedUnitsDecodabilityEpoch'])
+
 
