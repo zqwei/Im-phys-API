@@ -15,7 +15,7 @@ if ~exist([PlotDir 'CollectedUnitsPCA'],'dir')
 end
 
 
-numComps       = 10;
+numComps       = 5;
 cmap = [         0    0.4470    0.7410
     0.8500    0.3250    0.0980
     0.9290    0.6940    0.1250
@@ -44,10 +44,10 @@ for nData              = [1 3 4]
     end
     
     figure;
-    bar(1:numComps, PCAmargVar(:, 1:numComps)','stacked', 'edgecolor', 'none')
+    bar(1:numComps, PCAmargVar(:, 1:numComps)','stacked', 'edgecolor', 'k')
     box off
     xlim([0 numComps+0.5])
-    ylim([0 0.5])
+    ylim([0 0.2])
     xlabel('Component index')
     ylabel('frac. EV per PC')
     colormap(cmap(1:3, :))
