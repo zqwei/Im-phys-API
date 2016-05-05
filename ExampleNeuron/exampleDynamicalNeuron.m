@@ -16,12 +16,14 @@ function exampleDynamicalNeuron
     load([TempDatDir DataSetList(nData).name '.mat'])
     s2cDataSet   = nDataSet;
      
-    meanCaDataSet = meanData(caDataSet);
-    meanS2CDataSet = meanData(s2cDataSet);
+%     meanCaDataSet = meanData(caDataSet);
+%     meanS2CDataSet = meanData(s2cDataSet);
 
     dynamicalNeuronIndex = [334 177 142 27 30 80 93 580 557 367];
+    mCellSet             = [1566 1446 35 1345 746 1995 2272 1345 1682 352];
     
-    for nCell = dynamicalNeuronIndex
+    for nCellid = 1:length(dynamicalNeuronIndex)
+        nCell   = dynamicalNeuronIndex(nCellid);
         figure;
         % spike
         subplot(2, 3, 1)
@@ -35,8 +37,8 @@ function exampleDynamicalNeuron
         subplot(2, 3, 6)
         plotPSTH(s2cDataSet(nCell), params, 'DF/F');
         
-        mCell = findSimilarCellToS2CModel(meanS2CDataSet(nCell,:), meanCaDataSet);
-        disp(mCell)
+%         mCell = findSimilarCellToS2CModel(meanS2CDataSet(nCell,:), meanCaDataSet);
+        mCell = mCellSet(nCellid);
         subplot(2, 3, 2)
         plotDff(caDataSet(mCell), params)
         subplot(2, 3, 5)
