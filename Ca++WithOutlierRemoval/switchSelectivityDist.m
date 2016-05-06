@@ -21,6 +21,7 @@ for nData      = [3 4]
     logPValueEpoch= getLogPValueTscoreSpikeEpoch(nDataSet, DataSetList(nData).params);
     unitGroup = plotTtestLogPSpikeEpoch (logPValueEpoch);
     sizeGroup = histcounts(unitGroup, 0:3);
+    disp(sizeGroup(2)/sizeGroup(3))
     figure('Visible', 'off');
     groupNames      = {'Non.', 'Homo.', 'Dynamical'};
     pie(sizeGroup)

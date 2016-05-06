@@ -25,6 +25,7 @@ for nData      = [3 4]
     end
     save([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet')
     sizeGroup = histcounts(unitGroup, 0:3);
+    disp(sizeGroup(2)/sizeGroup(3))
     figure('Visible', 'off');
     groupNames      = {'Non.', 'Homo.', 'Dynamical'};
     pie(sizeGroup)

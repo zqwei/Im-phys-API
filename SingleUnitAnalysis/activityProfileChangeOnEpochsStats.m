@@ -25,7 +25,7 @@ function activityProfileChangeOnEpochsStats
                 peakMat(nUnit, :) = validIndex;
             end
         end
-        
+        disp(mean(sum(peakMat, 2)>1))
         figure
         hold on
         plot(timeStep, mean(peakMat(:, 1:numTime))*100, '-', 'linewid', 1.0, 'color', [0.7 0 0])

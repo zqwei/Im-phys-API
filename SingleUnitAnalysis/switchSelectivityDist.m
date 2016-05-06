@@ -23,6 +23,7 @@ for nData      = [1 3 4]
 %     load([TempDatDir 'LogPValueTscore_' DataSetList(nData).name '.mat'], 'logPValue', 'logPValueEpoch')
     unitGroup = plotTtestLogPSpikeEpoch (logPValueEpoch);
     
+    
 %     for nUnit = 1:length(nDataSet)
 %         nDataSet(nUnit).selectivity = unitGroup(nUnit); %#ok<SAGROW>
 %     end
@@ -31,6 +32,7 @@ for nData      = [1 3 4]
     
     
     sizeGroup = histcounts(unitGroup, 0:3);
+    disp(sizeGroup(2)/sizeGroup(3))
     figure('Visible', 'off');
     groupNames      = {'Non.', 'Homo.', 'Dynamical'};
 %     pie(sizeGroup, groupNames)

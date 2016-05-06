@@ -29,6 +29,7 @@ for nData     = 1:length(DataSetList)
     
     
     countMaxId = hist(maxId, 1:numTimeBin*2)/length(nDataSet)*100;
+    disp(sqrt(mean((countMaxId - 1/numTimeBin/2*100).^2)))
     figure;
     hold on;
     plot(timeStep, countMaxId(1:numTimeBin), '-', 'linewid', 1.0, 'color', [0.7 0 0]);
