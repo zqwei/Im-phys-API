@@ -1,6 +1,7 @@
 # ignore .mat files, anywhere in the tree
 
 TempDat/
+Texts/
 KSLab_Files/
 Slides/
 Text/.Rhistory
