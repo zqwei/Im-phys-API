@@ -48,6 +48,13 @@ for nData = [1 3 4]
     xlabel('Time (ms)')
     box off
     ylabel('Mean activity')
+    
+    baseline1 = mean(mean(noActMat(contraIndex, 1:8)));
+    baseline2 = mean(mean(yesActMat(contraIndex, 1:8)));
+    baseline  = (baseline1 + baseline2)/2;
+    
+    disp(max(mean(noActMat(contraIndex,:))) - baseline)
+    disp(min(mean(yesActMat(contraIndex,:))) - baseline)
 
     subplot(1, 2, 2)
     hold on
@@ -59,6 +66,13 @@ for nData = [1 3 4]
     xlabel('Time (ms)')
     box off
     ylabel('Mean activity')
+    
+    baseline1 = mean(mean(noActMat(~contraIndex, 1:8)));
+    baseline2 = mean(mean(yesActMat(~contraIndex, 1:8)));
+    baseline  = (baseline1 + baseline2)/2;
+    
+    disp(min(mean(noActMat(~contraIndex,:))) - baseline)
+    disp(max(mean(yesActMat(~contraIndex,:))) - baseline)
     
     setPrint(8*2, 6, [PlotDir 'SingleUnitsContraIpsi\' DataSetList(nData).name])
     

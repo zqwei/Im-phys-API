@@ -8,7 +8,7 @@ setDir;
 load ([TempDatDir 'DataListS2CModel.mat']);
 load('spikeContraIndex.mat')
 
-for nData = [3 4]
+for nData = 3 %[3 4]
     load([TempDatDir DataSetList(nData).name '.mat'])
     logPValueEpoch= getLogPValueTscoreSpikeEpoch(nDataSet, DataSetList(nData).params);
     unitGroup = plotTtestLogPSpikeEpoch (logPValueEpoch);
@@ -39,6 +39,13 @@ for nData = [3 4]
     xlabel('Time (ms)')
     box off
     ylabel('Mean activity')
+    
+    baseline1 = mean(mean(noActMat(contraIndex, 1:8)));
+    baseline2 = mean(mean(yesActMat(contraIndex, 1:8)));
+    baseline  = (baseline1 + baseline2)/2;
+    
+    disp(max(mean(noActMat(contraIndex,:))) - baseline)
+    disp(min(mean(yesActMat(contraIndex,:))) - baseline)
 
     subplot(1, 2, 2)
     hold on
@@ -50,6 +57,13 @@ for nData = [3 4]
     xlabel('Time (ms)')
     box off
     ylabel('Mean activity')
+
+    baseline1 = mean(mean(noActMat(~contraIndex, 1:8)));
+    baseline2 = mean(mean(yesActMat(~contraIndex, 1:8)));
+    baseline  = (baseline1 + baseline2)/2;
+    
+    disp(min(mean(noActMat(~contraIndex,:))) - baseline)
+    disp(max(mean(yesActMat(~contraIndex,:))) - baseline)   
     
     setPrint(8*2, 6, [PlotDir 'S2CModel\SingleUnitsContraIpsi_' DataSetList(nData).name])
     
@@ -75,6 +89,13 @@ for nData = [3 4]
     box off
     ylabel('Mean activity')
 
+    baseline1 = mean(mean(noActMat(contraIndex, 1:8)));
+    baseline2 = mean(mean(yesActMat(contraIndex, 1:8)));
+    baseline  = (baseline1 + baseline2)/2;
+    
+    disp(max(mean(noActMat(contraIndex,:))) - baseline)
+    disp(min(mean(yesActMat(contraIndex,:))) - baseline)
+    
     subplot(1, 2, 2)
     hold on
     shadedErrorBar(params.timeSeries, mean(noActMat(~contraIndex,:)), sem(noActMat(~contraIndex,:)),'-b')
@@ -85,6 +106,13 @@ for nData = [3 4]
     xlabel('Time (ms)')
     box off
     ylabel('Mean activity')
+    
+    baseline1 = mean(mean(noActMat(~contraIndex, 1:8)));
+    baseline2 = mean(mean(yesActMat(~contraIndex, 1:8)));
+    baseline  = (baseline1 + baseline2)/2;
+    
+    disp(max(mean(noActMat(~contraIndex,:))) - baseline)
+    disp(min(mean(yesActMat(~contraIndex,:))) - baseline)    
     
     setPrint(8*2, 6, [PlotDir 'S2CModel\SingleUnitsContraIpsiLinear_' DataSetList(nData).name])
     
