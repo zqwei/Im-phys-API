@@ -111,8 +111,8 @@ for nData = 3 %[3 4]
     baseline2 = mean(mean(yesActMat(~contraIndex, 1:8)));
     baseline  = (baseline1 + baseline2)/2;
     
-    disp(max(mean(noActMat(~contraIndex,:))) - baseline)
-    disp(min(mean(yesActMat(~contraIndex,:))) - baseline)    
+    disp(min(mean(noActMat(~contraIndex,:))) - baseline)
+    disp(max(mean(yesActMat(~contraIndex,:))) - baseline)    
     
     setPrint(8*2, 6, [PlotDir 'S2CModel\SingleUnitsContraIpsiLinear_' DataSetList(nData).name])
     
