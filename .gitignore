@@ -10,6 +10,8 @@ tmp
 peel_nl_oopsi.m
 *.m~
 DepreciatedCode
+*.md
+Stash
 
 
 # Byte-compiled / optimized / DLL files
