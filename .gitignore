@@ -1,7 +1,10 @@
 *.png
 *.svg
-tempDat
-Plots
+tempDatOOPSI
+Plot
+Func
+S2C_analysis_code
+TempDat
 tmp
 *.sh
 *.ipynb
