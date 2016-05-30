@@ -3,7 +3,9 @@
 tempDatOOPSI
 Plot
 Func
-S2C_analysis_code
+S2C_pramas_analysis_code
+S2C_activity_profile_analysis
+example_neuron
 TempDat
 tmp
 *.sh
