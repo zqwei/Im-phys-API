@@ -24,6 +24,7 @@ nData          = 5;
 load([TempDatDir 'LogPValueTscore_' DataSetList(nData).name '.mat'], 'logPValueEpoch')
 unitGroup      = plotTtestLogPSpikeEpoch (logPValueEpoch);
 figure;
+areaIndex      = false(length(unitGroup), 1);
 sizeGroup      = histcounts(unitGroup, 0:3);
 pie(sizeGroup)
 colormap(cmap)
@@ -34,6 +35,8 @@ figure;
 APLoc          = [DataSetList(nData).cellinfo.AP_axis];
 MLLoc          = [DataSetList(nData).cellinfo.ML_axis];
 sizeGroup      = histcounts(unitGroup(APLoc>2400 & APLoc<2600 & MLLoc>1100 & MLLoc<1900), 0:3);
+areaIndex(APLoc>2400 & APLoc<2600 & MLLoc>1100 & MLLoc<1900) = true;
+[tab, chi2, p] = crosstab(unitGroup(unitGroup>0), areaIndex(unitGroup>0)')
 groupNames     = {'Non.', 'Homo.', 'Dynamicial'};
 pie(sizeGroup)
 colormap(cmap)
@@ -59,6 +62,7 @@ for nAnm    = 1:anmIndex(end)
 end
 zeroGroups  = sum(groupCounts, 2) == 0;
 groupCounts = groupCounts(~zeroGroups, :);
+[tab, chi2, p] = crosstab(unitGroup(unitGroup>0), anmIndex(unitGroup>0)')
 groupPerCounts = bsxfun(@rdivide, groupCounts, sum(groupCounts, 2));
 figure
 subplot(2, 1, 1)
@@ -98,6 +102,7 @@ end
 
 zeroGroups  = sum(groupCounts, 2) == 0;
 groupCounts = groupCounts(~zeroGroups, :);
+[tab, chi2, p] = crosstab(unitGroup(unitGroup>0), anmIndex(unitGroup>0)')
 groupPerCounts = bsxfun(@rdivide, groupCounts, sum(groupCounts, 2));
 figure
 subplot(2, 1, 1)

@@ -28,6 +28,9 @@ for nData      = [3 4]
     colormap(cmap)
     set(gca, 'TickDir', 'out')
     setPrint(8, 6, [PlotDir 'SingleUnitsTscore/SingleUnitsTscore_' DataSetList(nData).name '_withOLRemoval'])
+    sizeGroup
+    sum(sizeGroup)
+    disp(sizeGroup(2)/sizeGroup(3))
     
     % depth test
     depth                        = [DataSetList(nData).cellinfo(:).depth];
@@ -57,6 +60,8 @@ for nData      = [3 4]
             groupCounts(nDepth, nGroup) = sum(nUnitGroup & depth' == uniqueDepth(nDepth));
         end
     end
+    
+    [tab, chi2, p] = crosstab(unitGroup(unitGroup>0), depth(unitGroup>0)')
     
     groupPerCounts = bsxfun(@rdivide, groupCounts, sum(groupCounts, 2));
     

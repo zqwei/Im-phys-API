@@ -19,25 +19,15 @@ cmap = cbrewer('qual', 'Set1', 3, 'cubic');
 for nData      = [1 3 4]
     load([TempDatDir DataSetList(nData).name '.mat'])
     logPValueEpoch= getLogPValueTscoreSpikeEpoch(nDataSet, DataSetList(nData).params);
-% %     save([TempDatDir 'LogPValueTscore_' DataSetList(nData).name '.mat'], 'logPValueEpoch')
-%     load([TempDatDir 'LogPValueTscore_' DataSetList(nData).name '.mat'], 'logPValue', 'logPValueEpoch')
     unitGroup = plotTtestLogPSpikeEpoch (logPValueEpoch);
     
-    
-%     for nUnit = 1:length(nDataSet)
-%         nDataSet(nUnit).selectivity = unitGroup(nUnit); %#ok<SAGROW>
-%     end
-%     
-%     save([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet')
-    
-    
     sizeGroup = histcounts(unitGroup, 0:3);
-    disp(sizeGroup(2)/sizeGroup(3))
+%     sizeGroup
+%     sum(sizeGroup)
+%     disp(sizeGroup(2)/sizeGroup(3))
     figure('Visible', 'off');
     groupNames      = {'Non.', 'Homo.', 'Dynamical'};
-%     pie(sizeGroup, groupNames)
     pie(sizeGroup)
-%     title('Distribution of cell types')
     colormap(cmap)
     set(gca, 'TickDir', 'out')
     setPrint(8, 6, [PlotDir 'SingleUnitsTscore/SingleUnitsTscore_' DataSetList(nData).name])
@@ -69,12 +59,13 @@ for nData      = [1 3 4]
         end
     end
     
+%     [tab, chi2, p] = crosstab(unitGroup(unitGroup>0), depth(unitGroup>0)')
+    
     groupPerCounts = bsxfun(@rdivide, groupCounts, sum(groupCounts, 2));
     
     figure('Visible', 'off');
     subplot(2, 1, 1)
     barh(uniqueDepth, groupPerCounts, 'stack', 'edgecolor', 'none');
-%     caxis([0 3])
     xlim([0 1])
     box off
     xlabel('% cell type')
