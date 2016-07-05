@@ -37,6 +37,8 @@ for nData             = [1 3 4]
     delayMean         = zeros(maxRandPickUnits, 1);
     delayStd          = zeros(maxRandPickUnits, 1);
     
+%     delaysSet         = zeros(numFold, maxRandPickUnits);
+    
     for numRandPickUnits      = 1:maxRandPickUnits;
         delays        = zeros(numFold, 1);
         for nFold     = 1:numFold
@@ -46,6 +48,8 @@ for nData             = [1 3 4]
         end
         delayMean(numRandPickUnits) = mean(delays)-(-2.6);
         delayStd(numRandPickUnits)  = sem(delays);
+        
+%         delaysSet(:, numRandPickUnits) = delays;
     end
     delayMean = delayMean * 1000;
     delayStd  = delayStd * 1000;
@@ -73,7 +77,7 @@ for nData             = [1 3 4]
     maxRandPickUnits  = 20;
     accuracyMean         = zeros(maxRandPickUnits, 1);
     accuracyStd          = zeros(maxRandPickUnits, 1);
-    
+    accuracySet          = zeros(numFold, maxRandPickUnits);
     for numRandPickUnits      = 1:maxRandPickUnits;
         accuracys        = zeros(numFold, 1);
         for nFold     = 1:numFold
@@ -81,6 +85,7 @@ for nData             = [1 3 4]
         end
         accuracyMean(numRandPickUnits) = mean(accuracys);
         accuracyStd(numRandPickUnits)  = sem(accuracys);
+        accuracySet(:, numRandPickUnits) = accuracys;
     end
     
     shadedErrorBar((1:maxRandPickUnits)*stepSize, accuracyMean, accuracyStd,...
