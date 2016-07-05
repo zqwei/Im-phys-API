@@ -35,12 +35,12 @@ figure;
 for nData             = [1 3 4]    
     if nData == 1
         load([TempDatDir DataSetList(nData).name '.mat'])
-%         selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';
-        selectedNeuronalIndex = true(length(DataSetList(nData)), 1);
+        selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';
+        % selectedNeuronalIndex = true(length(DataSetList(nData)), 1);
     else
         load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
-%         selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex(~neuronRemoveList)';
-        selectedNeuronalIndex = true(sum(~neuronRemoveList), 1);
+        selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex(~neuronRemoveList)';
+        % selectedNeuronalIndex = true(sum(~neuronRemoveList), 1);
     end
     oldDataSet          = nDataSet;
     hold on

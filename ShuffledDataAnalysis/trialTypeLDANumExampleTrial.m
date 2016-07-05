@@ -9,8 +9,8 @@
 addpath('../Func');
 setDir;
 
-numFold             = 10;
-numTrials           = 1000;
+numFold             = 30;
+numTrials           = 500;
 numTestTrials       = 200;
 numTrainingTrials   = numTrials - numTestTrials;
 ROCThres            = 0.5;
@@ -25,9 +25,9 @@ if ~exist([PlotDir '/CollectedUnitsDecodability'],'dir')
     mkdir([PlotDir '/CollectedUnitsDecodability'])
 end
 
-stepSize            = [100 150];%[5 10 15 50 100 150];
+stepSize            = [50 100 150];%[5 10 15 50 100 150];
 
-for nData             = 4%[1 3 4]
+for nData             = 1%[1 3 4]
     if nData == 1
         load([TempDatDir DataSetList(nData).name '.mat'])
         neuronRemoveList     = false(length(nDataSet),1);
@@ -61,7 +61,7 @@ for nData             = 4%[1 3 4]
         end
         figure;
         hold on
-        plot(DataSetList(nData).params.timeSeries, decodability, '-', 'linewid', 0.5, 'color', [0.5 0.5 0.5]);
+        plot(DataSetList(nData).params.timeSeries, decodability(1:10,:), '-', 'linewid', 0.5, 'color', [0.5 0.5 0.5]);
         plot(DataSetList(nData).params.timeSeries, mean(decodability), '-k', 'linewid', 2.0);
         xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
         ylim([0.5 1])
