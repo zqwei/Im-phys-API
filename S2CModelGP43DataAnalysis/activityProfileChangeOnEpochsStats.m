@@ -5,12 +5,12 @@
 function activityProfileChangeOnEpochsStats
     addpath('../Func');
     setDir;
-    load ([TempDatDir 'DataListS2CModel.mat']);
+    load ([TempDatDir 'DataListS2CGP43Model.mat']);
     smoothedBinsize = 11;
     stdThres      = 3;
     ttestThres    = 0.1;
     spThres       = 0.2;
-    for nData     = 1:4
+    for nData     = [1 2]
         load([TempDatDir DataSetList(nData).name '.mat'])
         [actMat, splineActMat, stdActMat] = smoothedMeanActivityMatrix(nDataSet, smoothedBinsize);
         peakMat   = false(size(actMat));
@@ -25,7 +25,7 @@ function activityProfileChangeOnEpochsStats
                 peakMat(nUnit, :) = validIndex;
             end
         end
-        %disp(mean(sum(peakMat, 2)>1))
+        % disp(mean(sum(peakMat, 2)>1))
         disp(mean(peakMat(:))*100)
         figure
         hold on
@@ -37,7 +37,7 @@ function activityProfileChangeOnEpochsStats
         xlim([timeStep(1) timeStep(end)])
         gridxy ([polein, poleout, 0],[], 'Color','k','Linestyle','--','linewid', 1.0)
         box off
-        setPrint(8, 3, [PlotDir 'S2CModel/SingleUnitsPeakFinderStats_' DataSetList(nData).name])
+        setPrint(8, 3, [PlotDir 'S2CGP43Model/SingleUnitsPeakFinderStats_' DataSetList(nData).name])
     end
 end
 

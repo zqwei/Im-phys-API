@@ -7,18 +7,21 @@
 
 addpath('../Func');
 setDir;
+load ([TempDatDir 'DataListShuffle.mat']);
+ActiveNeuronIndex  = DataSetList(1).ActiveNeuronIndex';
+params             = DataSetList(1).params;
+DataSetListName{1} = DataSetList(1).name;
+load ([TempDatDir 'DataListS2CModel.mat']);
+DataSetListName{2} = DataSetList(3).name;
+load ([TempDatDir 'DataListS2CGP43Model.mat']);
+DataSetListName{3} = DataSetList(2).name;
 
 numFold             = 30;
-load ([TempDatDir 'DataListS2CModel.mat']);
 addNoise         = [1 0 0 0];
 
 cmap = [         0    0.4470    0.7410
-    0.8500    0.3250    0.0980
     0.4940    0.1840    0.5560
-    0.9290    0.6940    0.1250
-    0.4660    0.6740    0.1880
-    0.3010    0.7450    0.9330
-    0.6350    0.0780    0.1840];
+    0.9290    0.6940    0.1250];
 
 numRandPickUnits    = 100;
 numTrials           = numRandPickUnits*5;
@@ -28,20 +31,12 @@ ROCThres            = 0.5;
 
 figure;
 
-for nData             = [1 3 4]    
-    if nData == 1
-        load([TempDatDir 'Shuffle_Spikes.mat'])
-        selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';
-%         selectedNeuronalIndex = true(length(nDataSet), 1);
-    else
-        load([TempDatDir DataSetList(nData).name '.mat'])
-        selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';
-%         selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex(~neuronRemoveList)';
-%         selectedNeuronalIndex = true(length(nDataSet), 1);
-    end
+for nData             = 1:3
+    load([TempDatDir DataSetListName{nData} '.mat'])
+    selectedNeuronalIndex = ActiveNeuronIndex';
     oldDataSet          = nDataSet;
     hold on
-    selectedNeuronalIndex = selectedHighROCneurons(oldDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);
+    selectedNeuronalIndex = selectedHighROCneurons(oldDataSet, params, ROCThres, selectedNeuronalIndex);
     nDataSet              = oldDataSet(selectedNeuronalIndex);
     decodability          = zeros(numFold, size(nDataSet(1).unit_yes_trial,2));        
     for nFold    = 1:numFold
@@ -63,15 +58,15 @@ for nData             = [1 3 4]
     end
     
     meandecodability = mean(decodability,1);
-    meanValue        = mean(meandecodability(1:8));
-    meandecodability = (meandecodability - meanValue)/(1-meanValue)*0.5+0.5;
+%     meanValue        = mean(meandecodability(1:8));
+%     meandecodability = (meandecodability - meanValue)/(1-meanValue)*0.5+0.5;
     
-    shadedErrorBar(DataSetList(nData).params.timeSeries, meandecodability,...
+    shadedErrorBar(params.timeSeries, meandecodability,...
         std(decodability, 1)/sqrt(numFold),...
         {'-', 'linewid', 1.0, 'color', cmap(nData,:)}, 0.5);  
-    xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
+    xlim([min(params.timeSeries) max(params.timeSeries)]);
     ylim([0.5 1])
-    gridxy ([DataSetList(nData).params.polein, 0],[], 'Color','k','Linestyle','--','linewid', 0.5)
+    gridxy ([params.polein, 0],[], 'Color','k','Linestyle','--','linewid', 0.5)
     set(gca, 'TickDir', 'out')
     box off;
     hold off;
@@ -79,18 +74,8 @@ for nData             = [1 3 4]
     ylabel('Decodability');
 end
 
-setPrint(8, 6, [PlotDir 'S2CModel/CollectedUnitsDecodabilityROC_Summary'])
-margNames = {'Spike', '', 'S2C long decay', 'S2C short decay'};
+setPrint(8, 6, [PlotDir 'S2CGP43Model/CollectedUnitsDecodabilityROC_Summary'])
+margNames = {'Spike', 'S2C 6s-AAV', 'S2C GP4.3'};
 
-figure;
-hold on
-for nColor = [1 3 4]
-    plot(0, nColor, 's', 'color', cmap(nColor,:), 'MarkerFaceColor',cmap(nColor,:),'MarkerSize', 8)
-    text(1, nColor, margNames{nColor})
-end
-xlim([0 10])
-hold off
-axis off
-setPrint(3, 2, [PlotDir 'S2CModel/CollectedUnitsDecodabilityROC_SummaryLabel'])
 
 close all;

@@ -7,16 +7,16 @@
 
 addpath('../Func');
 setDir;
-load ([TempDatDir 'DataListS2CModel.mat']);
+load ([TempDatDir 'DataListS2CGP43Model.mat']);
 
 
-if ~exist([PlotDir 'S2CModel'],'dir')
-    mkdir([PlotDir 'S2CModel'])
+if ~exist([PlotDir 'S2CGP43Model'],'dir')
+    mkdir([PlotDir 'S2CGP43Model'])
 end
 
 cmap = cbrewer('qual', 'Set1', 3, 'cubic');
 
-for nData      = [3 4]
+for nData      = 2
     load([TempDatDir DataSetList(nData).name '.mat'])    
     logPValueEpoch= getLogPValueTscoreSpikeEpoch(nDataSet, DataSetList(nData).params);
     unitGroup = plotTtestLogPSpikeEpoch (logPValueEpoch);
@@ -31,8 +31,9 @@ for nData      = [3 4]
     pie(sizeGroup)
     colormap(cmap)
     set(gca, 'TickDir', 'out')
-    setPrint(8, 6, [PlotDir 'S2CModel/SingleUnitsTscore_' DataSetList(nData).name])
+    setPrint(8, 6, [PlotDir 'S2CGP43Model/SingleUnitsTscore_' DataSetList(nData).name])
 end
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Cell type categorization
@@ -55,15 +56,15 @@ filterStep                    = linspace(-filterLength / 2, filterLength / 2, fi
 filterInUse                   = exp(-filterStep .^ 2 / (2 * sigma ^ 2));
 filterInUse                   = filterInUse / sum (filterInUse);
 
-load ([TempDatDir 'DataListS2CModel.mat']);
-if ~exist([PlotDir 'S2CModel'],'dir')
-    mkdir([PlotDir 'S2CModel'])
+load ([TempDatDir 'DataListS2CGP43Model.mat']);
+if ~exist([PlotDir 'S2CGP43Model'],'dir')
+    mkdir([PlotDir 'S2CGP43Model'])
 end
 
 
 cmap = cbrewer('qual', 'Set1', 3, 'cubic');
 
-for nData      = [3 4]
+for nData      = 2
     load([TempDatDir DataSetList(nData).name '.mat'])
     logPValueEpoch= getLogPValueTscoreSpikeEpoch(nDataSet, DataSetList(nData).params);
     unitGroup = plotTtestLogPSpikeEpoch (logPValueEpoch);   
@@ -91,6 +92,8 @@ for nData      = [3 4]
     ylim([0.5 3.5])
     set(gca, 'TickDir', 'out')
     set(gca, 'yTick', 1:3, 'yTickLabel', {'Non.', 'Homo.', 'Dynamicial'})
-    setPrint(8, 6, [PlotDir 'S2CModel/SingleUnitsTscoreTrans_' DataSetList(nData).name])
+    setPrint(8, 6, [PlotDir 'S2CGP43Model/SingleUnitsTscoreTrans_' DataSetList(nData).name])
         
 end
+
+close all

@@ -52,15 +52,15 @@ for nData             = [1 3 4]
 %         delaysSet(:, numRandPickUnits) = delays;
     end
     delayMean = delayMean * 1000;
-    delayStd  = delayStd * 1000;
+    delayStd  = delayStd/sqrt(numFold) * 1000;
     
     
-    shadedErrorBar((1:maxRandPickUnits)*stepSize, delayMean, delayStd,...
+    shadedErrorBar((1:maxRandPickUnits)*stepSize, delayMean+offset(nData), delayStd,...
         {'-', 'linewid', 1.0, 'color', cmap(nData,:)}, 0.5);  
 end
 
 xlim([0 maxRandPickUnits*stepSize+5]);
-% ylim([0.5 1])
+ylim([0 600])
 set(gca, 'TickDir', 'out')
 box off;
 hold off;

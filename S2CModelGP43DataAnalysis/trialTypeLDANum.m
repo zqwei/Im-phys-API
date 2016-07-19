@@ -15,14 +15,14 @@ numTestTrials       = 200;
 numTrainingTrials   = numTrials - numTestTrials;
 ROCThres            = 0.5;
 
-load ([TempDatDir 'DataListS2CModel.mat']);
+load ([TempDatDir 'DataListS2CGP43Model.mat']);
 addNoise            = [0 0 0 0];
 
 cmap                = cbrewer('div', 'Spectral', 128, 'cubic');
 
 
-if ~exist([PlotDir 'S2CModel'],'dir')
-    mkdir([PlotDir 'S2CModel'])
+if ~exist([PlotDir 'S2CGP43Model'],'dir')
+    mkdir([PlotDir 'S2CGP43Model'])
 end
 
 stepSize            = 10;
@@ -73,7 +73,7 @@ for nData             = 1:length(DataSetList)
     ylabel('# units');
     colormap(cmap)
     set(gca, 'TickDir', 'out')
-    setPrint(8, 6, [PlotDir 'S2CModel/CollectedUnitsDecodabilityFixedROCThres_0_5_' DataSetList(nData).name])
+    setPrint(8, 6, [PlotDir 'S2CGP43Model/CollectedUnitsDecodabilityFixedROCThres_0_5_' DataSetList(nData).name])
 end
 
 
@@ -125,7 +125,7 @@ for nData             = 1:length(DataSetList)
     ylabel('# units');
     colormap(cmap)
     set(gca, 'TickDir', 'out')
-    setPrint(8, 6, [PlotDir 'S2CModel/CollectedUnitsDecodabilityFixedROCThres_0_7_' DataSetList(nData).name])
+    setPrint(8, 6, [PlotDir 'S2CGP43Model/CollectedUnitsDecodabilityFixedROCThres_0_7_' DataSetList(nData).name])
 end
 
 close all;

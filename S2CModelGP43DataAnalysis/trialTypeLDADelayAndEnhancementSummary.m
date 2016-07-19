@@ -15,7 +15,8 @@ params             = DataSetList(1).params;
 DataSetListName{1} = DataSetList(1).name;
 load ([TempDatDir 'DataListS2CModel.mat']);
 DataSetListName{2} = DataSetList(3).name;
-DataSetListName{3} = DataSetList(4).name;
+load ([TempDatDir 'DataListS2CGP43Model.mat']);
+DataSetListName{3} = DataSetList(2).name;
 
 cmap = [         0    0.4470    0.7410
     0.4940    0.1840    0.5560
@@ -64,7 +65,7 @@ hold off;
 xlabel('# Units in analysis');
 ylabel('Time > 0.65 (ms)');
 
-setPrint(8, 6, [PlotDir 'S2CModel/CollectedUnitsDecodabilityROC_DelayInSample'])
+setPrint(8, 6, [PlotDir 'S2CGP43Model/CollectedUnitsDecodabilityROC_DelayInSample'])
 
 
 figure;
@@ -98,4 +99,4 @@ box off;
 hold off;
 xlabel('# Units in analysis');
 ylabel('Mean accuracy in response epoch');
-setPrint(8, 6, [PlotDir 'S2CModel/CollectedUnitsDecodabilityROC_MeanPerformanceInResponse'])
+setPrint(8, 6, [PlotDir 'S2CGP43Model/CollectedUnitsDecodabilityROC_MeanPerformanceInResponse'])

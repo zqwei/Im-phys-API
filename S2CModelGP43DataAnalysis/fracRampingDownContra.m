@@ -48,9 +48,9 @@ sum((yesRampDown==1 & noRampDown>=0) | (yesRampDown>=0 & noRampDown==1) & contra
 sum_noRampDown = sum((yesRampDown==-1 & noRampDown<=0) | (yesRampDown<=0 & noRampDown==-1)  & unitGroup>0);
 sum((yesRampDown==-1 & noRampDown<=0) | (yesRampDown<=0 & noRampDown==-1) & contraIndex & unitGroup>0)/sum_noRampDown
 
-load ([TempDatDir 'DataListS2CModel.mat']);
+load ([TempDatDir 'DataListS2CGP43Model.mat']);
 
-nData = 4;
+nData = 2;
 load([TempDatDir DataSetList(nData).name '.mat'])
 nDataSet   = nDataSet(validDepth);
 logPValueEpoch= getLogPValueTscoreSpikeEpoch(nDataSet, DataSetList(nData).params);
@@ -88,8 +88,8 @@ box off;
 setPrint(4, 3, [PlotDir 'S2CModel/ContraFractionRampDownUpLongDecay'])
 
 
-contraFrac = [31/48, 161/173]; % total 192/221
-ipsiFrac = [88/163, 74/85]; % total 162/248
+contraFrac = [34/48, 149/173]; % total 183/221
+ipsiFrac = [101/163, 60/85]; % total 161/248
 figure;
 hold on
 plot(1:2,contraFrac,'-ob','markerfacecolor','b')
@@ -100,4 +100,4 @@ ylim([0.5 1])
 xlabel('Dataset index')
 ylabel('Frac. Contra')
 box off;
-setPrint(4, 3, [PlotDir 'S2CModel/ContraFractionRampDownUpShortDecay'])
+setPrint(4, 3, [PlotDir 'S2CGP43Model/ContraFractionRampDownUpShortDecay'])

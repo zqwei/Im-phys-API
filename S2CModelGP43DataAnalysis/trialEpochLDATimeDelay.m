@@ -10,11 +10,16 @@
 addpath('../Func');
 setDir;
 load ([TempDatDir 'DataListShuffle.mat']);
-addNoise         = [0 0 0 0];
-
-if ~exist([PlotDir '/CollectedUnitsDecodabilityEpoch'],'dir')
-    mkdir([PlotDir '/CollectedUnitsDecodabilityEpoch'])
-end
+ActiveNeuronIndex  = DataSetList(1).ActiveNeuronIndex';
+params             = DataSetList(1).params;
+DataSetListName{1} = DataSetList(1).name;
+load ([TempDatDir 'DataListS2CModel.mat']);
+DataSetListName{2} = DataSetList(3).name;
+load ([TempDatDir 'DataListS2CGP43Model.mat']);
+DataSetListName{3} = DataSetList(2).name;
+addNoise           = [0 0 0 0];
+timePoints         = timePointTrialPeriod(params.polein, params.poleout, params.timeSeries);
+EpochIndex         = epochIndex(params);
 
 detectThres = 0.3;
 cmap = [ 0    0.4470    0.7410
@@ -33,34 +38,25 @@ testTargets         = [true(numTestTrials/2,1); false(numTestTrials/2,1)];
 testTargets         = testTargets(randperm(numTestTrials));
 totTargets          = [testTargets; trainingTargets];
 
-ROCValue        = 0.5:0.1:0.8;
-nDatas          = [1 3 4];
-meanDelays      = nan(length(nDatas), length(ROCValue), 3); % #nData, #Roc, #Epoch
-semDelays       = nan(length(nDatas), length(ROCValue), 3);  
+ROCValue        = 0.5:0.10:0.80;
+meanDelays      = nan(length(DataSetListName), length(ROCValue), 3); % #nData, #Roc, #Epoch
+semDelays       = nan(length(DataSetListName), length(ROCValue), 3);  
 
 for nROCThres   = 1:length(ROCValue)
     ROCThres    = ROCValue(nROCThres);
-    for mData   = 1:length(nDatas)
-        nData   = nDatas(mData);
-        if nData >1 
-            load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])   
-            selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex(~neuronRemoveList)';
-        else
-            load([TempDatDir DataSetList(nData).name '.mat'])   
-            selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';
-        end
-        selectedNeuronalIndex = selectedHighROCneurons(nDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);
+    for nData   = 1:length(DataSetListName)
+        load([TempDatDir DataSetListName{nData} '.mat'])   
+        selectedNeuronalIndex = ActiveNeuronIndex';
+        selectedNeuronalIndex = selectedHighROCneurons(nDataSet, params, ROCThres, selectedNeuronalIndex);
         nDataSet              = nDataSet(selectedNeuronalIndex);
-        timePoints            = timePointTrialPeriod(DataSetList(nData).params.polein, DataSetList(nData).params.poleout, DataSetList(nData).params.timeSeries);
         numPeriods            = length(timePoints) - 1;
         decodability          = zeros(numFold, numPeriods, size(nDataSet(1).unit_yes_trial,2));
         for nFold        = 1:numFold
             numUnits     = length(nDataSet);
             nSessionData = shuffleSessionData(nDataSet(randperm(numUnits, numRandPickUnits)), totTargets, numTestTrials);
-            nSessionData = permute(nSessionData,[1 3 2]);
-            EpochIndex   = epochIndex(DataSetList(nData).params);
-            EpochIndex   = EpochIndex(:,ones(1,numTrials))';
-            decodability(nFold,:,:)    = decodabilitySliceDataTaperAccumulated(nSessionData, EpochIndex, 0, addNoise(nData), numTestTrials, numPeriods);
+            nSessionData = permute(nSessionData,[1 3 2]);            
+            EpochIndexs  = EpochIndex(:,ones(1,numTrials))';
+            decodability(nFold,:,:)    = decodabilitySliceDataTaperAccumulated(nSessionData, EpochIndexs, 0, addNoise(nData), numTestTrials, numPeriods);
         end
         % [~, maxIndex] = max(decodability, [], 2);
         % maxIndex = squeeze(maxIndex);
@@ -73,13 +69,13 @@ for nROCThres   = 1:length(ROCValue)
             % delayTimes (:, nEpoch) = sum(maxIndex < nEpoch+1, 2);
         end
         % delayTimes = DataSetList(nData).params.timeSeries(delayTimes+1); 
-        delayTimes = delayTimes/DataSetList(nData).params.frameRate; 
+        delayTimes = delayTimes/params.frameRate; 
         % epochTime  = [DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0];    
         semDelay   = std(delayTimes)/sqrt(numFold);
         % meanDelay  = mean(delayTimes, 1) - epochTime;
         meanDelay  = mean(delayTimes, 1);
-        semDelays(mData, nROCThres, :)  = semDelay*1000;
-        meanDelays(mData, nROCThres, :) = meanDelay*1000;
+        semDelays(nData, nROCThres, :)  = semDelay*1000;
+        meanDelays(nData, nROCThres, :) = meanDelay*1000;
     end
 end
 
@@ -88,7 +84,7 @@ labelDelays         = {'Sample', 'Delay', 'Response'};
 for nPlot           = 1:length(labelDelays)
     subplot(1, length(labelDelays), nPlot)
     hold on
-    for nData       = 1:size(meanDelays, 1)
+    for nData       = 1:length(DataSetListName)
         shadedErrorBar(ROCValue, squeeze(meanDelays(nData, :, nPlot)), ...
             squeeze(semDelays(nData, :, nPlot)), {'-','color',cmap(nData, :), 'linewid', 1.0}, 0.5)
     end
@@ -101,12 +97,18 @@ for nPlot           = 1:length(labelDelays)
     box off
 end
 
-setPrint(8*3, 6, [PlotDir 'CollectedUnitsDecodabilityEpoch/CollectedUnitsDecodabilityEpochROCwithOLRemoval'])
+subplot(1,3,1)
+ylim([100 500])
+subplot(1,3,2)
+ylim([0 400])
+subplot(1,3,3)
+ylim([50 250])
+setPrint(8*3, 6, [PlotDir 'S2CGP43Model/CollectedUnitsDecodabilityEpochROC'])
 
-numRandPickUnitsSet     = [50 100 200 500];%[20 50 100 200 500];
-nDatas                  = [1 3 4];
-meanDelays              = nan(length(nDatas), length(numRandPickUnitsSet), 3); % #nData, #Roc, #Epoch
-semDelays               = nan(length(nDatas), length(numRandPickUnitsSet), 3);  
+numRandPickUnitsSet     = [50 100 200 500];% [20 50 100 200 500];
+nDatas                  = 1:length(DataSetList);
+meanDelays              = nan(length(DataSetListName), length(numRandPickUnitsSet), 3); % #nData, #Roc, #Epoch
+semDelays               = nan(length(DataSetListName), length(numRandPickUnitsSet), 3);  
 
 for nRandPickUnits      = 1:length(numRandPickUnitsSet)
     ROCThres            = 0.5;
@@ -114,34 +116,25 @@ for nRandPickUnits      = 1:length(numRandPickUnitsSet)
     numTestTrials       = 200;
     numFold             = 30;
     numTrials           = numRandPickUnits * 3 + numTestTrials;
-    numTrials           = max(numTrials, numTestTrials*5);
     numTrainingTrials   = numTrials - numTestTrials;
     trainingTargets     = [true(numTrainingTrials/2,1); false(numTrainingTrials/2,1)];
     trainingTargets     = trainingTargets(randperm(numTrainingTrials));
     testTargets         = [true(numTestTrials/2,1); false(numTestTrials/2,1)];
     testTargets         = testTargets(randperm(numTestTrials));
     totTargets          = [testTargets; trainingTargets];
-    for mData           = 1:length(nDatas)
-        nData           = nDatas(mData);
-        if nData >1 
-            load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])   
-            selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex(~neuronRemoveList)';
-        else
-            load([TempDatDir DataSetList(nData).name '.mat'])   
-            selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';
-        end
-        selectedNeuronalIndex = selectedHighROCneurons(nDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);
+    for nData           = 1:length(DataSetListName)
+        load([TempDatDir DataSetListName{nData} '.mat'])   
+        selectedNeuronalIndex = ActiveNeuronIndex';
+        selectedNeuronalIndex = selectedHighROCneurons(nDataSet, params, ROCThres, selectedNeuronalIndex);
         nDataSet              = nDataSet(selectedNeuronalIndex);
-        timePoints            = timePointTrialPeriod(DataSetList(nData).params.polein, DataSetList(nData).params.poleout, DataSetList(nData).params.timeSeries);
         numPeriods            = length(timePoints) - 1;
         decodability          = zeros(numFold, numPeriods, size(nDataSet(1).unit_yes_trial,2));
         for nFold        = 1:numFold
             numUnits     = length(nDataSet);
             nSessionData = shuffleSessionData(nDataSet(randperm(numUnits, numRandPickUnits)), totTargets, numTestTrials);
             nSessionData = permute(nSessionData,[1 3 2]);
-            EpochIndex   = epochIndex(DataSetList(nData).params);
-            EpochIndex   = EpochIndex(:,ones(1,numTrials))';
-            decodability(nFold,:,:)    = decodabilitySliceDataTaperAccumulated(nSessionData, EpochIndex, 0, addNoise(nData), numTestTrials, numPeriods);
+            EpochIndexs   = EpochIndex(:,ones(1,numTrials))';
+            decodability(nFold,:,:)    = decodabilitySliceDataTaperAccumulated(nSessionData, EpochIndexs, 0, addNoise(nData), numTestTrials, numPeriods);
         end
 %         [~, maxIndex] = max(decodability, [], 2);
 %         maxIndex = squeeze(maxIndex);
@@ -157,11 +150,11 @@ for nRandPickUnits      = 1:length(numRandPickUnitsSet)
             decodabilityEpoch      = decodability(:, :, timePoints(nEpoch+1):timePoints(nEpoch+2));
             delayTimes (:, nEpoch) = sum(decodabilityEpoch(:, nEpoch, :)>detectThres, 3);
         end
-        delayTimes = delayTimes/DataSetList(nData).params.frameRate; 
+        delayTimes = delayTimes/params.frameRate; 
         semDelay   = std(delayTimes)/sqrt(numFold);
         meanDelay  = mean(delayTimes, 1);
-        semDelays(mData, nRandPickUnits, :)  = semDelay*1000;
-        meanDelays(mData, nRandPickUnits, :) = meanDelay*1000;
+        semDelays(nData, nRandPickUnits, :)  = semDelay*1000;
+        meanDelays(nData, nRandPickUnits, :) = meanDelay*1000;
     end
 end
 
@@ -170,8 +163,8 @@ labelDelays         = {'Sample', 'Delay', 'Response'};
 for nPlot           = 1:length(labelDelays)
     subplot(1, length(labelDelays), nPlot)
     hold on
-    for nData       = 1:size(meanDelays, 1)
-        shadedErrorBar(numRandPickUnitsSet(:), squeeze(meanDelays(nData, :, nPlot)), ...
+    for nData       = [1 2 3]
+        shadedErrorBar(numRandPickUnitsSet, squeeze(meanDelays(nData, :, nPlot)), ...
             squeeze(semDelays(nData, :, nPlot)), {'-','color',cmap(nData, :), 'linewid', 1.0}, 0.5)
     end
     xlim([0, 501])
@@ -182,19 +175,11 @@ for nPlot           = 1:length(labelDelays)
     title(labelDelays{nPlot});
     box off
 end
+subplot(1,3,1)
+ylim([100 600])
+subplot(1,3,2)
+ylim([0 400])
+subplot(1,3,3)
+ylim([50 300])
 
-setPrint(8*3, 6, [PlotDir 'CollectedUnitsDecodabilityEpoch/CollectedUnitsDecodabilityEpochNumUnitswithOLRemoval'])
-
-
-margNames = {'Spike', 'GP4.3', '6s-AAV'};
-figure;
-hold on
-for nColor = 1:length(margNames)
-    plot(0, nColor, 's', 'color', cmap(nColor,:), 'MarkerFaceColor',cmap(nColor,:),'MarkerSize', 8)
-    text(1, nColor, margNames{nColor})
-end
-xlim([0 10])
-hold off
-axis off
-setPrint(3, 3, [PlotDir 'CollectedUnitsDecodabilityEpoch/CollectedUnitsDecodabilityEpochLabel'])
-close all
+setPrint(8*3, 6, [PlotDir 'S2CGP43Model/CollectedUnitsDecodabilityEpochNumUnits'])

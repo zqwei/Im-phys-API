@@ -8,6 +8,14 @@
 
 addpath('../Func');
 setDir;
+load ([TempDatDir 'DataListShuffle.mat']);
+ActiveNeuronIndex  = DataSetList(1).ActiveNeuronIndex';
+params             = DataSetList(1).params;
+DataSetListName{1} = DataSetList(1).name;
+load ([TempDatDir 'DataListS2CModel.mat']);
+DataSetListName{2} = DataSetList(3).name;
+load ([TempDatDir 'DataListS2CGP43Model.mat']);
+DataSetListName{3} = DataSetList(2).name;
 
 numFold             = 10;
 numTrials           = 1000;
@@ -23,16 +31,16 @@ cmap                = cbrewer('div', 'Spectral', 128, 'cubic');
 
 stepSize            = 10;
 
-for nData             = 4
-    load([TempDatDir DataSetList(nData).name '.mat'])
+for nData             = 1:length(DataSetListName)
+    load([TempDatDir DataSetListName{nData} '.mat'])
     oldDataSet               = nDataSet;
     maxRandPickUnits         = 20;
     decodabilityAll          = zeros(maxRandPickUnits, numFold, size(nDataSet(1).unit_yes_trial,2));
     figure;
     hold on
     for numRandPickUnits      = 1:maxRandPickUnits;
-        selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';% & [DataSetList(nData).cellinfo(:).cellType] == 1;
-        selectedNeuronalIndex = selectedHighROCneurons(oldDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);
+        selectedNeuronalIndex = ActiveNeuronIndex';% & [cellinfo(:).cellType] == 1;
+        selectedNeuronalIndex = selectedHighROCneurons(oldDataSet, params, ROCThres, selectedNeuronalIndex);
         nDataSet              = oldDataSet(selectedNeuronalIndex);
         decodability          = zeros(numFold, size(nDataSet(1).unit_yes_trial,2));
 
@@ -55,5 +63,5 @@ for nData             = 4
         end
         decodabilityAll(numRandPickUnits, :, :) = decodability;
     end
-    save(['decodabilityAll_' DataSetList(nData).name], 'decodabilityAll')
+    save(['decodabilityAll_' DataSetListName{nData}], 'decodabilityAll')
 end
