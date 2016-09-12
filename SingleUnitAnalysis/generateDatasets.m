@@ -4,6 +4,7 @@
 % Comparison_V2_0
 
 addpath('../Func');
+load('ALM_compiled_all_data.mat','cellType_all')
 setDir;
 
 minNumTrialToAnalysis  = 20;
@@ -25,11 +26,11 @@ minFiringRate          = 5; % Hz per epoch
 % nDataSet               = getSpikeData(SpikingDataDir, SpikeFileList, ...
 %                                       params.minNumTrialToAnalysis, ...
 %                                       params.timeSeries, params.binsize);
-nDataSet               = getSpikeDataWithEphysTime(SpikingDataDir, SpikeFileList, params.minNumTrialToAnalysis, params.timeSeries, params.binsize);                                  
+nDataSet = getSpikeDataWithEphysTime(SpikingDataDir, SpikeFileList, params.minNumTrialToAnalysis, params.timeSeries, params.binsize, cellType_all);
 DataSetList(1).name    = 'Shuffle_Spikes';
 DataSetList(1).params  = params; 
 DataSetList(1).ActiveNeuronIndex = findHighFiringUnits(nDataSet, params, minFiringRate);
-save([TempDatDir DataSetList(1).name '.mat'], 'nDataSet');
+save([TempDatDir DataSetList(1).name '_old.mat'], 'nDataSet');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Spike -- DF/F
@@ -129,11 +130,24 @@ for nData           = 1:length(fileList)
         DataSetList(nData).cellinfo(nUnit).depth      = nDataSet(nUnit).depth_in_um;
         DataSetList(nData).cellinfo(nUnit).expression = DataSetList(nData).params.expression;
         if strcmp(nDataSet(nUnit).cell_type, 'putative_interneuron')
-            DataSetList(nData).cellinfo(nUnit).cellType   = 0;
+            DataSetList(nData).cellinfo(nUnit).cellType   = 2;
         elseif strcmp(nDataSet(nUnit).cell_type, 'putative_pyramidal')
             DataSetList(nData).cellinfo(nUnit).cellType   = 1;
+        else
+            DataSetList(nData).cellinfo(nUnit).cellType   = nDataSet(nUnit).cell_type;
         end        
     end
 end
 
+cellType = [DataSetList(1).cellinfo.cellType];
+depth = [DataSetList(1).cellinfo.depth];
+validCellIndex = cellType==1 & depth>100 & depth<800;
+DataSetList(1).ActiveNeuronIndex = DataSetList(1).ActiveNeuronIndex(validCellIndex);
+DataSetList(1).cellinfo = DataSetList(1).cellinfo(validCellIndex);
+DataSetList(1).ROCIndex = DataSetList(1).ROCIndex(validCellIndex, :);
 save([TempDatDir 'DataListShuffle.mat'], 'DataSetList');
+
+
+load([TempDatDir DataSetList(1).name '_old.mat'], 'nDataSet');
+nDataSet = nDataSet(validCellIndex);
+save([TempDatDir DataSetList(1).name '.mat'], 'nDataSet');

@@ -5,7 +5,7 @@ function exampleDynamicalNeuron
     
     load ([TempDatDir 'DataListShuffle.mat']);
     nData = 1; % plot raster and psth
-    load([TempDatDir DataSetList(nData).name '.mat'])
+    load([TempDatDir DataSetList(nData).name '_old.mat'])
     spikeDataSet = nDataSet;   
     params = DataSetList(nData).params;
     nData = 4; % plot ca comparison
@@ -16,34 +16,37 @@ function exampleDynamicalNeuron
     load([TempDatDir DataSetList(nData).name '.mat'])
     s2cDataSet   = nDataSet;
      
-%     meanCaDataSet = meanData(caDataSet);
-%     meanS2CDataSet = meanData(s2cDataSet);
+    meanCaDataSet = meanData(caDataSet);
+    meanS2CDataSet = meanData(s2cDataSet);
+    dynamicalNeuronIndex = 1:length(spikeDataSet);
 
-    dynamicalNeuronIndex = [334 177 142 27 30 80 93 580 557 367];
-    mCellSet             = [1566 1446 35 1345 746 1995 2272 1345 1682 352];
+%     dynamicalNeuronIndex = [290 334 177 142 27 30 80 93 580 557 367 55];
+%     mCellSet             = [1 1566 1446 35 1345 746 1995 2272 1345 1682 352 55];
     
-    for nCellid = 1:length(dynamicalNeuronIndex)
+    for nCellid = 1:length(dynamicalNeuronIndex)%[2 3 11 12]
         nCell   = dynamicalNeuronIndex(nCellid);
         figure;
         % spike
-        subplot(2, 3, 1)
-        plotRaster(spikeDataSet(nCell), params);
-        subplot(2, 3, 4)
+        subplot(1, 2, 1)
+%         subplot(2, 3, 1)
+%         plotRaster(spikeDataSet(nCell), params);
+%         subplot(2, 3, 4)
         plotPSTH(spikeDataSet(nCell), params, 'Firing rate (Hz)');
         
         %
-        subplot(2, 3, 3)
-        plotDff(s2cDataSet(nCell), params)
-        subplot(2, 3, 6)
+%         subplot(2, 3, 3)
+%         plotDff(s2cDataSet(nCell), params)
+%         subplot(2, 3, 6)
+        subplot(1, 2, 2)
         plotPSTH(s2cDataSet(nCell), params, 'DF/F');
         
 %         mCell = findSimilarCellToS2CModel(meanS2CDataSet(nCell,:), meanCaDataSet);
-        mCell = mCellSet(nCellid);
-        subplot(2, 3, 2)
-        plotDff(caDataSet(mCell), params)
-        subplot(2, 3, 5)
-        plotPSTH(caDataSet(mCell), params, 'DF/F');
-        setPrint(8*3, 6*2, [PlotDir 'SingleUnitsTscore/SingleUnitsTscoreExampleNeuron_' num2str(nCell, '%04d')])
+%         mCell = mCellSet(nCellid);
+%         subplot(2, 3, 2)
+%         plotDff(caDataSet(mCell), params)
+%         subplot(2, 3, 5)
+%         plotPSTH(caDataSet(mCell), params, 'DF/F');
+        setPrint(8*2, 6, ['ExampleNeuronPlot/SingleUnitsTscoreExampleNeuron_' num2str(nCell, '%04d')], 'pdf')
         close all
     end
 
@@ -53,7 +56,7 @@ function plotRaster(spikeDataSet, params)
     spkTimes{1}    = spikeDataSet.unit_yes_trial_spk_time;
     spkTimes{2}    = spikeDataSet.unit_no_trial_spk_time;
     hold on;
-    color_index    = [0.7  0 0; 0 0 0.7];
+    color_index    = [0 0 0.7; 0.7  0 0]; %[0.7  0 0; 0 0 0.7];%
     spkLoc         = 0;
     for nPlot            = 1:2
         hold on;
@@ -86,20 +89,22 @@ function plotDff(spikeDataSet, params)
     noUnitData       = getGaussianPSTH (filterInUse, nUnitData, 2);
     cmin             = min([mean(yesUnitData), mean(noUnitData)]);
     cmax             = max([mean(yesUnitData), mean(noUnitData)]);
+    cstd             = max([std(yesUnitData), std(noUnitData)]);
     
 
 
     hold on
     actMat = nan(41, size(spikeDataSet.unit_yes_trial, 2));
-    actMat(1:20, :) = yesUnitData(1:20, :);
-    actMat(22:end, :) = noUnitData(1:20, :);
+    actMat(1:20, :) = yesUnitData(2:21, :);
+    actMat(22:end, :) = noUnitData(3:22, :);
+    actMat(21, :) = cmin;
     imagesc(params.timeSeries, 1:41, actMat);
     gridxy ([params.polein, params.poleout, 0],[], 'Color','w','Linestyle','--','linewid', 1.0);
     hold off;
     ylim([1 41])
     colormap(gray)
     
-    caxis([cmin, cmax]);
+    caxis([cmin, cmax+cstd*1]);
 %     colorbar
     xlim([params.timeSeries(1) params.timeSeries(end)]);
     axis off
@@ -113,7 +118,7 @@ function plotPSTH(spikeDataSet, params, ylabelName)
     filterInUse                   = exp(-filterStep .^ 2 / (2 * sigma ^ 2));
     filterInUse                   = filterInUse / sum (filterInUse); 
 
-    color_index    = [0.7  0 0; 0 0 0.7];
+    color_index    = [0 0 0.7; 0.7  0 0]; %[0.7  0 0; 0 0 0.7];%
     hold on;
     nUnitData        = spikeDataSet.unit_yes_trial;
     nUnitData        = getGaussianPSTH (filterInUse, nUnitData, 2);

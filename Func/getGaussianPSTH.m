@@ -28,7 +28,10 @@ function smoothedUnitData = getGaussianPSTH (filterInUse, nUnitData, fDim)
     smoothedUnitData = filter(filterInUse, 1, zeroPaddedData, [], fDim);
     weightMat      = filter(filterInUse, 1, weightMat, [], fDim);
     
-    smoothedUnitData = smoothedUnitData(:, zeroPadLength+1:end-zeroPadLength)./ ...
-                        weightMat(:, zeroPadLength+1:end-zeroPadLength);
-    
+%     smoothedUnitData = smoothedUnitData(:, zeroPadLength+1:end-zeroPadLength)./ ...
+%                         weightMat(:, zeroPadLength+1:end-zeroPadLength);
+
+    smoothedUnitData = smoothedUnitData(:, 1+2*zeroPadLength:end)./ ...
+                        weightMat(:, 1+2*zeroPadLength:end);%weightMat(:, zeroPadLength+1:end-zeroPadLength);
+
 end

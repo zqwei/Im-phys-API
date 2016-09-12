@@ -7,19 +7,24 @@
 
 addpath('../Func');
 setDir;
-load ([TempDatDir 'DataListNoNeuropil.mat']);
+load ([TempDatDir 'DataListC2SModel.mat']);
 
-cmap = cbrewer('qual', 'Set1', 3, 'cubic');
+% cmap = cbrewer('qual', 'Set1', 3, 'cubic');
+cmap = [0.8000    0.8000    0.8000;
+       1.0000    0.6000         0;
+       0    0.8000         0];
 
 for nData      = 1:length(DataSetList)
-    load([TempDatDir DataSetList(nData).name '.mat'])
-    logPValueEpoch= getLogPValueTscoreSpikeEpoch(nDataSet, DataSetList(nData).params);
-    unitGroup = plotTtestLogPSpikeEpoch (logPValueEpoch);
+    load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
+    unitGroup = getLogPValueTscoreSpikeTime(nDataSet, DataSetList(nData).params);    
     sizeGroup = histcounts(unitGroup, 0:3);
+%     sizeGroup
+%     sum(sizeGroup)
+%     disp(sizeGroup(2)/sizeGroup(3))
     figure('Visible', 'off');
     groupNames      = {'Non.', 'Homo.', 'Dynamical'};
     pie(sizeGroup)
     colormap(cmap)
     set(gca, 'TickDir', 'out')
-    setPrint(8, 6, [PlotDir 'NoNeuropil/SingleUnitsTscore_' DataSetList(nData).name], 'svg')
+    setPrint(8, 6, [PlotDir 'C2SModel/SingleUnitsTscoreTime_' DataSetList(nData).name '_withOLRemoval'])
 end

@@ -12,6 +12,17 @@ function activityProfileChangeOnEpochsStats
     spThres       = 0.2;
     for nData     = 1:4
         load([TempDatDir DataSetList(nData).name '.mat'])
+        
+        positivePeak        = false(length(nDataSet));
+        for nUnit        = 1:length(nDataSet)
+            yesData      = mean(nDataSet(nUnit).unit_yes_trial);
+            noData       = mean(nDataSet(nUnit).unit_no_trial);
+            positivePeak(nUnit)       = mean(yesData(1:8)) <= mean(yesData(9:47)) ...
+                                       || mean(noData(1:8)) <= mean(noData(9:47));
+        end
+        
+        nDataSet  = nDataSet(positivePeak);
+        
         [actMat, splineActMat, stdActMat] = smoothedMeanActivityMatrix(nDataSet, smoothedBinsize);
         peakMat   = false(size(actMat));
         timeStep  = DataSetList(nData).params.timeSeries;
@@ -29,11 +40,13 @@ function activityProfileChangeOnEpochsStats
         disp(mean(peakMat(:))*100)
         figure
         hold on
-        plot(timeStep, mean(peakMat(:, 1:numTime))*100, '-', 'linewid', 1.0, 'color', [0.7 0 0])
-        plot(timeStep, mean(peakMat(:, numTime+1:end))*100, '-', 'linewid', 1.0, 'color', [0 0 0.7])
+        bplot = bar(timeStep, mean(peakMat(:, 1:numTime))*100/sum(mean(peakMat(:, 1:numTime))), 'facecolor', 'b', 'edgecolor', 'none');
+        bplot.FaceAlpha = 0.5;
+        bplot = bar(timeStep, mean(peakMat(:, numTime+1:end))*100/sum(mean(peakMat(:, numTime+1:end))), 'facecolor', 'r', 'edgecolor', 'none');
+        bplot.FaceAlpha = 0.5;
         ylabel('% change')
         xlabel('Time')
-        ylim([0 2.5])
+        ylim([0 30])
         xlim([timeStep(1) timeStep(end)])
         gridxy ([polein, poleout, 0],[], 'Color','k','Linestyle','--','linewid', 1.0)
         box off

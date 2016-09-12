@@ -14,25 +14,35 @@ if ~exist([PlotDir 'SingleUnitsTscore'],'dir')
     mkdir([PlotDir 'SingleUnitsTscore'])
 end
 
-cmap = cbrewer('qual', 'Set1', 3, 'cubic');
+% cmap = cbrewer('qual', 'Set1', 3, 'cubic');
+cmap = [0.8000    0.8000    0.8000;
+       1.0000    0.6000         0;
+       0    0.8000         0];
 
 for nData      = [1 3 4]
-    load([TempDatDir DataSetList(nData).name '.mat'])
-    logPValueEpoch= getLogPValueTscoreSpikeEpoch(nDataSet, DataSetList(nData).params);
-    unitGroup = plotTtestLogPSpikeEpoch (logPValueEpoch);
-    
+    if nData   == 1
+        load([TempDatDir DataSetList(nData).name '.mat'])
+        neuronRemoveList = false(length(nDataSet), 1);
+    else
+        load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
+    end
+    unitGroup = getLogPValueTscoreSpikeTime(nDataSet, DataSetList(nData).params); 
+%     cellType  = [DataSetList(nData).cellinfo.cellType]';
+%     depth     = [DataSetList(nData).cellinfo(:).depth]';  
+%     sizeGroup = histcounts(unitGroup(cellType==1 & depth>100 & depth<800), 0:3);
     sizeGroup = histcounts(unitGroup, 0:3);
-%     sizeGroup
-%     sum(sizeGroup)
+    sizeGroup
+    sum(sizeGroup)
 %     disp(sizeGroup(2)/sizeGroup(3))
     figure('Visible', 'off');
     groupNames      = {'Non.', 'Homo.', 'Dynamical'};
     pie(sizeGroup)
     colormap(cmap)
     set(gca, 'TickDir', 'out')
-    setPrint(8, 6, [PlotDir 'SingleUnitsTscore/SingleUnitsTscore_' DataSetList(nData).name])
+    setPrint(8, 6, [PlotDir 'SingleUnitsTscore/SingleUnitsTscoreTime_' DataSetList(nData).name])
     
-    depth                        = [DataSetList(nData).cellinfo(:).depth];    
+    depth                        = [DataSetList(nData).cellinfo(:).depth];   
+    depth                        = depth(~neuronRemoveList);
     depthStart                   = 100;
     depthBin                     = 50;
     depthEnd                     = 900;    
@@ -65,23 +75,24 @@ for nData      = [1 3 4]
     
     figure('Visible', 'off');
     subplot(1, 2, 1)
-    barh(uniqueDepth, groupPerCounts, 'stack', 'edgecolor', 'none');
+    barh(-uniqueDepth, groupPerCounts, 'stack', 'edgecolor', 'none');
     xlim([0 1])
     box off
     xlabel('% cell type')
     ylabel('Depth (um)')
-    ylim([0 950])
+    set(gca, 'TickDir', 'out')
+    ylim([-850 0])
+    set(gca, 'yTick', -800:400:0)
     colormap(cmap)
-    set(gca, 'yTick', 0:300:900)
     
     subplot(1, 2, 2)
-    barh(uniqueDepth, sum(groupCounts,2),'k')
+    barh(-uniqueDepth, sum(groupCounts,2),'k')
     xlabel('# cells')
     ylabel('Depth (um)')
-    ylim([0 950])
-    set(gca, 'yTick', 0:300:900)
+    ylim([-850 0])
+    set(gca, 'yTick', -800:400:0)
     set(gca, 'TickDir', 'out')
-    setPrint(8*2, 6, [PlotDir 'SingleUnitsTscore/SingleUnitsTscoreDepth_' DataSetList(nData).name])
+    setPrint(8*2, 6, [PlotDir 'SingleUnitsTscore/SingleUnitsTscoreTimeDepth_' DataSetList(nData).name])
 end
 
 figure;

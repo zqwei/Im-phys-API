@@ -20,6 +20,10 @@ for nData = [1 3 4]
     else
         load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
     end
+    
+    depth = [DataSetList(nData).cellinfo.depth];
+    validDepth = depth<700 & depth>100;
+    
     logPValueEpoch= getLogPValueTscoreSpikeEpoch(nDataSet, DataSetList(nData).params);
     unitGroup = plotTtestLogPSpikeEpoch (logPValueEpoch);
     params      = DataSetList(nData).params;
@@ -34,17 +38,30 @@ for nData = [1 3 4]
         noTrial  = mean(nDataSet(nUnit).unit_no_trial);
         yesActMat(nUnit, :)  = yesTrial;
         noActMat(nUnit, :)   = noTrial;
-        contraIndex(nUnit)   = sum(noTrial(timePoints(2):end))>sum(yesTrial(timePoints(2):end));
+        contraIndex(nUnit)   = sum(noTrial(timePoints(2):end))<sum(yesTrial(timePoints(2):end));
     end
+    
+%     sigma                         = 0.05 / params.binsize; % 200 ms
+%     filterLength                  = 11;
+%     filterStep                    = linspace(-filterLength / 2, filterLength / 2, filterLength);
+%     filterInUse                   = exp(-filterStep .^ 2 / (2 * sigma ^ 2));
+%     filterInUse                   = filterInUse / sum (filterInUse); 
+%     
+%     yesActMat                     = getGaussianPSTH (filterInUse, yesActMat, 2);
+%     noActMat                      = getGaussianPSTH (filterInUse, noActMat, 2);
+    
+    otherIndex = unitGroup~=0 & cellType == 1 & validDepth';
     
     figure;
     subplot(1, 2, 1)
     hold on
-    shadedErrorBar(params.timeSeries, mean(noActMat(contraIndex,:)), sem(noActMat(contraIndex,:)),'-b')
-    shadedErrorBar(params.timeSeries, mean(yesActMat(contraIndex,:)), sem(yesActMat(contraIndex,:)),'-r')
+    shadedErrorBar(params.timeSeries, mean(noActMat(contraIndex & otherIndex,:)), sem(noActMat(contraIndex& otherIndex,:))/2,'-r')
+    shadedErrorBar(params.timeSeries, mean(yesActMat(contraIndex& otherIndex,:)), sem(yesActMat(contraIndex& otherIndex,:))/2,'-b')
+    ylim([2, 10])
     title('contra neuron only')
     gridxy ([params.polein, params.poleout, 0],[], 'Color','k','Linestyle','--','linewid', 1.0)
-    xlim([params.timeSeries(1) params.timeSeries(end)])
+    xlim([params.timeSeries(2) params.timeSeries(end-1)])
+    ylim([2, 10])
     xlabel('Time (ms)')
     box off
     ylabel('Mean activity')
@@ -58,11 +75,13 @@ for nData = [1 3 4]
 
     subplot(1, 2, 2)
     hold on
-    shadedErrorBar(params.timeSeries, mean(noActMat(~contraIndex,:)), sem(noActMat(~contraIndex,:)),'-b')
-    shadedErrorBar(params.timeSeries, mean(yesActMat(~contraIndex,:)), sem(yesActMat(~contraIndex,:)),'-r')
+    shadedErrorBar(params.timeSeries, mean(noActMat(~contraIndex& otherIndex,:)), sem(noActMat(~contraIndex& otherIndex,:))/2,'-r')
+    shadedErrorBar(params.timeSeries, mean(yesActMat(~contraIndex& otherIndex,:)), sem(yesActMat(~contraIndex& otherIndex,:))/2,'-b')
+    ylim([2, 10])
     title('ipsi neuron only')
     gridxy ([params.polein, params.poleout, 0],[], 'Color','k','Linestyle','--','linewid', 1.0)
-    xlim([params.timeSeries(1) params.timeSeries(end)])
+    xlim([params.timeSeries(2) params.timeSeries(end-1)])
+    ylim([2, 10])
     xlabel('Time (ms)')
     box off
     ylabel('Mean activity')

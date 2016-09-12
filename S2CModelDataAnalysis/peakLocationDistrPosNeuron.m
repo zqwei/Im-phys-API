@@ -1,16 +1,14 @@
 addpath('../Func');
 setDir;
-load ([TempDatDir 'DataListShuffle.mat']);
+load ([TempDatDir 'DataListS2CModel.mat']);
 
-if ~exist([PlotDir 'SingleUnitsPeakLocation'],'dir')
-    mkdir([PlotDir 'SingleUnitsPeakLocation'])
-end
 
-for nData     = [1 3 4]
+for nData     = 1:length(DataSetList)
     load([TempDatDir DataSetList(nData).name '.mat'])
     numTimeBin          = size(nDataSet(1).unit_yes_trial, 2);
     yesProfileMatrix    = nan(length(nDataSet), numTimeBin);
     noProfileMatrix     = yesProfileMatrix;
+    positivePeak        = false(length(nDataSet));
     for nUnit        = 1:length(nDataSet)
         yesData      = mean(nDataSet(nUnit).unit_yes_trial);
         noData       = mean(nDataSet(nUnit).unit_no_trial);
@@ -21,8 +19,11 @@ for nData     = [1 3 4]
         noData       = (noData - minData)/(maxData - minData);
         yesProfileMatrix(nUnit, :)    = yesData;
         noProfileMatrix(nUnit, :)     = noData;
+        positivePeak(nUnit)       = mean(yesData(1:8)) <= mean(yesData(9:47)) ...
+                                   || mean(noData(1:8)) <= mean(noData(9:47));
     end
     actMat        = [yesProfileMatrix, noProfileMatrix];
+    actMat        = actMat(positivePeak, :);
     [~, maxId]    = max(actMat, [], 2);
 
     timeStep  = DataSetList(nData).params.timeSeries;
@@ -31,24 +32,24 @@ for nData     = [1 3 4]
     poleout   = DataSetList(nData).params.poleout;
     
     
-    countMaxId = hist(maxId, 1:numTimeBin*2)/length(nDataSet)*100;
+    countMaxId = hist(maxId, 1:numTimeBin*2)/size(actMat,1)*100;
     disp(sqrt(mean((countMaxId - 1/numTimeBin/2*100).^2)))
     figure;
     hold on;
 %     stairs(timeStep, countMaxId(1:numTimeBin), '-', 'linewid', 1.0, 'color', [0.7 0 0])
-    bplot = bar(timeStep, countMaxId(1:numTimeBin), 'facecolor', [0.7 0 0], 'edgecolor', 'none');
+    bplot = bar(timeStep, countMaxId(1:numTimeBin), 'facecolor', 'b', 'edgecolor', 'none');
     bplot.FaceAlpha = 0.5;
 %     stairs(timeStep, countMaxId(1+numTimeBin:end), '-', 'linewid', 1.0, 'color', [0 0 0.7]);
-    bplot = bar(timeStep, countMaxId(1+numTimeBin:end), 'facecolor', [0 0 0.7], 'edgecolor', 'none');
+    bplot = bar(timeStep, countMaxId(1+numTimeBin:end), 'facecolor', 'r', 'edgecolor', 'none');
     bplot.FaceAlpha = 0.5;
     xlim([timeStep(1) 2])
-    ylim([0 6])
-    gridxy ([polein, poleout, 0],[1/numTimeBin/2*100], 'Color','k','Linestyle','--','linewid', 1.0)
+    ylim([0 8])
+    gridxy ([polein, poleout, 0],[1/(numTimeBin-8)/2*100], 'Color','k','Linestyle','--','linewid', 1.0)
     box off
     ylabel('% Max peak')
     xlabel('Time')
     hold off
-    setPrint(8, 3, [PlotDir 'SingleUnitsPeakLocation\SingleUnitsMaxLocation_' DataSetList(nData).name])
+    setPrint(8, 3, [PlotDir 'S2CModel\SingleUnitsMaxLocationPosNeuron_' DataSetList(nData).name])
 end
 
 close all

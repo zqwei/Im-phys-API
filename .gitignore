@@ -22,6 +22,7 @@ ModelsExplorationSever
 *.mat
 *.m~
 S2CParameterExpoloration/
+DepreciatedAnalysis
 *.key
 *.jpeg
 *.pages
