@@ -4,8 +4,9 @@
 % Comparison_V2_0
 
 addpath('../Func');
-load('ALM_compiled_all_data.mat','cellType_all')
 setDir;
+load([TempDatDir 'ALM_compiled_all_data.mat'],'cellType_all')
+
 
 minNumTrialToAnalysis  = 20;
 
