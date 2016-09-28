@@ -17,6 +17,8 @@ peel_nl_oopsi.m
 DepreciatedCode
 *.md
 Stash
+*.eps
+*.pdf
 
 
 # Byte-compiled / optimized / DLL files
