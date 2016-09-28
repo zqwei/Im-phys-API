@@ -12,60 +12,53 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 addpath('../Func');
 setDir;
-load('ParamsFitCells_S2CModel_Sim.mat');
-S2Cparams   = params;
+load([TempDatDir 'nlParaMat.mat'],'nlParaMat');
 clear params;
-idTauD      = 1;
-idN         = 1;
-idK         = 1;
-minNumTrialToAnalysis  = 20;
-params.frameRate       =  29.68/2;
-params.binsize         =  1/params.frameRate;
-params.polein          =  -2.6;
-params.poleout         =  -1.3;
-minTimeToAnalysis      =  round(-3.1 * params.frameRate);
-maxTimeToAnalysis      =  round(2.0 * params.frameRate);
-params.timeWindowIndexRange  = minTimeToAnalysis : maxTimeToAnalysis;
-params.timeSeries      = params.timeWindowIndexRange * params.binsize;
-params.minNumTrialToAnalysis =  minNumTrialToAnalysis;
-params.expression      = 'None';
-minFiringRate          = 5;
-% Raw activity
-% Spike
-nDataSet               = getSpikeDataWithEphysTime(SpikingDataDir, SpikeFileList, params.minNumTrialToAnalysis, params.timeSeries, params.binsize);
+load([TempDatDir 'DataListShuffle.mat'], 'DataSetList');
+load([TempDatDir 'Shuffle_Spikes.mat'], 'nDataSet');
+params      = DataSetList(1).params;
 spikeDataSet           = nDataSet;
-ActiveNeuronIndex = findHighFiringUnits(spikeDataSet, params, minFiringRate);
+ActiveNeuronIndex = DataSetList(1).ActiveNeuronIndex;
+clear DataSetList
 
-
-% Modeled GCaMP6s long decay
+% Modeled 6s-AAV
 truncatedNormal        = truncate(makedist('Normal'), -1.5, 1.5);
+% external noise is add after Fm, it does no matter how Fm is given
 params.Fm              = random(truncatedNormal, length(nDataSet), 1) * 10.6673 + 21.3240;
-std_K                  = min(S2Cparams(idK).K/3, S2Cparams(12).K);
-params.K               = random(truncatedNormal, length(nDataSet), 1) *  std_K               + S2Cparams(idN).K;
-params.n               = random(truncatedNormal, length(nDataSet), 1) *  S2Cparams(12).n     + S2Cparams(idN).n;
-params.tau_r           = random(truncatedNormal, length(nDataSet), 1) *  S2Cparams(12).tau_r + S2Cparams(1).tau_r;
-params.tau_d           = random(truncatedNormal, length(nDataSet), 1) *  S2Cparams(12).tau_d + S2Cparams(idTauD).tau_d;
-params.Fm              = params.Fm;
-params.tau_r           = params.tau_r;
-params.tau_d           = params.tau_d;
+% std_K                  = min(S2Cparams(idK).K/3, S2Cparams(12).K);
+% Ca0 and n are given as pairs (randomly sampled)
+randPairs              = randi([1 length(nlParaMat)], length(nDataSet), 1);
+params.Ca0             = nlParaMat(randPairs, 1);
+params.n               = nlParaMat(randPairs, 2);
+% tau_r and tau_d are given randomly
+std_r                  = 0.0246;
+median_r               = 0.0505;
+std_d                  = 0.4588;
+median_d               = 1.7064;
+params.tau_r           = random(truncatedNormal, length(nDataSet), 1) *  std_r + median_r;
+params.tau_d           = random(truncatedNormal, length(nDataSet), 1) *  std_d + median_d;
 params.intNoise        = 1.5;
 params.extNoise        = 1.5;
-nDataSet               = getFakeCaImagingData(spikeDataSet, params);
+nDataSet               = getFakeCaImagingDataSigmoid(spikeDataSet, params);
 nData                      = 1;
-DataSetList(nData).name    = 'Modeled_Ca_Long_Decay_No_Noise';
+DataSetList(nData).name    = 'Modeled_6s_AAV';
 DataSetList(nData).params  = params; 
 DataSetList(nData).ActiveNeuronIndex = ActiveNeuronIndex;
 save([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet'); 
 
-% Modeled GCaMP6s short decay
-params.Fm              = params.Fm;
-params.tau_r           = params.tau_r;
-params.tau_d           = params.tau_d*0.5;
+% Modeled GP4.3
+% tau_r and tau_d are given randomly
+std_r                  = 0.0375;
+median_r               = 0.0927;
+std_d                  = 0.5374;
+median_d               = 1.2294;
+params.tau_r           = random(truncatedNormal, length(nDataSet), 1) *  std_r + median_r;
+params.tau_d           = random(truncatedNormal, length(nDataSet), 1) *  std_d + median_d;
 params.intNoise        = 1.5;
-params.extNoise        = 1.5;
-nDataSet               = getFakeCaImagingData(spikeDataSet, params);
+params.extNoise        = 4.5;
+nDataSet               = getFakeCaImagingDataSigmoid(spikeDataSet, params);
 nData                      = 2;
-DataSetList(nData).name    = 'Modeled_Ca_Short_Decay_No_Noise';
+DataSetList(nData).name    = 'Modeled_GP43';
 DataSetList(nData).params  = params; 
 DataSetList(nData).ActiveNeuronIndex = ActiveNeuronIndex;
 save([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet'); 

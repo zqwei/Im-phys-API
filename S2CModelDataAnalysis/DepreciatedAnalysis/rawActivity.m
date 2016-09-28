@@ -3,26 +3,21 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 addpath('../Func');
 setDir;
-load ([TempDatDir 'DataListModeled.mat']);
+load ([TempDatDir 'DataListS2CModel.mat']);
 
-ylabels                 = {'Fring Rate (Hz)', 'dF/F', 'dF/F', 'dF/F', 'dR/R' };
-yAxes_set               = [0 60; -0.5 2.0; -0.5 2.0; -0.5 2.0; -0.5 2.0 ; -0.5 2.0];
-lowFiringThres          = [15, 0.3, 0.3, 0.3, 0.3, 0.3];
+ylabels                 = {'dF/F', 'dF/F', 'dF/F', 'dF/F' };
 
-if ~exist([PlotDir 'ModeledSingleUnitsImagescWithSort'],'dir')
-    mkdir([PlotDir 'ModeledSingleUnitsImagescWithSort'])
+if ~exist([PlotDir 'S2CModel'],'dir')
+    mkdir([PlotDir 'S2CModel'])
 end
-for nData             = 1:length(DataSetList)
+
+
+for nData             = [3 4]
     load([TempDatDir DataSetList(nData).name '.mat'])
-    plotMeanActivityImagescWithSortWithCellinfo(nDataSet, DataSetList(nData).params, [], [], ylabels{nData}, lowFiringThres(nData), yAxes_set(nData,:)); 
-    setPrint(6*4, 3*3, [PlotDir 'ModeledSingleUnitsImagescWithSort/SingleUnitsImagescWithSort_' DataSetList(nData).name], 'tif')
+    plotMeanActivityImagescRasterOnly(nDataSet(positivePeak), DataSetList(nData).params, [], [], ylabels{nData}); 
+    setPrint(6*2, 3*3, [PlotDir 'S2CModel/SingleUnitsImagescRasterOnly_' DataSetList(nData).name])
 end
 
 
-% for nData             = 1:length(DataSetList)
-%     load([TempDatDir DataSetList(nData).name '.mat'])
-%     plotMeanActivityImagescWithSortWithCellinfo(nDataSet(DataSetList(nData).ActiveNeuronIndex), DataSetList(nData).params, [], [], ylabels{nData}, lowFiringThres(nData), yAxes_set(nData,:)); 
-%     setPrint(6*4, 3*3, [PlotDir 'ModeledSingleUnitsImagescWithSort/SingleActiveUnitsImagescWithSort_' DataSetList(nData).name], 'tif')
-% end
 
-close all;
+% close all;

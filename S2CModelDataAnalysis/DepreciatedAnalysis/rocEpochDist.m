@@ -5,31 +5,19 @@
 
 addpath('../Func');
 setDir;
-load ([TempDatDir 'DataListModeled.mat']);
+load ([TempDatDir 'DataListS2CModel.mat']);
 
-if ~exist([PlotDir 'ModeledSingleUnitsROC'],'dir')
-    mkdir([PlotDir 'ModeledSingleUnitsROC'])
+if ~exist([PlotDir 'S2CModel'],'dir')
+    mkdir([PlotDir 'S2CModel'])
 end
 
 
-for nData             = 1:length(DataSetList)
+
+for nData             = [3 4]
     load([TempDatDir DataSetList(nData).name '.mat'])
-    plotROCPopAccLines(nDataSet, DataSetList(nData).params); 
-    setPrint(8, 6, [PlotDir 'ModeledSingleUnitsROC/SingleUnitsROC_' DataSetList(nData).name], 'pdf')
+    plotROCPopLines(nDataSet(DataSetList(nData).ActiveNeuronIndex), DataSetList(nData).params); 
+    setPrint(8*3, 6, [PlotDir 'S2CModel/SingleActUnitsROCNoAcc_' DataSetList(nData).name])
 end
-
-% for nData             = 1:length(DataSetList)-1
-%     load([TempDatDir DataSetList(nData).name '.mat'])
-%     plotROCPopAccLines(nDataSet(DataSetList(nData).ActiveNeuronIndex), DataSetList(nData).params); 
-%     setPrint(8, 6, [PlotDir 'ModeledSingleUnitsROC/SingleActUnitsROC_' DataSetList(nData).name], 'pdf')
-% end
-% 
-% 
-% for nData             = 1:length(DataSetList)-1
-%     load([TempDatDir DataSetList(nData).name '.mat'])
-%     plotROCPopLines(nDataSet(DataSetList(nData).ActiveNeuronIndex), DataSetList(nData).params); 
-%     setPrint(8, 6, [PlotDir 'ModeledSingleUnitsROC/SingleActUnitsROCNoAcc_' DataSetList(nData).name], 'pdf')
-% end
 
 
 close all

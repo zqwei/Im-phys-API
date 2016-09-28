@@ -33,7 +33,11 @@ for nData     = 1:length(DataSetList)
     
     
     countMaxId = hist(maxId, 1:numTimeBin*2)/size(actMat,1)*100;
-    disp(sqrt(mean((countMaxId - 1/numTimeBin/2*100).^2)))
+    std(countMaxId([timeTag, timeTag+77]))%/mean(countMaxId([timeTag, timeTag+77]))
+    [bootstat,bootsam] = bootstrp(1000,@std,countMaxId([timeTag, timeTag+77]));
+%     mean(bootstat)
+    std(bootstat)
+%     [h, p] = ttest(bootstat)
     figure;
     hold on;
 %     stairs(timeStep, countMaxId(1:numTimeBin), '-', 'linewid', 1.0, 'color', [0.7 0 0])
@@ -49,7 +53,7 @@ for nData     = 1:length(DataSetList)
     ylabel('% Max peak')
     xlabel('Time')
     hold off
-    setPrint(8, 3, [PlotDir 'S2CModel\SingleUnitsMaxLocationPosNeuron_' DataSetList(nData).name])
+%     setPrint(8, 3, [PlotDir 'S2CModel\SingleUnitsMaxLocationPosNeuron_' DataSetList(nData).name])
 end
 
 close all

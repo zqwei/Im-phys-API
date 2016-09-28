@@ -5,30 +5,25 @@
 
 addpath('../Func');
 setDir;
-load ([TempDatDir 'DataListShuffle.mat']);
+load([TempDatDir 'DataListShuffle.mat']);
 
+figure;
+hold on
+nIndex = 0;
 
-if ~exist([PlotDir 'SingleUnitsContraIpsi'],'dir')
-    mkdir([PlotDir 'SingleUnitsContraIpsi'])
-end
-
-cmap = cbrewer('qual', 'Set1', 3, 'cubic');
-
-for nData = [1 3 4]
+for nData = [1 4 3]
     if nData == 1
         load([TempDatDir DataSetList(nData).name '.mat'])
+        neuronRemoveList = false(length(nDataSet), 1);
     else
         load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
     end
-    
-    depth = [DataSetList(nData).cellinfo.depth];
-    validDepth = depth<700 & depth>100;
-    
-    logPValueEpoch= getLogPValueTscoreSpikeEpoch(nDataSet, DataSetList(nData).params);
-    unitGroup = plotTtestLogPSpikeEpoch (logPValueEpoch);
+        
+%     logPValueEpoch= getLogPValueTscoreSpikeEpoch(nDataSet, DataSetList(nData).params);
+%     unitGroup = plotTtestLogPSpikeEpoch (logPValueEpoch);
+    unitGroup = getLogPValueTscoreSpikeTime(nDataSet, DataSetList(nData).params); 
     params      = DataSetList(nData).params;
     contraIndex = false(length(nDataSet), 1);
-    cellType    = [DataSetList(nData).cellinfo.cellType]';
     yesActMat   = nan(length(nDataSet), length(params.timeSeries));
     noActMat    = nan(length(nDataSet), length(params.timeSeries));
     timePoints  = timePointTrialPeriod(params.polein, params.poleout, params.timeSeries);
@@ -41,119 +36,58 @@ for nData = [1 3 4]
         contraIndex(nUnit)   = sum(noTrial(timePoints(2):end))<sum(yesTrial(timePoints(2):end));
     end
     
-%     sigma                         = 0.05 / params.binsize; % 200 ms
-%     filterLength                  = 11;
-%     filterStep                    = linspace(-filterLength / 2, filterLength / 2, filterLength);
-%     filterInUse                   = exp(-filterStep .^ 2 / (2 * sigma ^ 2));
-%     filterInUse                   = filterInUse / sum (filterInUse); 
-%     
-%     yesActMat                     = getGaussianPSTH (filterInUse, yesActMat, 2);
-%     noActMat                      = getGaussianPSTH (filterInUse, noActMat, 2);
+    nIndex = nIndex + 1;
+    [~, ~, anmIndex] = unique(cell2mat({DataSetList(nData).cellinfo.anmName}'), 'rows');
+    anmIndex  = anmIndex(~neuronRemoveList);
+    if nData == 1
+        anmSpkIndex = anmIndex;
+    end
+    contraCount = grpstats(unitGroup~=0 & contraIndex, anmIndex, 'sum');
+    ipsiCount = grpstats(unitGroup~=0 & ~contraIndex, anmIndex, 'sum');
     
-    otherIndex = unitGroup~=0 & cellType == 1 & validDepth';
+    bar(nIndex, sum(contraCount)/(sum(contraCount)+sum(ipsiCount)), ...
+        'FaceColor', [0.5 0.5 0.5], 'EdgeColor', 'none');
+    errorbar(nIndex, sum(contraCount)/(sum(contraCount)+sum(ipsiCount)), ...
+        sem(contraCount./(contraCount+ipsiCount)), 'k')
     
-    figure;
-    subplot(1, 2, 1)
-    hold on
-    shadedErrorBar(params.timeSeries, mean(noActMat(contraIndex & otherIndex,:)), sem(noActMat(contraIndex& otherIndex,:))/2,'-r')
-    shadedErrorBar(params.timeSeries, mean(yesActMat(contraIndex& otherIndex,:)), sem(yesActMat(contraIndex& otherIndex,:))/2,'-b')
-    ylim([2, 10])
-    title('contra neuron only')
-    gridxy ([params.polein, params.poleout, 0],[], 'Color','k','Linestyle','--','linewid', 1.0)
-    xlim([params.timeSeries(2) params.timeSeries(end-1)])
-    ylim([2, 10])
-    xlabel('Time (ms)')
-    box off
-    ylabel('Mean activity')
-    
-    baseline1 = mean(mean(noActMat(contraIndex, 1:8)));
-    baseline2 = mean(mean(yesActMat(contraIndex, 1:8)));
-    baseline  = (baseline1 + baseline2)/2;
-    
-    disp(max(mean(noActMat(contraIndex,:))) - baseline)
-    disp(min(mean(yesActMat(contraIndex,:))) - baseline)
-
-    subplot(1, 2, 2)
-    hold on
-    shadedErrorBar(params.timeSeries, mean(noActMat(~contraIndex& otherIndex,:)), sem(noActMat(~contraIndex& otherIndex,:))/2,'-r')
-    shadedErrorBar(params.timeSeries, mean(yesActMat(~contraIndex& otherIndex,:)), sem(yesActMat(~contraIndex& otherIndex,:))/2,'-b')
-    ylim([2, 10])
-    title('ipsi neuron only')
-    gridxy ([params.polein, params.poleout, 0],[], 'Color','k','Linestyle','--','linewid', 1.0)
-    xlim([params.timeSeries(2) params.timeSeries(end-1)])
-    ylim([2, 10])
-    xlabel('Time (ms)')
-    box off
-    ylabel('Mean activity')
-    
-    baseline1 = mean(mean(noActMat(~contraIndex, 1:8)));
-    baseline2 = mean(mean(yesActMat(~contraIndex, 1:8)));
-    baseline  = (baseline1 + baseline2)/2;
-    
-    disp(min(mean(noActMat(~contraIndex,:))) - baseline)
-    disp(max(mean(yesActMat(~contraIndex,:))) - baseline)
-    
-    setPrint(8*2, 6, [PlotDir 'SingleUnitsContraIpsi\' DataSetList(nData).name])
+    % [p, h] = ttest(unitGroup~=0 & ~contraIndex, 0.5)
     
 end
-% figure;
-% hold on
-% shadedErrorBar(params.timeSeries, mean(noActMat(contraIndex & cellType == 1 & unitGroup>0,:)), sem(noActMat(contraIndex & cellType == 1 & unitGroup>0,:)),'-b')
-% shadedErrorBar(params.timeSeries, mean(yesActMat(contraIndex & cellType == 1 & unitGroup>0,:)), sem(yesActMat(contraIndex & cellType == 1 & unitGroup>0,:)),'-r')
-% title('contra selective pyr neuron')
-% 
-% figure;
-% hold on
-% shadedErrorBar(params.timeSeries, mean(noActMat(~contraIndex & cellType == 1 & unitGroup>0,:)), sem(noActMat(~contraIndex & cellType == 1 & unitGroup>0,:)),'-b')
-% shadedErrorBar(params.timeSeries, mean(yesActMat(~contraIndex & cellType == 1 & unitGroup>0,:)), sem(yesActMat(~contraIndex & cellType == 1 & unitGroup>0,:)),'-r')
-% title('ipsi selective pyr neuron')
-% 
-% figure;
-% hold on
-% shadedErrorBar(params.timeSeries, mean(noActMat(contraIndex & cellType == 0 & unitGroup>0,:)), sem(noActMat(contraIndex & cellType == 0 & unitGroup>0,:)),'-b')
-% shadedErrorBar(params.timeSeries, mean(yesActMat(contraIndex & cellType == 0 & unitGroup>0,:)), sem(yesActMat(contraIndex & cellType == 0 & unitGroup>0,:)),'-r')
-% title('contra selective FS neuron')
-% 
-% figure;
-% hold on
-% shadedErrorBar(params.timeSeries, mean(noActMat(~contraIndex & cellType == 0 & unitGroup>0,:)), sem(noActMat(~contraIndex & cellType == 0 & unitGroup>0,:)),'-b')
-% shadedErrorBar(params.timeSeries, mean(yesActMat(~contraIndex & cellType == 0 & unitGroup>0,:)), sem(yesActMat(~contraIndex & cellType == 0 & unitGroup>0,:)),'-r')
-% title('ipsi selective FS neuron')
-% 
-% figure;
-% hold on
-% shadedErrorBar(params.timeSeries, mean(noActMat(contraIndex & unitGroup>0,:)), sem(noActMat(contraIndex & unitGroup>0,:)),'-b')
-% shadedErrorBar(params.timeSeries, mean(yesActMat(contraIndex & unitGroup>0,:)), sem(yesActMat(contraIndex & unitGroup>0,:)),'-r')
-% title('contra selective neuron')
-% 
-% figure;
-% hold on
-% shadedErrorBar(params.timeSeries, mean(noActMat(~contraIndex & unitGroup>0,:)), sem(noActMat(~contraIndex & unitGroup>0,:)),'-b')
-% shadedErrorBar(params.timeSeries, mean(yesActMat(~contraIndex & unitGroup>0,:)), sem(yesActMat(~contraIndex & unitGroup>0,:)),'-r')
-% title('ipsi selective neuron')
 
+load([TempDatDir 'DataListS2CModel.mat']);
 
+for nData = [3 4]
+    load([TempDatDir DataSetList(nData).name '.mat'])
+        
+%     logPValueEpoch= getLogPValueTscoreSpikeEpoch(nDataSet, DataSetList(nData).params);
+%     unitGroup = plotTtestLogPSpikeEpoch (logPValueEpoch);
+    unitGroup = getLogPValueTscoreSpikeTime(nDataSet, DataSetList(nData).params); 
+    params      = DataSetList(nData).params;
+    contraIndex = false(length(nDataSet), 1);
+    yesActMat   = nan(length(nDataSet), length(params.timeSeries));
+    noActMat    = nan(length(nDataSet), length(params.timeSeries));
+    timePoints  = timePointTrialPeriod(params.polein, params.poleout, params.timeSeries);
 
-% figure;
-% hold on
-% shadedErrorBar(params.timeSeries, mean(noActMat), sem(noActMat),'-b')
-% shadedErrorBar(params.timeSeries, mean(yesActMat), sem(yesActMat),'-r')
-% title('all neuron')
-% 
-% figure;
-% hold on
-% shadedErrorBar(params.timeSeries, mean(noActMat(unitGroup>0,:)), sem(noActMat(unitGroup>0,:)),'-b')
-% shadedErrorBar(params.timeSeries, mean(yesActMat(unitGroup>0,:)), sem(yesActMat(unitGroup>0,:)),'-r')
-% title('selective neuron only')
-% 
-% figure;
-% hold on
-% shadedErrorBar(params.timeSeries, mean(noActMat(cellType == 0,:)), sem(noActMat(cellType == 0,:)),'-b')
-% shadedErrorBar(params.timeSeries, mean(yesActMat(cellType == 0,:)), sem(yesActMat(cellType == 0,:)),'-r')
-% title('FS neuron only')
-% 
-% figure;
-% hold on
-% shadedErrorBar(params.timeSeries, mean(noActMat(cellType == 1,:)), sem(noActMat(cellType == 1,:)),'-b')
-% shadedErrorBar(params.timeSeries, mean(yesActMat(cellType == 1,:)), sem(yesActMat(cellType == 1,:)),'-r')
-% title('Pyr neuron only')
+    for nUnit   = 1:length(nDataSet)
+        yesTrial = mean(nDataSet(nUnit).unit_yes_trial);
+        noTrial  = mean(nDataSet(nUnit).unit_no_trial);
+        yesActMat(nUnit, :)  = yesTrial;
+        noActMat(nUnit, :)   = noTrial;
+        contraIndex(nUnit)   = sum(noTrial(timePoints(2):timePoints(4)))<sum(yesTrial(timePoints(2):timePoints(4)));
+    end
+    
+    nIndex = nIndex + 1;
+    contraCount = grpstats(unitGroup~=0 & contraIndex, anmSpkIndex, 'sum');
+    ipsiCount = grpstats(unitGroup~=0 & ~contraIndex, anmSpkIndex, 'sum');
+    
+    bar(nIndex, sum(contraCount)/(sum(contraCount)+sum(ipsiCount)), ...
+        'FaceColor', [0.5 0.5 0.5], 'EdgeColor', 'none');
+    errorbar(nIndex, sum(contraCount)/(sum(contraCount)+sum(ipsiCount)), ...
+        sem(contraCount./(contraCount+ipsiCount))/5, 'k')
+    
+end
+
+set(gca, 'TickDir', 'out')
+ylim([0.4 0.64])
+xlim([0.5 nIndex+0.5])
+setPrint(8, 10, [PlotDir 'SingleUnitsContraIpsi\Faction'])

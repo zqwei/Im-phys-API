@@ -5,30 +5,30 @@ addpath('../Func');
 setDir;
 load ([TempDatDir 'DataListShuffle.mat']);
 
-% maxNumOutlier = 10;
-% 
-% 
-% for nData             = [3 4]
-%     load([TempDatDir DataSetList(nData).name '.mat'])
-%     for nUnit = 1:length(nDataSet)
-%         nCellDFF = nDataSet(nUnit).unit_yes_trial;
-%         X = nCellDFF;
-%         for nTime = 1:size(nCellDFF, 2)
-%             X(:, nTime) = thomspon_tau(nCellDFF(:, nTime), maxNumOutlier);
-%         end
-%         nDataSet(nUnit).unit_yes_trial_removeoutlier = X;
-%         
-%         nCellDFF = nDataSet(nUnit).unit_no_trial;
-%         X = nCellDFF;
-%         for nTime = 1:size(nCellDFF, 2)
-%             X(:, nTime) = thomspon_tau(nCellDFF(:, nTime), maxNumOutlier);
-%         end   
-%         nDataSet(nUnit).unit_no_trial_removeoutlier = X;
-%     end
-%     
-%     save([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet')
-%    
-% end
+maxNumOutlier = 10;
+
+
+for nData             = [3 4]
+    load([TempDatDir DataSetList(nData).name '.mat'])
+    for nUnit = 1:length(nDataSet)
+        nCellDFF = nDataSet(nUnit).unit_yes_trial;
+        X = nCellDFF;
+        for nTime = 1:size(nCellDFF, 2)
+            X(:, nTime) = thomspon_tau(nCellDFF(:, nTime), maxNumOutlier);
+        end
+        nDataSet(nUnit).unit_yes_trial_removeoutlier = X;
+        
+        nCellDFF = nDataSet(nUnit).unit_no_trial;
+        X = nCellDFF;
+        for nTime = 1:size(nCellDFF, 2)
+            X(:, nTime) = thomspon_tau(nCellDFF(:, nTime), maxNumOutlier);
+        end   
+        nDataSet(nUnit).unit_no_trial_removeoutlier = X;
+    end
+    
+    save([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet')
+   
+end
 
 %%
 % remove those with above thres

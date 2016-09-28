@@ -5,7 +5,7 @@ function exampleS2CNeuron_v2
     
     load ([TempDatDir 'DataListShuffle.mat']);
     nData = 1; % plot raster and psth
-    load([TempDatDir DataSetList(nData).name '.mat'])
+    load([TempDatDir DataSetList(nData).name '_old.mat'])
     spikeDataSet = nDataSet;   
     params = DataSetList(nData).params;
 %     load ([TempDatDir 'DataListS2CModel.mat']);    
@@ -63,7 +63,7 @@ function exampleS2CNeuron_v2
         plotPSTH(nCellDataSet, params, 'DF/F');        
     end
     setPrint(8*2, 6*length(dynamicalNeuronIndex'), [PlotDir 'SingleUnitsImagescWithSort/SingleUnitsTscoreExampleNeuronS2C_Linear'])
-    close all
+%     close all
 
 end
 
@@ -127,11 +127,11 @@ end
 
 
 function plotPSTH(spikeDataSet, params, ylabelName)
-%     sigma                         = 0.15 / params.binsize; % 200 ms
-%     filterLength                  = 11;
-%     filterStep                    = linspace(-filterLength / 2, filterLength / 2, filterLength);
-%     filterInUse                   = exp(-filterStep .^ 2 / (2 * sigma ^ 2));
-%     filterInUse                   = filterInUse / sum (filterInUse); 
+    sigma                         = 0.10 / params.binsize; % 200 ms
+    filterLength                  = 11;
+    filterStep                    = linspace(-filterLength / 2, filterLength / 2, filterLength);
+    filterInUse                   = exp(-filterStep .^ 2 / (2 * sigma ^ 2));
+    filterInUse                   = filterInUse / sum (filterInUse); 
 
     color_index    = [0 0 0.7; 0.7  0 0];
     hold on;
@@ -140,11 +140,15 @@ function plotPSTH(spikeDataSet, params, ylabelName)
     shadedErrorBar(params.timeSeries, mean(nUnitData, 1),...
         std(nUnitData, 1)/sqrt(size(nUnitData, 1)),...
         {'k-', 'linewid', 1.0, 'color', color_index(1, :)}, 0.5);
+    x = mean(nUnitData, 1);
     [max_v, maxid]  = max(mean(nUnitData, 1));
-    maxid
     plot(params.timeSeries(maxid), max_v, 'go');
-%     nUnitData        = spikeDataSet.unit_no_trial;
-%     nUnitData        = getGaussianPSTH (filterInUse, nUnitData, 2);
+    nUnitData        = spikeDataSet.unit_yes_trial;
+    nUnitData        = getGaussianPSTH (filterInUse, nUnitData, 2);
+    plot(params.timeSeries, mean(nUnitData, 1), '-k');
+    maxid
+    y = mean(nUnitData, 1);
+    x(maxid)/y(maxid)
 %     shadedErrorBar(params.timeSeries, mean(nUnitData, 1),...
 %         std(nUnitData, 1)/sqrt(size(nUnitData, 1)),...
 %         {'k-', 'linewid', 1.0, 'color', color_index(2, :)}, 0.5);

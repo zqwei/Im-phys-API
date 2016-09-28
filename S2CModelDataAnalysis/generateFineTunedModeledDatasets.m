@@ -13,16 +13,14 @@
 
 addpath('../Func');
 setDir;
-load('FineTunedNLParams.mat');
-load ([TempDatDir 'DataListS2CModel.mat']);
+load([TempDatDir 'FineTunedNLParams.mat'], 'nlParams');
+load([TempDatDir 'DataListS2CModel.mat']);
 
 % nonlinear function
-% g = @(p,x) p(1) + p(2)./ (1 + (p(3)./x).^p(4));
-g = @(p,x) p(1) + p(2)./ (1 + 10.^((p(3)-x)*p(4)));
+g = @(p,x) p(1) + p(2)./ (1 + exp((p(3)-x)*p(4)));
 
-numTrial = 50;
-
-ext_noise = 0.15;
+int_noise = [2.0, 2.0];
+ext_noise = [0.15, 0.45];
 
 for nData = 1:2
     
@@ -31,17 +29,22 @@ for nData = 1:2
     
     load([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet');
     for nUnit  = 1:length(nDataSet)
-        param  = nlParams(nUnit, :);
-        yesNoise = randn(numTrial, 77)*ext_noise; %squeeze(noiseRates{nData}(nUnit, 1, :, :))';
-        noNoise  = randn(numTrial, 77)*ext_noise; %squeeze(noiseRates{nData}(nUnit, 2, :, :))';
-        nDataSet(nUnit).unit_yes_trial = g(param, nDataSet(nUnit).unit_yes_trial_linear) + ...
-                                            yesNoise(randpermLargeK(numTrial, size(nDataSet(nUnit).unit_yes_trial, 1)), :);
-        nDataSet(nUnit).unit_no_trial  = g(param, nDataSet(nUnit).unit_no_trial_linear) + ...
-                                            noNoise(randpermLargeK(numTrial, size(nDataSet(nUnit).unit_no_trial, 1)), :);
-        nDataSet(nUnit).unit_yes_error = g(param, nDataSet(nUnit).unit_yes_error_linear) + ...
-                                            yesNoise(randpermLargeK(numTrial, size(nDataSet(nUnit).unit_yes_error, 1)), :);
-        nDataSet(nUnit).unit_no_error  = g(param, nDataSet(nUnit).unit_no_error_linear) + ...
-                                            noNoise(randpermLargeK(numTrial, size(nDataSet(nUnit).unit_no_error, 1)), :);
+        param  = squeeze(nlParams(2, nUnit, :));
+        yesNoise = randn(size(nDataSet(nUnit).unit_yes_trial))*ext_noise(nData);
+        noNoise  = randn(size(nDataSet(nUnit).unit_no_trial))*ext_noise(nData);
+        yesIntNoise = randn(size(nDataSet(nUnit).unit_yes_trial))*int_noise(nData);
+        noIntNoise  = randn(size(nDataSet(nUnit).unit_no_trial))*int_noise(nData);
+        unit_yes_trial_linear = nDataSet(nUnit).unit_yes_trial_linear + yesIntNoise;
+        unit_no_trial_linear  = nDataSet(nUnit).unit_no_trial_linear + noIntNoise;
+        unit_yes_trial_linear(unit_yes_trial_linear<0) = 0;
+        unit_no_trial_linear(unit_no_trial_linear<0)   = 0;
+        
+        nDataSet(nUnit).unit_yes_trial = g(param, unit_yes_trial_linear) + yesIntNoise;
+        nDataSet(nUnit).unit_no_trial  = g(param, unit_no_trial_linear) + noIntNoise;
+%         nDataSet(nUnit).unit_yes_error = g(param, nDataSet(nUnit).unit_yes_error_linear) + ...
+%                                             yesNoise(randpermLargeK(numTrial, size(nDataSet(nUnit).unit_yes_error, 1)), :);
+%         nDataSet(nUnit).unit_no_error  = g(param, nDataSet(nUnit).unit_no_error_linear) + ...
+%                                             noNoise(randpermLargeK(numTrial, size(nDataSet(nUnit).unit_no_error, 1)), :);
     end
     save([TempDatDir DataSetList(2+nData).name '.mat'], 'nDataSet');     
 end

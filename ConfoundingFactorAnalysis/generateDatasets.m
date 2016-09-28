@@ -5,6 +5,7 @@
 
 addpath('../Func');
 setDir;
+load([TempDatDir 'ALM_compiled_all_data.mat'],'cellType_all')
 
 minNumTrialToAnalysis  = 20;
 

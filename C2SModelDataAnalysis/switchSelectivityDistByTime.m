@@ -26,5 +26,5 @@ for nData      = 1:length(DataSetList)
     pie(sizeGroup)
     colormap(cmap)
     set(gca, 'TickDir', 'out')
-    setPrint(8, 6, [PlotDir 'C2SModel/SingleUnitsTscoreTime_' DataSetList(nData).name '_withOLRemoval'])
+    setPrint(8, 6, [PlotDir 'SingleUnitsTscore/SingleUnitsTscoreTime_' DataSetList(nData).name '_withOLRemoval'])
 end

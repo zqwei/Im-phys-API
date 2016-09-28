@@ -21,19 +21,23 @@ load([TempDatDir 'Shuffle_Spikes_boxcar_200ms.mat'])
 
 smoothDataSet = nDataSet;
 
-load([TempDatDir DataSetList(nData).name '.mat'])
-depth = [DataSetList(nData).cellinfo.depth];
-validDepth = depth<700 & depth>100;
+load([TempDatDir DataSetList(nData).name '_old.mat'])
+depth = [nDataSet.depth_in_um];
+validDepth = depth<800 & depth>100;
 
+% selective defined as neuron shows selectivity for any of sample, delay,
+% response epoch.
 logPValueEpoch= getLogPValueTscoreSpikeEpoch(nDataSet, DataSetList(nData).params);
-unitGroup = plotTtestLogPSpikeEpoch (logPValueEpoch);
+unitGroup   = plotTtestLogPSpikeEpoch (logPValueEpoch)'; 
 params      = DataSetList(nData).params;
 contraIndex = false(length(nDataSet), 1);
-cellType    = [DataSetList(nData).cellinfo.cellType]';
+cellType    = [nDataSet.cell_type];
 yesActMat   = nan(length(nDataSet), length(smoothedparams.timeSeries));
 noActMat    = nan(length(nDataSet), length(smoothedparams.timeSeries));
 timePoints  = timePointTrialPeriod(params.polein, params.poleout, params.timeSeries);
 
+% contra vs ipsi as neuron firing difference summed across all thress
+% epochs
 for nUnit   = 1:length(nDataSet)
     yesTrial = mean(nDataSet(nUnit).unit_yes_trial);
     noTrial  = mean(nDataSet(nUnit).unit_no_trial);
@@ -42,8 +46,8 @@ for nUnit   = 1:length(nDataSet)
     contraIndex(nUnit)   = sum(noTrial(timePoints(2):end))<sum(yesTrial(timePoints(2):end));
 end
 
-cellType  = cellType_all(usedUnits==1,1);
-otherIndex = unitGroup~=0 & cellType == 1; % & validDepth';
+otherIndex = unitGroup~=0 & cellType == 1 & validDepth;
+otherIndex = otherIndex';
     
 figure;
 subplot(1, 2, 1)
@@ -58,13 +62,14 @@ ylim([2, 10])
 xlabel('Time (ms)')
 box off
 ylabel('Mean activity')
+set(gca, 'TickDir', 'out')
 
-% baseline1 = mean(mean(noActMat(contraIndex, 1:8)));
-% baseline2 = mean(mean(yesActMat(contraIndex, 1:8)));
-% baseline  = (baseline1 + baseline2)/2;
-% 
-% disp(max(mean(noActMat(contraIndex,:))) - baseline)
-% disp(min(mean(yesActMat(contraIndex,:))) - baseline)
+actPre = mean([yesActMat(contraIndex& otherIndex,1:100), noActMat(contraIndex & otherIndex,1:100)], 2);
+actYes = mean(yesActMat(contraIndex& otherIndex,435:550), 2);
+actNo = mean(noActMat(contraIndex& otherIndex,435:550), 2);
+
+[~, p] = ttest2(actPre, actYes, 'tail', 'left');
+[~, p] = ttest(actPre, actNo, 'tail', 'right');
 
 subplot(1, 2, 2)
 hold on
@@ -78,12 +83,14 @@ ylim([2, 10])
 xlabel('Time (ms)')
 box off
 ylabel('Mean activity')
+set(gca, 'TickDir', 'out')
 
-% baseline1 = mean(mean(noActMat(~contraIndex, 1:8)));
-% baseline2 = mean(mean(yesActMat(~contraIndex, 1:8)));
-% baseline  = (baseline1 + baseline2)/2;
-% 
-% disp(min(mean(noActMat(~contraIndex,:))) - baseline)
-% disp(max(mean(yesActMat(~contraIndex,:))) - baseline)
+
+actPre = mean([yesActMat(~contraIndex& otherIndex,1:100), noActMat(~contraIndex & otherIndex,1:100)], 2);
+actYes = mean(yesActMat(~contraIndex& otherIndex,435:550), 2);
+actNo = mean(noActMat(~contraIndex& otherIndex,435:550), 2);
+
+[~, p] = ttest2(actPre, actYes, 'tail', 'right');
+[~, p] = ttest(actPre, actNo, 'tail', 'left');
 
 setPrint(8*2, 6, [PlotDir 'SingleUnitsContraIpsi\' DataSetList(nData).name])

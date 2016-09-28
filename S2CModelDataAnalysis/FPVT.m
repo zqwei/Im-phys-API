@@ -12,10 +12,6 @@ filterStep                    = linspace(-filterLength / 2, filterLength / 2, fi
 filterInUse                   = exp(-filterStep .^ 2 / (2 * sigma ^ 2));
 filterInUse                   = filterInUse / sum (filterInUse);
 
-if ~exist([PlotDir 'S2CModel'],'dir')
-    mkdir([PlotDir 'S2CModel'])
-end
-
 
 for nData                     = [3 4]
     load([TempDatDir DataSetList(nData).name '.mat']);
@@ -67,11 +63,9 @@ for nData                     = [3 4]
     xlabel('Time (s)')
     ylabel('Neuron Index')
     box off;
-    setPrint(8, 6, [PlotDir 'S2CModel/SingleUnitsZScore_' DataSetList(nData).name], 'svg')
+    set(gca, 'TickDir', 'out')
+    setPrint(8, 6, [PlotDir 'SingleUnitsFPVT/SingleUnitsZScore_' DataSetList(nData).name])
 end
-
-
-setColorbar(french(128,2), -5, 5, '-log(P)', [PlotDir 'S2CModel/SingleUnitsZScore_'])
 
 
 close all

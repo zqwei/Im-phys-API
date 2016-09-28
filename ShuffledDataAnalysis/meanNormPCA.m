@@ -7,7 +7,7 @@ setDir;
 load ([TempDatDir 'DataListShuffle.mat']);
 
 combinedParams = {{1}, {2}, {[1 2]}};
-margNames      = {'Stim', 'Time', 'Inter'};
+margNames      = {'Stim', 'Time', 'Other'};
 numTrials      = 100;
 numFold        = 100;
 if ~exist([PlotDir 'CollectedUnitsPCA'],'dir')
@@ -15,7 +15,7 @@ if ~exist([PlotDir 'CollectedUnitsPCA'],'dir')
 end
 
 
-numComps       = 5;
+numComps       = 10;
 cmap = [         0    0.4470    0.7410
     0.8500    0.3250    0.0980
     0.9290    0.6940    0.1250
@@ -26,7 +26,12 @@ cmap = [         0    0.4470    0.7410
 
 
 for nData              = [1 3 4]
-    load([TempDatDir DataSetList(nData).name '.mat']);
+    if nData   == 1
+        load([TempDatDir DataSetList(nData).name '.mat'])
+        neuronRemoveList = false(length(nDataSet), 1);
+    else
+        load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
+    end
     evMat              = zeros(numFold, length(combinedParams), numComps);
     firingRates        = generateDPCAData(nDataSet, numTrials);
     firingRatesAverage = nanmean(firingRates, ndims(firingRates));
@@ -44,7 +49,7 @@ for nData              = [1 3 4]
     end
     
     figure;
-    bar(1:numComps, PCAmargVar(:, 1:numComps)','stacked', 'edgecolor', 'k')
+    bar(1:numComps, PCAmargVar(:, 1:numComps)','stacked', 'edgecolor', 'none')
     box off
     xlim([0 numComps+0.5])
     ylim([0 0.2])

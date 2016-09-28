@@ -26,19 +26,20 @@ for nData              = [3 4]
     for nPlot           = 1:numComps
         subplot(1, numComps, nPlot)
         hold on
-        plot(DataSetList(nData).params.timeSeries, squeeze(pcaFiringRatesAverage(nPlot, 1, :)), '-r', 'linewid', 2);
-        plot(DataSetList(nData).params.timeSeries, squeeze(pcaFiringRatesAverage(nPlot, 2, :)), '-b', 'linewid', 2);
+        plot(DataSetList(nData).params.timeSeries, squeeze(pcaFiringRatesAverage(nPlot, 1, :)), '-b', 'linewid', 1);
+        plot(DataSetList(nData).params.timeSeries, squeeze(pcaFiringRatesAverage(nPlot, 2, :)), '-r', 'linewid', 1);
         gridxy ([DataSetList(nData).params.polein, DataSetList(nData).params.poleout, 0],[], 'Color','k','Linestyle','--','linewid', 0.5)
         hold off
         box off
         xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
         xlabel('Time (s)')
-        ylabel(['PC' num2str(nPlot) ' score'])  
+        ylabel(['PC' num2str(nPlot) ' score']) 
+        set(gca, 'TickDir', 'out')
     end
     
-    setPrint(8*3, 6, [PlotDir 'S2CModel/CollectedUnitsPCATrace_' DataSetList(nData).name])
+%     setPrint(8*3, 6, [PlotDir 'CollectedUnitsPCA/CollectedUnitsPCATrace_' DataSetList(nData).name])
     
 end
 
 
-close all
+% close all

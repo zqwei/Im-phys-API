@@ -9,33 +9,23 @@ addpath('../Func');
 setDir;
 load ([TempDatDir 'DataListS2CModel.mat']);
 
-
-if ~exist([PlotDir 'S2CModel'],'dir')
-    mkdir([PlotDir 'S2CModel'])
-end
-
-% cmap = cbrewer('qual', 'Set1', 3, 'cubic');
 cmap = [0.8000    0.8000    0.8000;
        1.0000    0.6000         0;
        0    0.8000         0];
 
-for nData      = [1 2 3 4]
+for nData      = [3 4]
     load([TempDatDir DataSetList(nData).name '.mat'])    
     unitGroup = getLogPValueTscoreSpikeTime(nDataSet, DataSetList(nData).params);       
-    for nUnit = 1:length(nDataSet)
-        nDataSet(nUnit).selectivity = unitGroup(nUnit); %#ok<SAGROW>
-    end
-    save([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet')
     sizeGroup = histcounts(unitGroup, 0:3);
-    disp([sizeGroup(2), sizeGroup(3)])
+    % disp([sizeGroup(2), sizeGroup(3)])
     figure('Visible', 'off');
     groupNames      = {'Non.', 'Homo.', 'Dynamical'};
     pie(sizeGroup)
     colormap(cmap)
     set(gca, 'TickDir', 'out')
-    setPrint(8, 6, [PlotDir 'S2CModel/SingleUnitsTscoreTime_' DataSetList(nData).name])
+    setPrint(8, 6, [PlotDir 'SingleUnitsTscore/SingleUnitsTscoreTime_' DataSetList(nData).name])
 end
-
+close all
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -47,9 +37,7 @@ end
 
 addpath('../Func');
 setDir;
-load ([TempDatDir 'DataListShuffle.mat']);
-nData          = 1;
-load([TempDatDir DataSetList(nData).name '.mat'])
+load([TempDatDir 'Shuffle_Spikes.mat'])
 unitSpikeGroup = getLogPValueTscoreSpikeTime(nDataSet, DataSetList(nData).params);
 spikeDataSet    = nDataSet;
 sigma                         = 0.15 / DataSetList(1).params.binsize; % 200 ms
@@ -57,16 +45,11 @@ filterLength                  = 10;
 filterStep                    = linspace(-filterLength / 2, filterLength / 2, filterLength);
 filterInUse                   = exp(-filterStep .^ 2 / (2 * sigma ^ 2));
 filterInUse                   = filterInUse / sum (filterInUse);
-
 load ([TempDatDir 'DataListS2CModel.mat']);
-if ~exist([PlotDir 'S2CModel'],'dir')
-    mkdir([PlotDir 'S2CModel'])
-end
-
 
 % cmap = cbrewer('qual', 'Set1', 3, 'cubic');
 
-for nData      = [1 2 3 4]
+for nData      = [3 4]
     load([TempDatDir DataSetList(nData).name '.mat'])
     unitGroup = getLogPValueTscoreSpikeTime(nDataSet, DataSetList(nData).params);  
     
@@ -85,16 +68,17 @@ for nData      = [1 2 3 4]
     figure;
     for nPlot = 1:3
         subplot(1, 3, nPlot)
+        hold on
         bar(1:3, groupPerCounts(nPlot, :), 'edgecolor', 'none');
         ylim([0 1])
         box off
         xlabel('cell type')
         ylabel('frac. cell')
-%         colormap(cmap)
+        colormap(cmap)
         xlim([0.5 3.5])
         set(gca, 'TickDir', 'out')
     end
-    setPrint(8*3, 6, [PlotDir 'S2CModel/SingleUnitsTscoreTimeTrans_' DataSetList(nData).name])
+    setPrint(8*3, 6, [PlotDir 'SingleUnitsTscore/SingleUnitsTscoreTimeTrans_' DataSetList(nData).name])
         
 end
 

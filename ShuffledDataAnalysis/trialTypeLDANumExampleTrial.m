@@ -9,7 +9,7 @@
 addpath('../Func');
 setDir;
 
-numFold             = 30;
+numFold             = 100;
 numTrials           = 500;
 numTestTrials       = 200;
 numTrainingTrials   = numTrials - numTestTrials;
@@ -25,9 +25,9 @@ if ~exist([PlotDir '/CollectedUnitsDecodability'],'dir')
     mkdir([PlotDir '/CollectedUnitsDecodability'])
 end
 
-stepSize            = [50 100 150];%[5 10 15 50 100 150];
+stepSize            = [50];%[5 10 15 50 100 150];
 
-for nData             = 1%[1 3 4]
+for nData             = 4%[1 3 4]
     if nData == 1
         load([TempDatDir DataSetList(nData).name '.mat'])
         neuronRemoveList     = false(length(nDataSet),1);

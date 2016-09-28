@@ -11,10 +11,6 @@ margNames      = {'Stim', 'Time', 'Inter'};
 numTrials      = 100;
 numFold        = 100;
 
-if ~exist([PlotDir 'S2CModel'],'dir')
-    mkdir([PlotDir 'S2CModel'])
-end
-
 
 numComps       = 10;
 cmap = [         0    0.4470    0.7410
@@ -25,7 +21,8 @@ cmap = [         0    0.4470    0.7410
     0.3010    0.7450    0.9330
     0.6350    0.0780    0.1840];
 
-
+% [1 2] before refit
+% [3 4] after refit
 for nData              = [3 4]
     load([TempDatDir DataSetList(nData).name '.mat']);
     evMat              = zeros(numFold, length(combinedParams), numComps);
@@ -43,7 +40,10 @@ for nData              = [3 4]
     end
     
     figure;
-    bar(1:numComps, PCAmargVar(:, 1:numComps)','stacked')
+    bar(1:numComps, PCAmargVar(:, 1:numComps)','stacked','edgecolor','none')
+%     PCAmargVar(1, 1:numComps)'./sum(PCAmargVar(:, 1:numComps)', 2)
+%     PCAmargVar(2, 1:numComps)'./sum(PCAmargVar(:, 1:numComps)', 2)
+    1 - PCAmargVar(2, 1:numComps)'./sum(PCAmargVar(:, 1:numComps)', 2)
     box off
     xlim([0 numComps+0.5])
     ylim([0 0.5])
@@ -52,9 +52,9 @@ for nData              = [3 4]
     colormap(cmap(1:3, :))
     set(gca, 'xTick', 0:5:10)
     set(gca, 'TickDir', 'out')
-    setPrint(8, 6, [PlotDir 'S2CModel/CollectedUnitsPCA_' DataSetList(nData).name])
+%     setPrint(8, 6, [PlotDir 'CollectedUnitsPCA/CollectedUnitsPCA_' DataSetList(nData).name])
     
 end
 
 
-close all
+% close all

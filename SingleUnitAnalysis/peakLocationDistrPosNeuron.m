@@ -7,7 +7,11 @@ if ~exist([PlotDir 'SingleUnitsPeakLocation'],'dir')
 end
 
 for nData     = [1 3 4]
-    load([TempDatDir DataSetList(nData).name '.mat'])
+    if nData   == 1
+        load([TempDatDir DataSetList(nData).name '.mat'])
+    else
+        load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
+    end
     numTimeBin          = size(nDataSet(1).unit_yes_trial, 2);
     yesProfileMatrix    = nan(length(nDataSet), numTimeBin);
     noProfileMatrix     = yesProfileMatrix;
@@ -30,13 +34,19 @@ for nData     = [1 3 4]
     [~, maxId]    = max(actMat, [], 2);
 
     timeStep  = DataSetList(nData).params.timeSeries;
-    numTime   = length(timeStep);
+    timeTag   = 8:60; % sample to response
+    numTime   = length(timeTag);
     polein    = DataSetList(nData).params.polein;
     poleout   = DataSetList(nData).params.poleout;
     
-    
     countMaxId = hist(maxId, 1:numTimeBin*2)/size(actMat,1)*100;
-    disp(sqrt(mean((countMaxId - 1/numTimeBin/2*100).^2)))
+    % mean(countMaxId([8:77, 95:end]))
+    % disp(sqrt(mean((countMaxId([8:77, 95:end]) - 1/numTimeBin/2*100).^2)))
+    std(countMaxId([timeTag, timeTag+77]))%/mean(countMaxId([timeTag, timeTag+77]))
+    [bootstat,bootsam] = bootstrp(1000,@std,countMaxId([timeTag, timeTag+77]));
+%     mean(bootstat)
+    std(bootstat)
+%     [h, p] = ttest(bootstat)
     figure;
     hold on;
 %     stairs(timeStep, countMaxId(1:numTimeBin), '-', 'linewid', 1.0, 'color', [0.7 0 0])

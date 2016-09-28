@@ -34,20 +34,18 @@ function barerror (X,Y,E,width,ycolor,ecolor,varargin)
 %-- Check vectors lengths & widths
 if mean([size(X,1),size(Y,1),size(E,1)]) ~= length(X)	
 	error ('Imput vectors are of different lengths. They must have the same length'); 
-	return;
 end
 if size(Y,2) ~= size(E,2)
 	error ('Y and Error vectors have different number of columns'); 
-	return;
 end
-if size(Y,2) ~= length(ycolor)
-	error ('The Y vector has more/less columns than number of elements in ycolor'); 
-	return; 
-end
-if size(E,2) ~= length(ecolor)
-	error ('The Error vector has more/less columns than number of elements in ecolor'); 
-	return; 
-end
+% if size(Y,2) ~= length(ycolor)
+% 	error ('The Y vector has more/less columns than number of elements in ycolor'); 
+% 	return; 
+% end
+% if size(E,2) ~= length(ecolor)
+% 	error ('The Error vector has more/less columns than number of elements in ecolor'); 
+% 	return; 
+% end
 
 
 %-- Function
@@ -60,8 +58,8 @@ if ~mod(ncol,2)
 end
 for h= 1:ncol
 	Xtmp= X(:,1)+ off(h)*(realwidth/2)- sign(off(h))*(~mod(ncol,2)*realwidth/4);
-	bar(Xtmp,Y(:,h), 'BarWidth', width/(2*ncol), 'FaceColor', ycolor(h, :));
-	errorbar(Xtmp,Y(:,h),E(:,h),'LineStyle','none','Color',ecolor(mod(h,1+length(ycolor))));
+	bar(Xtmp,Y(:,h), 'BarWidth', width/(2*ncol), 'FaceColor', ycolor(h, :), 'EdgeColor', 'none');
+	errorbar(Xtmp,Y(:,h),E(:,h),'LineStyle','none','Color',ecolor(mod(h,1+size(ycolor, 1)), :));
 end
 
 set(gca,'XTick',X);

@@ -17,8 +17,13 @@ if ~exist([PlotDir 'SingleUnitsFPVT'],'dir')
 end
 
 
-for nData                     = 1:length(DataSetList)-1
-    load([TempDatDir DataSetList(nData).name '.mat']);
+for nData                     = [1 3 4]
+    if nData   == 1
+        load([TempDatDir DataSetList(nData).name '.mat'])
+        neuronRemoveList = false(length(nDataSet), 1);
+    else
+        load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
+    end
     numUnits                  = length(nDataSet);
     pValue                    = applyFuncToCompareTrialType(nDataSet, @pValueTTest2);
     meanDiffValue             = applyFuncToCompareTrialType(nDataSet, @meanDiff);
@@ -60,6 +65,7 @@ for nData                     = 1:length(DataSetList)-1
     xlim([DataSetList(nData).params.timeSeries(1) DataSetList(nData).params.timeSeries(end)])
     ylim([1 numUnits])
     set(gca, 'YTick', [1 numUnits])
+    set(gca, 'TickDir', 'out')
     colormap(h, french(128,2))
 %     colorbar;
     caxis([-5 5])

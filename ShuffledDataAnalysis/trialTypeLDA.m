@@ -24,7 +24,7 @@ cmap = [         0    0.4470    0.7410
     0.3010    0.7450    0.9330
     0.6350    0.0780    0.1840];
 
-numRandPickUnits    = 100;
+numRandPickUnits    = 25;
 numTrials           = numRandPickUnits*5;
 numTestTrials       = numRandPickUnits*2;
 numTrainingTrials   = numTrials - numTestTrials;
