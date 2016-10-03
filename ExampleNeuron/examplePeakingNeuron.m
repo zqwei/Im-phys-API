@@ -1,5 +1,5 @@
 
-function exampleS2CNeuron_v2
+function examplePeakingNeuron
     addpath('../Func');
     setDir;
     
@@ -8,11 +8,6 @@ function exampleS2CNeuron_v2
     load([TempDatDir DataSetList(nData).name '_old.mat'])
     spikeDataSet = nDataSet;   
     params = DataSetList(nData).params;
-%     load ([TempDatDir 'DataListS2CModel.mat']);    
-%     nData = 3; % plot s2c model
-%     load([TempDatDir DataSetList(nData).name '.mat'])
-%     s2cDataSet   = nDataSet;
-
     dynamicalNeuronIndex = [1047 982 972 810 751 742 728 555 401 395 307 264 221 161 137 1041];
     dynamicalNeuronIndex = dynamicalNeuronIndex([6, 5, 4, 8, 16 ]);
     params.Fm = 1;
@@ -33,14 +28,10 @@ function exampleS2CNeuron_v2
         nCellDataSet  = getFakeCaImagingData(spikeDataSet(nCell), params);
         yesNoise = randn(numTrial, 77)*ext_noise; %squeeze(noiseRates{nData}(nUnit, 1, :, :))';
         noNoise  = randn(numTrial, 77)*ext_noise; %squeeze(noiseRates{nData}(nUnit, 2, :, :))';
-%         nCellDataSet.unit_yes_trial = nCellDataSet.unit_yes_trial_linear;
         mean_pre_sample             = max(mean(nCellDataSet.unit_yes_trial_linear(:,1:8)));
         param(3)                    = mean_pre_sample;
         nCellDataSet.unit_yes_trial = nCellDataSet.unit_yes_trial_linear-mean_pre_sample;
         nCellDataSet.unit_yes_trial = nCellDataSet.unit_yes_trial/max(mean(nCellDataSet.unit_yes_trial));
-%         nCellDataSet.unit_yes_trial = g(param, nCellDataSet.unit_yes_trial_linear+...
-%                                             params.intNoise*randn(size(nCellDataSet.unit_yes_trial_linear))) + ...
-%                                             yesNoise(randpermLargeK(numTrial, size(nCellDataSet.unit_yes_trial, 1)), :);
         nCellDataSet.unit_no_trial  = g(param, nCellDataSet.unit_no_trial_linear+...
                                             params.intNoise*randn(size(nCellDataSet.unit_no_trial_linear))) + ...
                                             noNoise(randpermLargeK(numTrial, size(nCellDataSet.unit_no_trial, 1)), :);
@@ -49,16 +40,9 @@ function exampleS2CNeuron_v2
         nCellDataSet.unit_no_error  = g(param, nCellDataSet.unit_no_error_linear) + ...
                                             noNoise(randpermLargeK(numTrial, size(nCellDataSet.unit_no_error, 1)), :);
         
-%         figure;
-        % spike
-%         subplot(2, 3, 1)
-%         plotRaster(spikeDataSet(nCell), params);
         subplot(length(dynamicalNeuronIndex), 2, 1+nCellid*2-2)
         plotPSTH(spikeDataSet(nCell), params, 'Firing rate (Hz)');
-        
-        %
-%         subplot(2, 3, 3)
-%         plotDff(s2cDataSet(nCell), params)
+
         subplot(length(dynamicalNeuronIndex), 2, 2+nCellid*2-2)
         plotPSTH(nCellDataSet, params, 'DF/F');        
     end

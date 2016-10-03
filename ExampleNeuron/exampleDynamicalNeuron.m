@@ -6,49 +6,66 @@ function exampleDynamicalNeuron
     load ([TempDatDir 'DataListShuffle.mat']);
     nData = 1; % plot raster and psth
     load([TempDatDir DataSetList(nData).name '_old.mat'])
+    load('FineTunedNLParams.mat', 'nlParams')
     spikeDataSet = nDataSet;   
     params = DataSetList(nData).params;
-    nData = 4; % plot ca comparison
-    load([TempDatDir DataSetList(nData).name '.mat'])
-    caDataSet    = nDataSet;
-    load ([TempDatDir 'DataListS2CModel.mat']);    
-    nData = 4; % plot s2c model
-    load([TempDatDir DataSetList(nData).name '.mat'])
-    s2cDataSet   = nDataSet;
-     
-    meanCaDataSet = meanData(caDataSet);
-    meanS2CDataSet = meanData(s2cDataSet);
-    dynamicalNeuronIndex = 1:length(spikeDataSet);
+    params.Fm = 1;
+    params.K  = 1;
+    params.n  = 1;
+    params.tau_r = 0.060;
+    params.tau_d = 1.7;
+    params.intNoise = 0;
+    params.extNoise = 0;
+    ext_noise = params.extNoise;
+    g = @(p,x) p(1) + p(2)./ (1 + 10.^((p(3)-x)*p(4)));
+    % param = [0, 1, 0.2, 3];
 
-%     dynamicalNeuronIndex = [290 334 177 142 27 30 80 93 580 557 367 55];
-%     mCellSet             = [1 1566 1446 35 1345 746 1995 2272 1345 1682 352 55];
     
-    for nCellid = 1:length(dynamicalNeuronIndex)%[2 3 11 12]
+    % fig 2
+    % cell 1: 177
+    % cell 2: 367
+    % cell 3: 334
+    % cell 4: 30
+    % cell 5: 491
+    % cell 6: 189
+    
+    % fig 4
+    % cell 1: 27
+    
+    % fig 5 (contra only)
+    % cell 1: 401
+    % cell 2: 555
+    
+    % fig 7
+    % cell 1: 290
+    numTrial    = 100;
+    dynamicalNeuronIndex = [177 367 334 30 491 189 27 401 555 290];
+    
+    for nCellid = 1:length(dynamicalNeuronIndex)
         nCell   = dynamicalNeuronIndex(nCellid);
-        figure;
-        % spike
-        subplot(1, 2, 1)
-%         subplot(2, 3, 1)
-%         plotRaster(spikeDataSet(nCell), params);
-%         subplot(2, 3, 4)
+        nCellDataSet  = getFakeCaImagingData(spikeDataSet(nCell), params);
+        yesNoise = randn(numTrial, 77)*ext_noise; %squeeze(noiseRates{nData}(nUnit, 1, :, :))';
+        noNoise  = randn(numTrial, 77)*ext_noise; %squeeze(noiseRates{nData}(nUnit, 2, :, :))';
+        param    = nlParams(nCell, :);
+        nCellDataSet.unit_yes_trial = g(param, nCellDataSet.unit_yes_trial_linear+...
+                                            params.intNoise*randn(size(nCellDataSet.unit_yes_trial_linear))) + ...
+                                            yesNoise(randpermLargeK(numTrial, size(nCellDataSet.unit_yes_trial, 1)), :);
+        nCellDataSet.unit_no_trial  = g(param, nCellDataSet.unit_no_trial_linear+...
+                                            params.intNoise*randn(size(nCellDataSet.unit_no_trial_linear))) + ...
+                                            noNoise(randpermLargeK(numTrial, size(nCellDataSet.unit_no_trial, 1)), :);
+                                        
+        nCellDataSet.unit_yes_error = g(param, nCellDataSet.unit_yes_error_linear) + ...
+                                            yesNoise(randpermLargeK(numTrial, size(nCellDataSet.unit_yes_error, 1)), :);
+        nCellDataSet.unit_no_error  = g(param, nCellDataSet.unit_no_error_linear) + ...
+                                            noNoise(randpermLargeK(numTrial, size(nCellDataSet.unit_no_error, 1)), :);
+        
+        subplot(length(dynamicalNeuronIndex), 2, 1+nCellid*2-2)
         plotPSTH(spikeDataSet(nCell), params, 'Firing rate (Hz)');
-        
-        %
-%         subplot(2, 3, 3)
-%         plotDff(s2cDataSet(nCell), params)
-%         subplot(2, 3, 6)
-        subplot(1, 2, 2)
-        plotPSTH(s2cDataSet(nCell), params, 'DF/F');
-        
-%         mCell = findSimilarCellToS2CModel(meanS2CDataSet(nCell,:), meanCaDataSet);
-%         mCell = mCellSet(nCellid);
-%         subplot(2, 3, 2)
-%         plotDff(caDataSet(mCell), params)
-%         subplot(2, 3, 5)
-%         plotPSTH(caDataSet(mCell), params, 'DF/F');
-        setPrint(8*2, 6, ['ExampleNeuronPlot/SingleUnitsTscoreExampleNeuron_' num2str(nCell, '%04d')], 'pdf')
-        close all
+
+        subplot(length(dynamicalNeuronIndex), 2, 2+nCellid*2-2)
+        plotPSTH(nCellDataSet, params, 'DF/F');        
     end
+    setPrint(8*2, 6*length(dynamicalNeuronIndex'), ['ExampleNeurons'])
 
 end
 
@@ -56,7 +73,7 @@ function plotRaster(spikeDataSet, params)
     spkTimes{1}    = spikeDataSet.unit_yes_trial_spk_time;
     spkTimes{2}    = spikeDataSet.unit_no_trial_spk_time;
     hold on;
-    color_index    = [0 0 0.7; 0.7  0 0]; %[0.7  0 0; 0 0 0.7];%
+    color_index    = [0 0 0.7; 0.7  0 0];
     spkLoc         = 0;
     for nPlot            = 1:2
         hold on;
@@ -89,22 +106,20 @@ function plotDff(spikeDataSet, params)
     noUnitData       = getGaussianPSTH (filterInUse, nUnitData, 2);
     cmin             = min([mean(yesUnitData), mean(noUnitData)]);
     cmax             = max([mean(yesUnitData), mean(noUnitData)]);
-    cstd             = max([std(yesUnitData), std(noUnitData)]);
     
 
 
     hold on
     actMat = nan(41, size(spikeDataSet.unit_yes_trial, 2));
-    actMat(1:20, :) = yesUnitData(2:21, :);
-    actMat(22:end, :) = noUnitData(3:22, :);
-    actMat(21, :) = cmin;
+    actMat(1:20, :) = yesUnitData(1:20, :);
+    actMat(22:end, :) = noUnitData(1:20, :);
     imagesc(params.timeSeries, 1:41, actMat);
     gridxy ([params.polein, params.poleout, 0],[], 'Color','w','Linestyle','--','linewid', 1.0);
     hold off;
     ylim([1 41])
     colormap(gray)
     
-    caxis([cmin, cmax+cstd*1]);
+    caxis([cmin, cmax]);
 %     colorbar
     xlim([params.timeSeries(1) params.timeSeries(end)]);
     axis off
@@ -118,7 +133,7 @@ function plotPSTH(spikeDataSet, params, ylabelName)
     filterInUse                   = exp(-filterStep .^ 2 / (2 * sigma ^ 2));
     filterInUse                   = filterInUse / sum (filterInUse); 
 
-    color_index    = [0 0 0.7; 0.7  0 0]; %[0.7  0 0; 0 0 0.7];%
+    color_index    = [0 0 0.7; 0.7  0 0];
     hold on;
     nUnitData        = spikeDataSet.unit_yes_trial;
     nUnitData        = getGaussianPSTH (filterInUse, nUnitData, 2);
