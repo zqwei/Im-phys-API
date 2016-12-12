@@ -41,10 +41,10 @@ for nData     = 1:length(DataSetList)
     figure;
     hold on;
 %     stairs(timeStep, countMaxId(1:numTimeBin), '-', 'linewid', 1.0, 'color', [0.7 0 0])
-    bplot = bar(timeStep, countMaxId(1:numTimeBin), 'facecolor', 'b', 'edgecolor', 'none');
+    bplot = bar(timeStep, countMaxId(1:numTimeBin), 1, 'facecolor', 'b', 'edgecolor', 'none');
     bplot.FaceAlpha = 0.5;
 %     stairs(timeStep, countMaxId(1+numTimeBin:end), '-', 'linewid', 1.0, 'color', [0 0 0.7]);
-    bplot = bar(timeStep, countMaxId(1+numTimeBin:end), 'facecolor', 'r', 'edgecolor', 'none');
+    bplot = bar(timeStep, countMaxId(1+numTimeBin:end), 1, 'facecolor', 'r', 'edgecolor', 'none');
     bplot.FaceAlpha = 0.5;
     xlim([timeStep(1) 2])
     ylim([0 8])
@@ -52,8 +52,9 @@ for nData     = 1:length(DataSetList)
     box off
     ylabel('% Max peak')
     xlabel('Time')
+    set(gca, 'TickDir', 'out')
     hold off
-%     setPrint(8, 3, [PlotDir 'S2CModel\SingleUnitsMaxLocationPosNeuron_' DataSetList(nData).name])
+    setPrint(8, 3, [PlotDir 'SingleUnitsPeakLocation\SingleUnitsMaxLocationPosNeuron_' DataSetList(nData).name])
 end
 
 close all

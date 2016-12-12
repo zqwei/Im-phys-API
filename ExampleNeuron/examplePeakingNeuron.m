@@ -14,7 +14,7 @@ function examplePeakingNeuron
     params.K  = 1;
     params.n  = 1;
     params.tau_r = 0.060;
-    params.tau_d = 1.7;
+    params.tau_d = 1.1;
     params.intNoise = 0;
     params.extNoise = 0;
     ext_noise = params.extNoise;
