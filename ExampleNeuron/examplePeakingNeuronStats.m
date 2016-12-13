@@ -107,12 +107,12 @@ for nCell = 1:length(spikeDataSet)
             nUnitData        = spikeDataSet(nCell).unit_yes_trial;
             nUnitData        = getGaussianPSTH (filterInUse, nUnitData, 2);
             y                = mean(nUnitData, 1);
-            modulation(nCell)= max_yes/y(max_id);
+            modulation(nCell)= max_yes-y(max_id);
         else
             nUnitData        = spikeDataSet(nCell).unit_no_trial;
             nUnitData        = getGaussianPSTH (filterInUse, nUnitData, 2);
             y                = mean(nUnitData, 1);
-            modulation(nCell)= max_no/y(max_id);
+            modulation(nCell)= max_no-y(max_id);
         end
     end
 end
