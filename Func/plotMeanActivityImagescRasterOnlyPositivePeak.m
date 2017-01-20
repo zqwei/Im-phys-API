@@ -46,9 +46,12 @@ function positivePeak = plotMeanActivityImagescRasterOnlyPositivePeak (nDataSet,
     % 1. normalization of the neuronal activity to range [0, 1]
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    maxActMat                     = nanmax(actMat, [], 2);
-    minActMat                     = nanmin(actMat, [], 2);
-
+    maxActMat                     = prctile(actMat, 98, 2); % nanmax(actMat, [], 2);
+    minActMat                     = prctile(actMat, 2, 2); % nanmin(actMat, [], 2);
+% 
+%     maxActMat                     = nanmax(actMat, [], 2);
+%     minActMat                     = nanmin(actMat, [], 2);
+    
     if ~isempty(minValue)
         actMat                    = actMat-minValue;
         tMinActMat                = minValue;
@@ -88,7 +91,9 @@ function positivePeak = plotMeanActivityImagescRasterOnlyPositivePeak (nDataSet,
         end
     end
         
-    [~, similaritySort]       = sortrows([bumpStartPoint, bumpSize], [1 -2]);
+    [~, similaritySort]       = sortrows(bumpStartPoint, 1);%sortrows([bumpStartPoint, bumpSize], [1 -2]);
+    valid_sort                = bumpSize(similaritySort) > 10;
+    similaritySort            = similaritySort(valid_sort);
     similaritySort            = similaritySort(end:-1:1);
     
     figure;
@@ -102,7 +107,7 @@ function positivePeak = plotMeanActivityImagescRasterOnlyPositivePeak (nDataSet,
     timeSeries                    = [timeSeries, maxTime + (1:blankSpace)*params.binsize, timeSeries+constShift];
     tMaxTime                      = timeSeries(end);
     b = imagesc(timeSeries, 1:length(similaritySort), actMat(similaritySort, :), [0 1]);
-    set(b,'AlphaData',~isnan(actMat));
+    set(b,'AlphaData',~isnan(actMat(similaritySort, :)));
     axis xy;
     %gridxy ([maxTime + betweenSpace/2],[], 'Color','k','Linestyle','-','linewid', 2.0)
     gridxy ([params.polein, params.poleout, 0, params.polein+constShift, params.poleout+constShift, constShift],[], 'Color','k','Linestyle','--','linewid', 1.0)
@@ -118,7 +123,7 @@ function positivePeak = plotMeanActivityImagescRasterOnlyPositivePeak (nDataSet,
     xTickLabel                    = arrayfun(@(x) num2str(x), xTicks,'Uniform',false);
     xTickLabel(mod(xTicks,2)==1)  = {''};
     set(ax, 'XTick', [xTicks xTicks+constShift], 'XTickLabel', [xTickLabel, xTickLabel]);
-    set(ax, 'YTick', [1 size(actMat, 1)])
+    set(ax, 'YTick', [1 size(actMat(similaritySort, :), 1)])
     axis([minTime, tMaxTime, 1, length(similaritySort)]);
     set(ax, 'TickDir', 'Out')
     xlabel('Time (s)')

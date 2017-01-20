@@ -13,7 +13,7 @@ if ~exist([PlotDir 'SingleUnitsImagescWithSort'],'dir')
     mkdir([PlotDir 'SingleUnitsImagescWithSort'])
 end
 
-for nData             = [1 3 4]
+for nData             = [3 4]
     if nData   == 1
             load([TempDatDir DataSetList(nData).name '.mat'])
         else
@@ -26,4 +26,4 @@ end
 
 
 
-close all;
+% close all;

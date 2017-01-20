@@ -1,66 +1,56 @@
-%
-% plotMeanActivityImagescWithSort.m
-% 
-% based on plotMeanActivityImagesc.m
-%
-% ----------------------------
-% Output:
-%
-% version 1.0
-%
-% -------------------------------------------------------------------------
-% Ziqiang Wei
-% weiz@janelia.hhmi.org
-% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% dPCA and PCA across trials
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function plotMeanActivityImagescRasterOnly (nDataSet, params, maxValue, minValue, ylabels)    
+addpath('../Func');
+setDir;
+load ([TempDatDir 'DataListShuffle.mat']);
 
-    
-    
+combinedParams = {{1}, {2}, {[1 2]}};
+margNames      = {'Stim', 'Time', 'Inter'};
+numTrials      = 100;
+numComps       = 10;
+
+if ~exist([PlotDir 'CollectedUnitsPCA'],'dir')
+    mkdir([PlotDir 'CollectedUnitsPCA'])
+end
+
+for nData              = [1 3 4]
+    if nData   == 1
+        load([TempDatDir DataSetList(nData).name '.mat'])
+        neuronRemoveList = false(length(nDataSet), 1);
+    else
+        load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
+    end
+    firingRates        = generateDPCAData(nDataSet, numTrials);
+    firingRatesAverage = nanmean(firingRates, ndims(firingRates));
+    pcaFiringRatesAverage = zeros(numComps, 2, 77);
+    firingRatesAverage = [squeeze(firingRatesAverage(:, 1, :)), squeeze(firingRatesAverage(:, 2, :));];
+    [coeff,score,~]        = pca(firingRatesAverage', 'NumComponents', numComps);
+    actMatTemp             = coeff * score';
+
     numT       = size(nDataSet(1).unit_yes_trial,2);
     if numT <= 77
         blankSpace = 10;
     else
         blankSpace = round(10/77*numT);
     end
-    
-    
-    actMat     = nan(length(nDataSet),numT*2+blankSpace);
-    
-    for nUnit = 1: length(nDataSet)
-        actMat(nUnit, 1:numT)     = mean(nDataSet(nUnit).unit_yes_trial);
-        actMat(nUnit, numT+blankSpace+1:end) = mean(nDataSet(nUnit).unit_no_trial);
-    end
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % 1. normalization of the neuronal activity to range [0, 1]
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    maxActMat                     = prctile(actMat, 98, 2); % nanmax(actMat, [], 2);
-    minActMat                     = prctile(actMat, 2, 2); % nanmin(actMat, [], 2);
+    actMat         = nan(length(nDataSet),numT*2+blankSpace);
+    positivePeak   = true(length(nDataSet),1);
+    actMat(:, 1:numT)     = actMatTemp(:, 1:numT);
+    actMat(:, numT+blankSpace+1:end) = actMatTemp(:, 1+numT:end);
+%     for nUnit = 1: length(nDataSet)        
+%         positivePeak(nUnit)       = mean(actMat(1:8)) <= mean(actMat(9:47)) ...
+%                                    || mean(actMat((1:8)+numT)) <= mean(actMat((9:47)+numT));
+%     end
+    actMat                        = actMat(positivePeak, :);
+    maxActMat                     = nanmax(actMat, [], 2);
+    minActMat                     = nanmin(actMat, [], 2);
+    actMat                    = bsxfun(@minus, actMat, minActMat);
+    tMinActMat                = minActMat;
+    actMat                    = bsxfun(@rdivide, actMat, maxActMat-tMinActMat);
 
-%     maxActMat                     = nanmax(actMat, [], 2);
-%     minActMat                     = nanmin(actMat, [], 2);
     
-    if ~isempty(minValue)
-        actMat                    = actMat-minValue;
-        tMinActMat                = minValue;
-    else
-        actMat                    = bsxfun(@minus, actMat, minActMat);
-        tMinActMat                = minActMat;
-    end
-    
-    if ~isempty(maxValue)
-        actMat                    = bsxfun(@rdivide, actMat, maxValue-tMinActMat);
-    else
-        actMat                    = bsxfun(@rdivide, actMat, maxActMat-tMinActMat);
-    end
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % 2. sort the neurons
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-
     bumpActThres              = 0.6; % > bumpActThres considering as a bump
     bumpMat                   = actMat > bumpActThres;
     bumpSize                  = ones(size(actMat,1),1);
@@ -81,8 +71,9 @@ function plotMeanActivityImagescRasterOnly (nDataSet, params, maxValue, minValue
         end
     end
         
-    [~, similaritySort]       = sortrows([bumpStartPoint, bumpSize], [1 -2]);
+    [~, similaritySort]       = sortrows(bumpStartPoint, 1);%sortrows([bumpStartPoint, bumpSize], [1 -2]);
     similaritySort            = similaritySort(end:-1:1);
+    params                    = DataSetList(nData).params;
     
     figure;
     % 3. plot of imagesc
@@ -111,7 +102,7 @@ function plotMeanActivityImagescRasterOnly (nDataSet, params, maxValue, minValue
     xTickLabel                    = arrayfun(@(x) num2str(x), xTicks,'Uniform',false);
     xTickLabel(mod(xTicks,2)==1)  = {''};
     set(ax, 'XTick', [xTicks xTicks+constShift], 'XTickLabel', [xTickLabel, xTickLabel]);
-    set(ax, 'YTick', [1 length(nDataSet)])
+    set(ax, 'YTick', [1 size(actMat, 1)])
     axis([minTime, tMaxTime, 1, length(similaritySort)]);
     set(ax, 'TickDir', 'Out')
     xlabel('Time (s)')
@@ -120,3 +111,5 @@ function plotMeanActivityImagescRasterOnly (nDataSet, params, maxValue, minValue
     hold off
     
 end
+
+% close all
