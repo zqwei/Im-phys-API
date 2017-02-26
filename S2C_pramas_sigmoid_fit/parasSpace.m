@@ -10,7 +10,7 @@ load([TempDatDir 'ParamsFitCells_S2CModel_sigmoid_Fmfix.mat'], 'paras');
 if ~exist([PlotDir 'ModelCellFits'],'dir')
     mkdir([PlotDir 'ModelCellFits'])
 end
-nKeys    = {'tau_r', 'tau_d', 'Ca0', 'beta', 'FmNorm', 'ev'};
+nKeys    = {'tau_r', 'tau_d', 'Ca0', 'beta', 'FmNorm', 'ev', 'Fm'};
 paraMat  = nan(length(paras), length(nKeys));
 for nKey = 1:length(nKeys)
     paraMat(:, nKey) = [paras.(nKeys{nKey})];
@@ -54,11 +54,13 @@ for nParam = 1:5
             hold on
             for nGroup = 1:length(expression)
                 [f,xi] = ksdensity(paraMat(group==nGroup, nParam));
-                plot(xi, f, '-', 'color', groupColor(nGroup, :), 'linewid', 1.5);
+                %[f, xi] = histcounts(paraMat(group==nGroup, nParam),50);
+                % bar(xi(1:end-1), f/sum(f), 'edgecolor', groupColor(nGroup, :), 'facecolor', 'none')
+                plot(xi, f/sum(f), '-', 'color', groupColor(nGroup, :), 'linewid', 1.5);
                 xlim(paramLimit(nParam, :))
-                ylim(histLimit(nParam, :))
+                % ylim(histLimit(nParam, :))
                 set(gca, 'xTick', paramLimit(nParam, :))
-                set(gca, 'yTick', histLimit(nParam, :))
+                % set(gca, 'yTick', histLimit(nParam, :))
             end
             box off
         else

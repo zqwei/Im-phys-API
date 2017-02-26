@@ -39,9 +39,9 @@ end
 
 load([TempDatDir 'DataListCells.mat'], 'totCell');
 
-EVmat               = cell(2, 1);
+EVmat               = cell(4, 1);
 
-for nGroup           = [2 4]
+for nGroup           = 1:4
     nGroupCell       = totCell(group == nGroup & validPara);
     nGroupPara       = paraMat(group == nGroup & validPara, :);
     EVmatNGroup      = nan(length(nGroupCell), 101, 5);
@@ -73,7 +73,7 @@ for nGroup           = [2 4]
         
     end   
     
-    EVmat{nGroup/2} = EVmatNGroup;
+    EVmat{nGroup} = EVmatNGroup;
 end
 
 
@@ -81,7 +81,7 @@ Sensitivity_index = nan(39, 6);
 
 nCell      = 0;
 
-for nGroup = 1:2
+for nGroup = 1:4
     
     EVmatNGroup = EVmat{nGroup};
     
@@ -103,12 +103,12 @@ end
 
 nGroupName = {'Fm', '[Ca++]0', 'beta', '\tau_d', '\tau_r'};
 figure;
-for nKey = 1:2
-    subplot(1, 2, nKey)
+for nKey = 1:4
+    subplot(1, 4, nKey)
     boxplot(Sensitivity_index(Sensitivity_index(:, 1)==nKey, 2:end), 'label', nGroupName) %, 'colors', 'k','plotStyle','compact'
     box off
     set(gca, 'TickDir', 'out')
     set(gca, 'XTick', 1:5)
     ylim([0 1.1])
 end
-setPrint(8*2, 6, ['ParamsComparison_Groups_para_sensivity'])
+setPrint(8*4, 6, ['ParamsComparison_Groups_para_sensivity'])
