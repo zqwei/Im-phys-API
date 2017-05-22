@@ -8,4 +8,4 @@ Simultaneous calcium imaging using GCaMP sensors and electrophysiology in L2/3 p
 
 Bei-Jung Lin, Tsai-Wen Chen, Douglas Kim, Karel Svoboda
 
-DOI:10.6080/K0S46PV7
+[DOI:10.6080/K0S46PV7](https://doi.org/10.6080/K0S46PV7)
