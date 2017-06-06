@@ -46,6 +46,8 @@ for nTau     = 1:length(tau_d_list)
     end
 end
 
+cellTypeMatGP43 = cellTypeMat;
+
 % result for single neuron
 figure
 nNeuron = 100;
@@ -103,6 +105,8 @@ for nTau     = 1:length(tau_d_list)
     end
 end
 
+cellTypeMat6sAAV = cellTypeMat;
+
 % result for single neuron
 figure
 nNeuron = 100;
@@ -131,4 +135,6 @@ title('Frac. Multi. Cell')
 
 % mean_value
 mean(cellTypeMat(:)==1)
+
+save('cellTypeMat', 'cellTypeMat6sAAV', 'cellTypeMatGP43')
 mean(cellTypeMat(:)==2)
