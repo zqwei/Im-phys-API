@@ -1,7 +1,7 @@
 %
 % imagingToSpike.m
 %
-% This performs the transformation from the spiking data to the Ca++
+% This performs the transformation from the Ca++ to the spiking data
 % imaging data
 % 
 % Input:

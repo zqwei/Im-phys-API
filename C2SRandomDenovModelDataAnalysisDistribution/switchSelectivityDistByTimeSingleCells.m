@@ -1,12 +1,8 @@
 %
-% TODO
-% 06/04/17
-% Add code to compute distribution of selectivity for each single neuron
+% Compute distribution of selectivity for each single neuron
 % 
 % Here we drop the test of parameter of tau_r
 % 
-% Comparison based on single unit acitivity
-% Generating Ca++ imaging data from ephys data using Tsai-Wen's model
 % 
 % -------------------------------------------------------------------------
 % version 1.0
@@ -37,7 +33,7 @@ numNeuron              = length(nDataSet);
 cellTypeMat            = nan(numNeuron, numFold, length(noise_factor_list), length(tau_d_list));
 
 for nTau              = 1:length(tau_d_list)
-    spikeDataSet      = getFakeSpikeDeconvDataSimpleVersion(nDataSet, median_r, tau_d_list(nTau), params);  
+    spikeDataSet      = getSyntheticSpikeDeconvDataSimpleVersion(nDataSet, median_r, tau_d_list(nTau), params);  
     for nFF           = 1:length(noise_factor_list) 
         for nFold     = 1:numFold
             unitGroup = getLogPValueTscoreSpikeTimeAve(spikeDataSet, params, noise_factor_list(nFF));
@@ -96,7 +92,7 @@ numNeuron              = length(nDataSet);
 cellTypeMat            = nan(numNeuron, numFold, length(noise_factor_list), length(tau_d_list));
 
 for nTau              = 1:length(tau_d_list)
-    spikeDataSet      = getFakeSpikeDeconvDataSimpleVersion(nDataSet, median_r, tau_d_list(nTau), params);  
+    spikeDataSet      = getSyntheticSpikeDeconvDataSimpleVersion(nDataSet, median_r, tau_d_list(nTau), params);  
     for nFF           = 1:length(noise_factor_list) 
         for nFold     = 1:numFold
             unitGroup = getLogPValueTscoreSpikeTimeAve(spikeDataSet, params, noise_factor_list(nFF));
