@@ -14,21 +14,19 @@ if ~exist([PlotDir 'SingleUnitsTscore'],'dir')
     mkdir([PlotDir 'SingleUnitsTscore'])
 end
 
-% cmap = cbrewer('qual', 'Set1', 3, 'cubic');
-cmap = [0.8000    0.8000    0.8000;
-       1.0000    0.6000         0;
-       0    0.8000         0];
+cmap = cbrewer('qual', 'Set1', 3, 'cubic');
+cmap = cmap([3, 5, 9], :);
 
-for nData      = 4 % [1 3 4]
+for nData      = [1 3 4]
     if nData   == 1
         load([TempDatDir DataSetList(nData).name '.mat'])
         neuronRemoveList = false(length(nDataSet), 1);
     else
         load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
     end
-    unitGroup = getLogPValueTscoreSpikeTime(nDataSet, DataSetList(nData).params); 
+    unitGroup = getLogPValueTscoreSpikeTime(nDataSet, DataSetList(nData).params);
 %     cellType  = [DataSetList(nData).cellinfo.cellType]';
-%     depth     = [DataSetList(nData).cellinfo(:).depth]';  
+%     depth     = [DataSetList(nData).cellinfo(:).depth]';
 %     sizeGroup = histcounts(unitGroup(cellType==1 & depth>100 & depth<800), 0:3);
     sizeGroup = histcounts(unitGroup, 0:3);
 %     sizeGroup
@@ -40,18 +38,19 @@ for nData      = 4 % [1 3 4]
     colormap(cmap)
     set(gca, 'TickDir', 'out')
     setPrint(8, 6, [PlotDir 'SingleUnitsTscore/SingleUnitsTscoreTime_' DataSetList(nData).name])
-    
-    depth                        = [DataSetList(nData).cellinfo(:).depth];   
+    setPrint(8, 6, [PlotDir 'SingleUnitsTscore/' DataSetList(nData).name '_'], 'svg')
+
+    depth                        = [DataSetList(nData).cellinfo(:).depth];
     depth                        = depth(~neuronRemoveList);
     depthStart                   = 100;
     depthBin                     = 50;
-    depthEnd                     = 900;    
+    depthEnd                     = 900;
     depth                        = floor((depth-depthStart)/depthBin)*depthBin+depthStart;
     depth(depth>depthEnd)        = depthEnd;
     depth(depth<depthStart)      = depthStart;
-    
+
     uniqueDepth                  = depthStart:depthBin:depthEnd;
-    depthStrings                 = cell(length(uniqueDepth),1);  
+    depthStrings                 = cell(length(uniqueDepth),1);
     depthStrings(1:end)          = {''};
     if length(uniqueDepth)       <=3
         depthStrings             = cellstr(num2str(uniqueDepth'));
@@ -59,20 +58,20 @@ for nData      = 4 % [1 3 4]
         stepLength               = floor(length(uniqueDepth)/3);
         depthStrings(1:stepLength:end) = cellstr(num2str(uniqueDepth(1:stepLength:end)'));
     end
-    
+
     groupCounts = zeros(length(uniqueDepth), 3);
-    
+
     for nGroup = 1:3
         nUnitGroup = unitGroup == nGroup-1;
         for nDepth = 1:length(uniqueDepth)
             groupCounts(nDepth, nGroup) = sum(nUnitGroup & depth' == uniqueDepth(nDepth));
         end
     end
-    
+
 %     [tab, chi2, p] = crosstab(unitGroup(unitGroup>0), depth(unitGroup>0)')
-    
+
     groupPerCounts = bsxfun(@rdivide, groupCounts, sum(groupCounts, 2));
-    
+
     figure('Visible', 'off');
     subplot(1, 2, 1)
     barh(-uniqueDepth, groupPerCounts, 'stack', 'edgecolor', 'none');
@@ -84,7 +83,7 @@ for nData      = 4 % [1 3 4]
     ylim([-850 0])
     set(gca, 'yTick', -800:400:0)
     colormap(cmap)
-    
+
     subplot(1, 2, 2)
     barh(-uniqueDepth, sum(groupCounts,2),'k')
     xlabel('# cells')
@@ -118,7 +117,7 @@ for nData = [1 4]
     numGroup    = 3;
     groupCounts = zeros(anmIndex(end), numGroup);
     anmIndex  = anmIndex(~neuronRemoveList);
-    unitGroup = getLogPValueTscoreSpikeTime(nDataSet, DataSetList(nData).params); 
+    unitGroup = getLogPValueTscoreSpikeTime(nDataSet, DataSetList(nData).params);
     for nAnm    = 1:anmIndex(end)
         if sum(anmIndex == nAnm) > 50
             for nGroup = 1:numGroup
@@ -153,7 +152,7 @@ end
 load ([TempDatDir 'DataListShuffleConfounding.mat']);
 nData          = 5;
 load([TempDatDir DataSetList(nData).name '.mat'])
-unitGroup      = getLogPValueTscoreSpikeTime(nDataSet, DataSetList(nData).params); 
+unitGroup      = getLogPValueTscoreSpikeTime(nDataSet, DataSetList(nData).params);
 figure;
 areaIndex      = false(length(unitGroup), 1);
 sizeGroup      = histcounts(unitGroup, 0:3);
@@ -178,4 +177,3 @@ hold on
 plot(MLLoc, APLoc, '.', 'color', [0.5 0.5 0.5])
 plot(MLLoc(areaIndex), APLoc(areaIndex), '.k')
 setPrint(8, 6, [PlotDir 'SingleUnitsTscore/SingleUnitsTscoreAPML_Sub_Loc_' DataSetList(nData).name])
-

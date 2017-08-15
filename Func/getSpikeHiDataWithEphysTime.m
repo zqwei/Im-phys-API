@@ -15,33 +15,40 @@
 
 
 
-function SpikeDataSet = getSpikeDataWithEphysTime(SpikingDataDir, SpikeFileList, minNumTrialToAnalysis, TimeToAnalysis, binSize, cellType_all)
+function SpikeDataSet = getSpikeHiDataWithEphysTime(SpikingDataDir, SpikeFileList, minNumTrialToAnalysis, TimeToAnalysis, binSize)
     
     SpikeDataSet       = repmat(struct('sessionIndex',1, 'nUnit', 1, ...
                                 'unit_yes_trial', 1, 'unit_no_trial', 1),1000, 1);
     tot_Unit           = 0;
     
     h                  = waitbar(0,'Initializing data loads...');
-    usedUnits          = [];
-    
-    nFileUnit = 0;
     
     for nfile = 1:length(SpikeFileList)
         
         fname               = SpikeFileList(nfile).name;
         load([SpikingDataDir fname])
         
-        valid_trials = (~behavior_early_report) & (behavior_report== 1) & ...
-                        (task_stimulation(:,1)==0);  %#ok<NODEF>
+        behavior_report     = unit(1).Behavior.Trial_types_of_response_vector;
+        task_stimulation    = unit(1).Behavior.stim_trial_vector;
+        task_cue_time       = unit(1).Behavior.Cue_start;
+        valid_trials = (behavior_report== 1 | behavior_report== 2) & ...
+                        (task_stimulation(:,1)==0);
                     
-        valid_errors = (~behavior_early_report) & (behavior_report== 0) & ...
+        valid_errors = (behavior_report== 3 | behavior_report== 4) & ...
                         (task_stimulation(:,1)==0);  
                     
-        numUnits     = length(neuron_single_units); %#ok<USENS>
+        numUnits     = length(unit);
         % numTrials    = length(behavior_report);
-        task_type    = task_trial_type =='y';
+        task_type    = mod(behavior_report, 2)==1;
         
-        usedUnitsNFile      = false(numUnits, 1);
+        neuron_single_units = cell(numUnits, 1);
+        
+        for nUnit           = 1:numUnits
+            for nTrial      = 1:length(behavior_report)
+                neuron_single_units{nUnit}{nTrial} = unit(nUnit).SpikeTimes(unit(nUnit).Trial_idx_of_spike==nTrial);
+            end
+        end
+        
         
         for nUnit           = 1:numUnits
             n_missing_dat   = cellfun(@isempty, neuron_single_units{nUnit});
@@ -51,7 +58,6 @@ function SpikeDataSet = getSpikeDataWithEphysTime(SpikingDataDir, SpikeFileList,
             sum_valid_no    = sum(n_valid_no);
 
             if sum_valid_yes> minNumTrialToAnalysis && sum_valid_no> minNumTrialToAnalysis
-                usedUnitsNFile(nUnit) = true;
                 unit_yes_trial = nan(sum_valid_yes, length(TimeToAnalysis));
                 unit_no_trial  = nan(sum_valid_no, length(TimeToAnalysis));
                 unit_yes_trial_spk_time = cell(sum_valid_yes,1);
@@ -131,20 +137,14 @@ function SpikeDataSet = getSpikeDataWithEphysTime(SpikingDataDir, SpikeFileList,
                 SpikeDataSet(tot_Unit).unit_no_error_index  = find_n_valid_no;
                 SpikeDataSet(tot_Unit).unit_no_error_spk_time  = unit_no_error_spk_time;
                 
-                SpikeDataSet(tot_Unit).depth_in_um          = neuron_unit_info{nUnit}.depth_in_um; %#ok<USENS>
-                SpikeDataSet(tot_Unit).AP_in_um             = neuron_unit_info{nUnit}.AP_ML_in_um(1);
-                SpikeDataSet(tot_Unit).ML_in_um             = neuron_unit_info{nUnit}.AP_ML_in_um(2);
-                if ~isempty(cellType_all)
-                    SpikeDataSet(tot_Unit).cell_type        = cellType_all(nUnit + nFileUnit, 1);
-                else
-                    SpikeDataSet(tot_Unit).cell_type        = neuron_unit_info{nUnit}.cell_type1;
-                end
-                
+                SpikeDataSet(tot_Unit).depth_in_um          = unit(nUnit).Depth; 
+                SpikeDataSet(tot_Unit).AP_in_um             = nan;
+                SpikeDataSet(tot_Unit).ML_in_um             = nan;
+                SpikeDataSet(tot_Unit).cell_type            = unit(nUnit).SpikeWidth > 0.45;
+%                 
             end
         end
         
-        usedUnits = [usedUnits; usedUnitsNFile];
-        nFileUnit = nFileUnit + numUnits;
         waitbar(nfile/length(SpikeFileList), h, sprintf('%d of %d files have been finished...',nfile, length(SpikeFileList)));
         
     end

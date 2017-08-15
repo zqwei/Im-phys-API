@@ -20,6 +20,11 @@ set(0, 'defaultaxesTickDir', 'out')
 set(0, 'defaultaxesLineWidth', 1.0)
 
 SpikingDataDir              = '../../../Data_In_Use/Dataset_Comparison/ElectrophysiologyData/';
+SpikingShortNuoDir          = [SpikingDataDir 'delay1e3n/'];
+SpikingShortHiDir           = [SpikingDataDir 'delay1e3h/'];
+SpikingShortHiIntraDir      = [SpikingDataDir 'delay1e3h_intra/'];
+SpikingLongNuoDir           = [SpikingDataDir 'delaye3e0n/'];
+
 CaImagingDataDir            = '../../../Data_In_Use/Dataset_Comparison/ImagingData/';
 CaImagingShortDelayFastDir  = [CaImagingDataDir 'delay1f4t/'];
 CaImagingShortDelaySlowDir  = [CaImagingDataDir 'delay1s4t/'];
@@ -29,7 +34,11 @@ CaImagingLongDelaySlowDir   = [CaImagingDataDir 'delay3s0t/'];
 
 
 % Load filenames
-SpikeFileList                   = dir([SpikingDataDir '*.mat']);
+SpikingShortNuoFileList         = dir([SpikingShortNuoDir '*.mat']);
+SpikingShortHiFileList          = dir([SpikingShortHiDir '*.mat']);
+SpikingShortHiIntraFileList     = dir([SpikingShortHiIntraDir '*.mat']);
+SpikingLongNuoFileList          = dir([SpikingLongNuoDir '*.mat']);
+
 CaImagingShortDelayFastFileList = dir([CaImagingDataDir 'delay1f4t/*.mat']);
 CaImagingShortDelaySlowFileList = dir([CaImagingDataDir 'delay1s4t/*.mat']);
 CaImagingShortDelaySlowVirusFileList  = dir([CaImagingDataDir 'delay1s4v/*.mat']);
