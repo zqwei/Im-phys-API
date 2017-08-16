@@ -23,7 +23,7 @@ SpikingDataDir              = '../../../Data_In_Use/Dataset_Comparison/Electroph
 SpikingShortNuoDir          = [SpikingDataDir 'delay1e3n/'];
 SpikingShortHiDir           = [SpikingDataDir 'delay1e3h/'];
 SpikingShortHiIntraDir      = [SpikingDataDir 'delay1e3h_intra/'];
-SpikingLongNuoDir           = [SpikingDataDir 'delaye3e0n/'];
+SpikingLongNuoDir           = [SpikingDataDir 'delay3e0n/'];
 
 CaImagingDataDir            = '../../../Data_In_Use/Dataset_Comparison/ImagingData/';
 CaImagingShortDelayFastDir  = [CaImagingDataDir 'delay1f4t/'];
@@ -36,7 +36,7 @@ CaImagingLongDelaySlowDir   = [CaImagingDataDir 'delay3s0t/'];
 % Load filenames
 SpikingShortNuoFileList         = dir([SpikingShortNuoDir '*.mat']);
 SpikingShortHiFileList          = dir([SpikingShortHiDir '*.mat']);
-SpikingShortHiIntraFileList     = dir([SpikingShortHiIntraDir '*.mat']);
+SpikingShortHiIntraFileList     = dir([SpikingShortHiIntraDir 'data*.mat']);
 SpikingLongNuoFileList          = dir([SpikingLongNuoDir '*.mat']);
 
 CaImagingShortDelayFastFileList = dir([CaImagingDataDir 'delay1f4t/*.mat']);

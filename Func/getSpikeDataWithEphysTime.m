@@ -28,8 +28,14 @@ function SpikeDataSet = getSpikeDataWithEphysTime(SpikingDataDir, SpikeFileList,
     
     for nfile = 1:length(SpikeFileList)
         
+        clear task_stimulation;
+        
         fname               = SpikeFileList(nfile).name;
         load([SpikingDataDir fname])
+        
+        if ~exist('task_stimulation', 'var')
+            task_stimulation = zeros(size(behavior_early_report));
+        end
         
         valid_trials = (~behavior_early_report) & (behavior_report== 1) & ...
                         (task_stimulation(:,1)==0);  %#ok<NODEF>
@@ -132,8 +138,13 @@ function SpikeDataSet = getSpikeDataWithEphysTime(SpikingDataDir, SpikeFileList,
                 SpikeDataSet(tot_Unit).unit_no_error_spk_time  = unit_no_error_spk_time;
                 
                 SpikeDataSet(tot_Unit).depth_in_um          = neuron_unit_info{nUnit}.depth_in_um; %#ok<USENS>
-                SpikeDataSet(tot_Unit).AP_in_um             = neuron_unit_info{nUnit}.AP_ML_in_um(1);
-                SpikeDataSet(tot_Unit).ML_in_um             = neuron_unit_info{nUnit}.AP_ML_in_um(2);
+                if isfield(neuron_unit_info{nUnit}, 'AP_ML_in_um')
+                    SpikeDataSet(tot_Unit).AP_in_um             = neuron_unit_info{nUnit}.AP_ML_in_um(1);
+                    SpikeDataSet(tot_Unit).ML_in_um             = neuron_unit_info{nUnit}.AP_ML_in_um(2);
+                else
+                    SpikeDataSet(tot_Unit).AP_in_um             = nan;
+                    SpikeDataSet(tot_Unit).ML_in_um             = nan;
+                end
                 if ~isempty(cellType_all)
                     SpikeDataSet(tot_Unit).cell_type        = cellType_all(nUnit + nFileUnit, 1);
                 else
