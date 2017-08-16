@@ -16,7 +16,7 @@ numTrainingTrials   = numTrials - numTestTrials;
 ROCThres            = 0.5;
 
 load ([TempDatDir 'DataListShuffle.mat']);
-addNoise            = [1 0 0 0];
+addNoise            = zeros(length(DataSetList), 1);
 
 cmap                = cbrewer('div', 'Spectral', 128, 'cubic');
 
@@ -25,19 +25,18 @@ if ~exist([PlotDir '/CollectedUnitsDecodability'],'dir')
     mkdir([PlotDir '/CollectedUnitsDecodability'])
 end
 
-stepSize            = [50];%[5 10 15 50 100 150];
+stepSize            = 50; % 15 for the last data.
 
-for nData             = 4%[1 3 4]
-    if nData == 1
+for nData      = 1:length(DataSetList)-1
+    if ~exist([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'], 'file')
         load([TempDatDir DataSetList(nData).name '.mat'])
-        neuronRemoveList     = false(length(nDataSet),1);
+        neuronRemoveList = false(length(nDataSet), 1);
     else
         load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
     end
     oldDataSet               = nDataSet;
-    figure;
-    hold on
-    for numRandPickUnits      = 1:length(stepSize);        
+
+    for numRandPickUnits      = 1:length(stepSize)        
         selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex(~neuronRemoveList)';% & [DataSetList(nData).cellinfo(:).cellType] == 1;
         selectedNeuronalIndex = selectedHighROCneurons(oldDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);
         nDataSet              = oldDataSet(selectedNeuronalIndex);
@@ -61,7 +60,10 @@ for nData             = 4%[1 3 4]
         end
         figure;
         hold on
-        plot(DataSetList(nData).params.timeSeries, decodability(1:10,:), '-', 'linewid', 0.5, 'color', [0.5 0.5 0.5]);
+%         plot(DataSetList(nData).params.timeSeries, decodability(1:10,:), '-', 'linewid', 0.5, 'color', [0.5 0.5 0.5]);
+        shadedErrorBar(DataSetList(nData).params.timeSeries, mean(decodability,1),...
+            std(decodability, 1)/sqrt(numFold),...
+            {'-', 'linewid', 1.0, 'color', 'k'}, 0.5);
         plot(DataSetList(nData).params.timeSeries, mean(decodability), '-k', 'linewid', 2.0);
         xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
         ylim([0.5 1])
@@ -71,7 +73,8 @@ for nData             = 4%[1 3 4]
         xlabel('Time (s)');
         ylabel('# units');
         set(gca, 'TickDir', 'out')
-        setPrint(8, 6, [PlotDir 'CollectedUnitsDecodability/CollectedUnitsDecodabilityFixedROCThres_0_5_Example' DataSetList(nData).name '_numNeuron_' num2str(stepSize(numRandPickUnits))])
+%         setPrint(8, 6, [PlotDir 'CollectedUnitsDecodability/CollectedUnitsDecodabilityFixedROCThres_0_5_Example' DataSetList(nData).name '_numNeuron_' num2str(stepSize(numRandPickUnits))])
+        setPrint(8, 6, [PlotDir 'CollectedUnitsDecodability/' DataSetList(nData).name '_decodability'], 'svg')
     end    
 end
 

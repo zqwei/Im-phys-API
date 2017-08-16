@@ -28,10 +28,12 @@ for nData      = 1:length(DataSetList)
     unitGroup = getLogPValueTscoreSpikeTime(nDataSet, DataSetList(nData).params);
     sizeGroup = histcounts(unitGroup, 0:3);
     figure('Visible', 'off');
-    groupNames      = {'Non.', 'Mono.', 'Multi.'};
+    groupNames      = {['Non' newline 'n = ' num2str(sum(unitGroup==0))], ... 
+                       ['Mono' newline 'n = ' num2str(sum(unitGroup==1))], ...
+                       ['Multi' newline 'n = ' num2str(sum(unitGroup==2))]};
     donut(sizeGroup, groupNames, groupColors)
     axis off
-    legend('Location','southoutside','Orientation','horizontal')
+    legend('Location','eastoutside')
     legend('boxoff')
     setPrint(8, 6, [PlotDir 'SingleUnitsTscore/SingleUnitsTscoreTime_' DataSetList(nData).name])
     setPrint(8, 6, [PlotDir 'SingleUnitsTscore/' DataSetList(nData).name '_selectivity'], 'svg')

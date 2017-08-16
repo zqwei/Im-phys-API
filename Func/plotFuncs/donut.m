@@ -16,7 +16,7 @@ colormap lines
 clrmp = colormap;
 ispie = 0;
 
-if length(varargin)>0
+if ~isempty(varargin)
     legtext = varargin{1};
     if length(varargin)>1
         if ~isempty(varargin{2})
