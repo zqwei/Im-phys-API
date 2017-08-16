@@ -25,8 +25,8 @@ cmap = [         0    0.4470    0.7410
     0.6350    0.0780    0.1840];
 
 
-for nData              = [1 3 4]
-    if nData   == 1
+for nData      = 1:length(DataSetList)
+    if ~exist([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'], 'file')
         load([TempDatDir DataSetList(nData).name '.mat'])
         neuronRemoveList = false(length(nDataSet), 1);
     else
@@ -53,13 +53,16 @@ for nData              = [1 3 4]
     bar(1:numComps, PCAmargVar(:, 1:numComps)','stacked', 'edgecolor', 'none')
     box off
     xlim([0 numComps+0.5])
-    ylim([0 0.5])
+    ylim([0 0.7])
     xlabel('Component index')
     ylabel('frac. EV per PC')
     colormap(cmap(1:3, :))
     set(gca, 'xTick', 0:5:10)
     set(gca, 'TickDir', 'out')
-    setPrint(8, 6, [PlotDir 'CollectedUnitsPCA/CollectedUnitsPCA_' DataSetList(nData).name])    
+    setPrint(8, 6, [PlotDir 'CollectedUnitsPCA/CollectedUnitsPCA_' DataSetList(nData).name])  
+    legend({'Trial type', 'Time', 'Other'})
+    legend('boxoff')
+    setPrint(8, 6, [PlotDir 'CollectedUnitsPCA/' DataSetList(nData).name '_pca'], 'svg')   
 end
 
 figure;

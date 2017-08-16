@@ -6,9 +6,10 @@ if ~exist([PlotDir 'SingleUnitsPeakLocation'],'dir')
     mkdir([PlotDir 'SingleUnitsPeakLocation'])
 end
 
-for nData     = [1 3 4]
-    if nData   == 1
+for nData     = 1:length(DataSetList)
+    if ~exist([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'], 'file')
         load([TempDatDir DataSetList(nData).name '.mat'])
+        neuronRemoveList = false(length(nDataSet), 1);
     else
         load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
     end
@@ -64,6 +65,7 @@ for nData     = [1 3 4]
     xlabel('Time')
     hold off
     setPrint(8, 3, [PlotDir 'SingleUnitsPeakLocation\SingleUnitsMaxLocationPosNeuron_' DataSetList(nData).name])
+    setPrint(8, 3, [PlotDir 'SingleUnitsPeakLocation\\' DataSetList(nData).name '_peakness'], 'svg')
 end
 
 close all
