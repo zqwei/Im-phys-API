@@ -8,7 +8,7 @@ load ([TempDatDir 'DataListShuffle.mat']);
 maxNumOutlier = 10;
 
 
-for nData             = [3 4]
+for nData             = 2:5
     load([TempDatDir DataSetList(nData).name '.mat'])
     for nUnit = 1:length(nDataSet)
         nCellDFF = nDataSet(nUnit).unit_yes_trial;
@@ -36,7 +36,7 @@ end
 
 thres          = 0.3;
 
-for nData              = [3 4]
+for nData              = 2:5
     load([TempDatDir DataSetList(nData).name '.mat'])
     params             = DataSetList(nData).params;
     timePeriod         = timePointTrialPeriod(params.polein, params.poleout, params.timeSeries);
