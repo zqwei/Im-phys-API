@@ -14,31 +14,27 @@ if ~exist([PlotDir 'SingleUnitsTscore'],'dir')
     mkdir([PlotDir 'SingleUnitsTscore'])
 end
 
-cmap = cbrewer('qual', 'Set1', 3, 'cubic');
+cmap = cbrewer('qual', 'Set1', 9, 'cubic');
 cmap = cmap([3, 5, 9], :);
+groupColors = {cmap(3, :), cmap(2, :), cmap(1, :)};
 
-for nData      = [1 3 4]
-    if nData   == 1
+for nData      = 1:length(DataSetList)
+    if ~exist([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'], 'file')
         load([TempDatDir DataSetList(nData).name '.mat'])
         neuronRemoveList = false(length(nDataSet), 1);
     else
         load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
     end
     unitGroup = getLogPValueTscoreSpikeTime(nDataSet, DataSetList(nData).params);
-%     cellType  = [DataSetList(nData).cellinfo.cellType]';
-%     depth     = [DataSetList(nData).cellinfo(:).depth]';
-%     sizeGroup = histcounts(unitGroup(cellType==1 & depth>100 & depth<800), 0:3);
     sizeGroup = histcounts(unitGroup, 0:3);
-%     sizeGroup
-%     sum(sizeGroup)
-%     disp(sizeGroup(2)/sizeGroup(3))
     figure('Visible', 'off');
-    groupNames      = {'Non.', 'Homo.', 'Dynamical'};
-    pie(sizeGroup)
-    colormap(cmap)
-    set(gca, 'TickDir', 'out')
+    groupNames      = {'Non.', 'Mono.', 'Multi.'};
+    donut(sizeGroup, groupNames, groupColors)
+    axis off
+    legend('Location','southoutside','Orientation','horizontal')
+    legend('boxoff')
     setPrint(8, 6, [PlotDir 'SingleUnitsTscore/SingleUnitsTscoreTime_' DataSetList(nData).name])
-    setPrint(8, 6, [PlotDir 'SingleUnitsTscore/' DataSetList(nData).name '_'], 'svg')
+    setPrint(8, 6, [PlotDir 'SingleUnitsTscore/' DataSetList(nData).name '_selectivity'], 'svg')
 
     depth                        = [DataSetList(nData).cellinfo(:).depth];
     depth                        = depth(~neuronRemoveList);
@@ -94,86 +90,86 @@ for nData      = [1 3 4]
     setPrint(8*2, 6, [PlotDir 'SingleUnitsTscore/SingleUnitsTscoreTimeDepth_' DataSetList(nData).name])
 end
 
-figure;
-hold on
-for nColor = 1:length(groupNames)
-    plot(0, nColor, 's', 'color', cmap(nColor,:), 'MarkerFaceColor',cmap(nColor,:),'MarkerSize', 8)
-    text(1, nColor, groupNames{nColor})
-end
-xlim([0 10])
-hold off
-axis off
-setPrint(3, 2, [PlotDir 'SingleUnitsTscore/SingleUnitsTscore_Label'])
-close all
-
-for nData = [1 4]
-    if nData   == 1
-        load([TempDatDir DataSetList(nData).name '.mat'])
-        neuronRemoveList = false(length(nDataSet), 1);
-    else
-        load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
-    end
-    [~, ~, anmIndex] = unique(cell2mat({DataSetList(nData).cellinfo.anmName}'), 'rows');
-    numGroup    = 3;
-    groupCounts = zeros(anmIndex(end), numGroup);
-    anmIndex  = anmIndex(~neuronRemoveList);
-    unitGroup = getLogPValueTscoreSpikeTime(nDataSet, DataSetList(nData).params);
-    for nAnm    = 1:anmIndex(end)
-        if sum(anmIndex == nAnm) > 50
-            for nGroup = 1:numGroup
-                groupCounts(nAnm, nGroup) = sum(unitGroup == nGroup-1 & anmIndex == nAnm);
-            end
-        end
-    end
-    zeroGroups  = sum(groupCounts, 2) == 0;
-    groupCounts = groupCounts(~zeroGroups, :);
-%     [tab, chi2, p] = crosstab(unitGroup(unitGroup>0), anmIndex(unitGroup>0)');
-    groupPerCounts = bsxfun(@rdivide, groupCounts, sum(groupCounts, 2));
-    figure
-    subplot(2, 1, 1)
-    barh(groupPerCounts, 'stack', 'edgecolor', 'none');
-    colormap(cmap)
-    %     caxis([1 8])
-    xlim([0 1])
-    box off
-    xlabel('% cell type')
-    ylabel('Animal index')
-    set(gca, 'yTickLabel', {})
-    set(gca, 'TickDir', 'out')
-    subplot(2, 1, 2)
-    barh(sum(groupCounts,2), 'k')
-    xlabel('# cells')
-    ylabel('Animal index')
-    set(gca, 'yTickLabel', {})
-    set(gca, 'TickDir', 'out')
-    setPrint(8, 6*2, [PlotDir 'SingleUnitsTscore/SingleUnitsTscoreANM_' DataSetList(nData).name])
-end
-
-load ([TempDatDir 'DataListShuffleConfounding.mat']);
-nData          = 5;
-load([TempDatDir DataSetList(nData).name '.mat'])
-unitGroup      = getLogPValueTscoreSpikeTime(nDataSet, DataSetList(nData).params);
-figure;
-areaIndex      = false(length(unitGroup), 1);
-sizeGroup      = histcounts(unitGroup, 0:3);
-pie(sizeGroup)
-colormap(cmap)
-disp(sum(sizeGroup))
-setPrint(8, 6, [PlotDir 'SingleUnitsTscore/SingleUnitsTscoreAPML_Pop_' DataSetList(nData).name])
-figure;
-APLoc          = [DataSetList(nData).cellinfo.AP_axis];
-MLLoc          = [DataSetList(nData).cellinfo.ML_axis];
-sizeGroup      = histcounts(unitGroup(APLoc>2400 & APLoc<2600 & MLLoc>1100 & MLLoc<1900), 0:3);
-areaIndex(APLoc>2400 & APLoc<2600 & MLLoc>1100 & MLLoc<1900) = true;
-[tab, chi2, p] = crosstab(unitGroup(unitGroup>0), areaIndex(unitGroup>0)');
-groupNames     = {'Non.', 'Homo.', 'Dynamicial'};
-pie(sizeGroup)
-colormap(cmap)
-disp(sum(sizeGroup))
-setPrint(8, 6, [PlotDir 'SingleUnitsTscore/SingleUnitsTscoreAPML_Sub_' DataSetList(nData).name])
-
-figure
-hold on
-plot(MLLoc, APLoc, '.', 'color', [0.5 0.5 0.5])
-plot(MLLoc(areaIndex), APLoc(areaIndex), '.k')
-setPrint(8, 6, [PlotDir 'SingleUnitsTscore/SingleUnitsTscoreAPML_Sub_Loc_' DataSetList(nData).name])
+% % % % figure;
+% % % % hold on
+% % % % for nColor = 1:length(groupNames)
+% % % %     plot(0, nColor, 's', 'color', cmap(nColor,:), 'MarkerFaceColor',cmap(nColor,:),'MarkerSize', 8)
+% % % %     text(1, nColor, groupNames{nColor})
+% % % % end
+% % % % xlim([0 10])
+% % % % hold off
+% % % % axis off
+% % % % setPrint(3, 2, [PlotDir 'SingleUnitsTscore/SingleUnitsTscore_Label'])
+% % % % close all
+% % % % 
+% % % % for nData = [1 4]
+% % % %     if nData   == 1
+% % % %         load([TempDatDir DataSetList(nData).name '.mat'])
+% % % %         neuronRemoveList = false(length(nDataSet), 1);
+% % % %     else
+% % % %         load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
+% % % %     end
+% % % %     [~, ~, anmIndex] = unique(cell2mat({DataSetList(nData).cellinfo.anmName}'), 'rows');
+% % % %     numGroup    = 3;
+% % % %     groupCounts = zeros(anmIndex(end), numGroup);
+% % % %     anmIndex  = anmIndex(~neuronRemoveList);
+% % % %     unitGroup = getLogPValueTscoreSpikeTime(nDataSet, DataSetList(nData).params);
+% % % %     for nAnm    = 1:anmIndex(end)
+% % % %         if sum(anmIndex == nAnm) > 50
+% % % %             for nGroup = 1:numGroup
+% % % %                 groupCounts(nAnm, nGroup) = sum(unitGroup == nGroup-1 & anmIndex == nAnm);
+% % % %             end
+% % % %         end
+% % % %     end
+% % % %     zeroGroups  = sum(groupCounts, 2) == 0;
+% % % %     groupCounts = groupCounts(~zeroGroups, :);
+% % % % %     [tab, chi2, p] = crosstab(unitGroup(unitGroup>0), anmIndex(unitGroup>0)');
+% % % %     groupPerCounts = bsxfun(@rdivide, groupCounts, sum(groupCounts, 2));
+% % % %     figure
+% % % %     subplot(2, 1, 1)
+% % % %     barh(groupPerCounts, 'stack', 'edgecolor', 'none');
+% % % %     colormap(cmap)
+% % % %     %     caxis([1 8])
+% % % %     xlim([0 1])
+% % % %     box off
+% % % %     xlabel('% cell type')
+% % % %     ylabel('Animal index')
+% % % %     set(gca, 'yTickLabel', {})
+% % % %     set(gca, 'TickDir', 'out')
+% % % %     subplot(2, 1, 2)
+% % % %     barh(sum(groupCounts,2), 'k')
+% % % %     xlabel('# cells')
+% % % %     ylabel('Animal index')
+% % % %     set(gca, 'yTickLabel', {})
+% % % %     set(gca, 'TickDir', 'out')
+% % % %     setPrint(8, 6*2, [PlotDir 'SingleUnitsTscore/SingleUnitsTscoreANM_' DataSetList(nData).name])
+% % % % end
+% % % % 
+% % % % load ([TempDatDir 'DataListShuffleConfounding.mat']);
+% % % % nData          = 5;
+% % % % load([TempDatDir DataSetList(nData).name '.mat'])
+% % % % unitGroup      = getLogPValueTscoreSpikeTime(nDataSet, DataSetList(nData).params);
+% % % % figure;
+% % % % areaIndex      = false(length(unitGroup), 1);
+% % % % sizeGroup      = histcounts(unitGroup, 0:3);
+% % % % pie(sizeGroup)
+% % % % colormap(cmap)
+% % % % disp(sum(sizeGroup))
+% % % % setPrint(8, 6, [PlotDir 'SingleUnitsTscore/SingleUnitsTscoreAPML_Pop_' DataSetList(nData).name])
+% % % % figure;
+% % % % APLoc          = [DataSetList(nData).cellinfo.AP_axis];
+% % % % MLLoc          = [DataSetList(nData).cellinfo.ML_axis];
+% % % % sizeGroup      = histcounts(unitGroup(APLoc>2400 & APLoc<2600 & MLLoc>1100 & MLLoc<1900), 0:3);
+% % % % areaIndex(APLoc>2400 & APLoc<2600 & MLLoc>1100 & MLLoc<1900) = true;
+% % % % [tab, chi2, p] = crosstab(unitGroup(unitGroup>0), areaIndex(unitGroup>0)');
+% % % % groupNames     = {'Non.', 'Homo.', 'Dynamicial'};
+% % % % pie(sizeGroup)
+% % % % colormap(cmap)
+% % % % disp(sum(sizeGroup))
+% % % % setPrint(8, 6, [PlotDir 'SingleUnitsTscore/SingleUnitsTscoreAPML_Sub_' DataSetList(nData).name])
+% % % % 
+% % % % figure
+% % % % hold on
+% % % % plot(MLLoc, APLoc, '.', 'color', [0.5 0.5 0.5])
+% % % % plot(MLLoc(areaIndex), APLoc(areaIndex), '.k')
+% % % % setPrint(8, 6, [PlotDir 'SingleUnitsTscore/SingleUnitsTscoreAPML_Sub_Loc_' DataSetList(nData).name])
