@@ -65,7 +65,7 @@ for nData     = 1:length(DataSetList)
     xlabel('Time')
     hold off
     setPrint(8, 3, [PlotDir 'SingleUnitsPeakLocation\SingleUnitsMaxLocationPosNeuron_' DataSetList(nData).name])
-    setPrint(8, 3, [PlotDir 'SingleUnitsPeakLocation\\' DataSetList(nData).name '_peakness'], 'svg')
+    setPrint(8, 3, [PlotDir 'SingleUnitsPeakLocation\' DataSetList(nData).name '_peakness'], 'svg')
 end
 
 close all

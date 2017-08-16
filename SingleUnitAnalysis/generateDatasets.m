@@ -230,10 +230,10 @@ fileList            = {SpikingShortNuoFileList; ...
                        SpikingShortHiIntraFileList};
 
 for nData           = 1:length(fileList)
-    if exist([TempDatDir DataSetList(nData).name '.mat'], 'file')
-        load([TempDatDir DataSetList(nData).name '.mat']);
-    else
+    if exist([TempDatDir DataSetList(nData).name '_old.mat'], 'file')
         load([TempDatDir DataSetList(nData).name '_old.mat']);
+    else
+        load([TempDatDir DataSetList(nData).name '.mat']);
     end
     DataSetList(nData).cellinfo  = repmat(struct('fileName',1, 'nUnit', 1, ...
                                 'AP_axis',1, 'ML_axis', 1, 'depth', 1,...
@@ -271,9 +271,11 @@ for nData     = [1 8:9]
     DataSetList(nData).ActiveNeuronIndex = DataSetList(1).ActiveNeuronIndex(validCellIndex);
     DataSetList(nData).cellinfo = DataSetList(1).cellinfo(validCellIndex);
     DataSetList(nData).ROCIndex = DataSetList(1).ROCIndex(validCellIndex, :);
-    save([TempDatDir 'DataListShuffle.mat'], 'DataSetList');
+    
     
     load([TempDatDir DataSetList(nData).name '_old.mat'], 'nDataSet');
     nDataSet = nDataSet(validCellIndex);
     save([TempDatDir DataSetList(nData).name '.mat'], 'nDataSet');
 end
+
+save([TempDatDir 'DataListShuffle.mat'], 'DataSetList');
