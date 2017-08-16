@@ -229,7 +229,7 @@ fileList            = {SpikingShortNuoFileList; ...
                        SpikingShortHiFileList;...
                        SpikingShortHiIntraFileList};
 
-for nData           = 7:9%1:length(fileList)
+for nData           = 1:length(fileList)
     if exist([TempDatDir DataSetList(nData).name '.mat'], 'file')
         load([TempDatDir DataSetList(nData).name '.mat']);
     else
