@@ -52,33 +52,33 @@ end
 
 save([TempDatDir 'ParamsFitCells_S2CModel_linear_nofix.mat'], 'paras');
 
-for nCell        = 1:length(totCell)  
-    spk          = totCell(nCell).spk;
-    dff          = totCell(nCell).dff;
-    if isa(dff, 'single'); dff = double(dff); end
-    t_frame      = totCell(nCell).CaTime;
-    
-    %%%%%%%% linear model
-    para_start                   = [20  0  0  1  0.2107];
-    para_final                   = gcamp6_quadratic_model({spk}, dff, t_frame, para_start);
-    CaTraces                     = func_getCaTraces_quadratic({spk},t_frame,para_final);
-        
-    paras(nCell).cellName      = totCell(nCell).cellName;
-    paras(nCell).nRep          = totCell(nCell).nRep;
-    paras(nCell).expression    = totCell(nCell).expression;
-    paras(nCell).CaIndicator   = totCell(nCell).CaIndicator;
-    paras(nCell).a             = para_final(1);
-    paras(nCell).b             = para_final(2);
-    paras(nCell).c             = para_final(3);
-    paras(nCell).tau_d         = para_final(4);
-    paras(nCell).tau_r         = para_final(5);
-    paras(nCell).fitCaTraces   = fitCaTraces;
-    paras(nCell).ev            = 1- sum((fitCaTraces-dff).^2)/length(dff)/var(dff);
-    paras(nCell).var            = var(dff);
-    disp([paras(nCell).ev paras(nCell).var max(dff)])
-end
-
-save([TempDatDir 'ParamsFitCells_S2CModel_quadratic_nofix.mat'], 'paras');
+% for nCell        = 1:length(totCell)  
+%     spk          = totCell(nCell).spk;
+%     dff          = totCell(nCell).dff;
+%     if isa(dff, 'single'); dff = double(dff); end
+%     t_frame      = totCell(nCell).CaTime;
+%     
+%     %%%%%%%% linear model
+%     para_start                   = [20  0  0  1  0.2107];
+%     para_final                   = gcamp6_quadratic_model(spk, dff, t_frame, para_start);
+%     CaTraces                     = func_getCaTraces_quadratic(spk,t_frame,para_final);
+%         
+%     paras(nCell).cellName      = totCell(nCell).cellName;
+%     paras(nCell).nRep          = totCell(nCell).nRep;
+%     paras(nCell).expression    = totCell(nCell).expression;
+%     paras(nCell).CaIndicator   = totCell(nCell).CaIndicator;
+%     paras(nCell).a             = para_final(1);
+%     paras(nCell).b             = para_final(2);
+%     paras(nCell).c             = para_final(3);
+%     paras(nCell).tau_d         = para_final(4);
+%     paras(nCell).tau_r         = para_final(5);
+%     paras(nCell).fitCaTraces   = fitCaTraces;
+%     paras(nCell).ev            = 1- sum((fitCaTraces-dff).^2)/length(dff)/var(dff);
+%     paras(nCell).var            = var(dff);
+%     disp([paras(nCell).ev paras(nCell).var max(dff)])
+% end
+% 
+% save([TempDatDir 'ParamsFitCells_S2CModel_quadratic_nofix.mat'], 'paras');
                     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % S2C model -- all fited
