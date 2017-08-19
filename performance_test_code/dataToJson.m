@@ -6,7 +6,12 @@ load('../TempDat/ParamsFitCells_S2CModel_sigmoid_Fmfix.mat', 'paras');
 S2C_Sigmoid_Function = paras;
 load('../TempDat/ParamsFitCells_S2CModel_linear_nofix.mat', 'paras');
 S2C_linear_Function = paras;
-
+load('removeList.mat');
+saveId = true(size(paras));
+saveId(removeList) = false;
+S2C_Hill_Function = S2C_Hill_Function(saveId);
+S2C_Sigmoid_Function = S2C_Sigmoid_Function(saveId);
+S2C_linear_Function = S2C_linear_Function(saveId);
 
 for nCell  = 1:length(totCell)
     load([tempFitDir 'Fast_oopsi_fit_Cell_' num2str(nCell) '.mat'])
