@@ -9,56 +9,120 @@ addpath('../Func');
 addpath('../Func/S2CfitFuncs');
 setDir;
 load([TempDatDir 'DataListCells.mat'], 'totCell');
-% load([TempDatDir 'ParamsFitCells_S2CModel_nofix.mat'], 'paras');
-% parasOld = paras;
-% clear paras;
-% paras = repmat(struct('cellName',1, 'nRep', 1, 'expression', 'virus',...
-%                         'CaIndicator', 'GCaMP6f', 'FmNorm', nan, ...
-%                         'Fm',1, 'Ca0', 1, 'beta', 1, 'tau_r', 1, 'tau_d', 1),length(totCell), 1); 
-%                     
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% % S2C model -- all fited
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                     
-% p_fit_index      = [false, false, false, true, true]; % Fm, Kd, n, tau_d, tau_r
-% 
-%                     
+load([TempDatDir 'ParamsFitCells_S2CModel_nofix.mat'], 'paras');
+parasOld = paras;
+clear paras;
+paras = repmat(struct('cellName',1, 'nRep', 1, 'expression', 'virus',...
+                        'CaIndicator', 'GCaMP6f', 'FmNorm', nan, ...
+                        'Fm',1, 'Ca0', 1, 'beta', 1, 'tau_r', 1, 'tau_d', 1),length(totCell), 1); 
+                    
+                    
+                    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% S2C model -- all fited
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                    
+p_fit_index      = [false, false, false, true, true]; % Fm, Kd, n, tau_d, tau_r
+
+                    
+for nCell        = 1:length(totCell)  
+    spk          = totCell(nCell).spk;
+    dff          = totCell(nCell).dff;
+    if isa(dff, 'single'); dff = double(dff); end
+    t_frame      = totCell(nCell).CaTime;
+    
+    %%%%%%%% linear model
+    para_start                   = [20   0    1    0.2107];
+    para_final                   = gcamp6_linear_model(spk, dff, t_frame, para_start);
+    fitCaTraces                  = func_getCaTraces_linear(spk, t_frame,para_final);
+        
+    paras(nCell).cellName      = totCell(nCell).cellName;
+    paras(nCell).nRep          = totCell(nCell).nRep;
+    paras(nCell).expression    = totCell(nCell).expression;
+    paras(nCell).CaIndicator   = totCell(nCell).CaIndicator;
+    paras(nCell).a             = para_final(1);
+    paras(nCell).b             = para_final(2);
+    paras(nCell).tau_d         = para_final(3);
+    paras(nCell).tau_r         = para_final(4);
+    paras(nCell).fitCaTraces   = fitCaTraces;
+    paras(nCell).ev            = 1- sum((fitCaTraces-dff).^2)/length(dff)/var(dff);
+    paras(nCell).var            = var(dff);
+    disp([paras(nCell).ev paras(nCell).var max(dff)])
+end
+
+save([TempDatDir 'ParamsFitCells_S2CModel_linear_nofix.mat'], 'paras');
+
 % for nCell        = 1:length(totCell)  
 %     spk          = totCell(nCell).spk;
 %     dff          = totCell(nCell).dff;
 %     if isa(dff, 'single'); dff = double(dff); end
-%     para_start   = [20   20.4788    1.1856    parasOld(nCell).tau_d    parasOld(nCell).tau_r];
 %     t_frame      = totCell(nCell).CaTime;
 %     
 %     %%%%%%%% linear model
-%     % para_start                   = [20   0    1    0.2107];
-%     % para_final                   = gcamp6_linear_model({spk}, dff, para.t_frame, para_start);
-%     % CaTraces                     = func_getCaTraces_linear({spk},para.t_frame,para_final);
-%     
-%     %%%%%%%% quadratic model
-%     % para_start                   = [20  0  0  1  0.2107];
-%     % para_final                   = gcamp6_quadratic_model({spk}, dff, para.t_frame, para_start);
-%     % CaTraces                     = func_getCaTraces_quadratic({spk},para.t_frame,para_final);
-%     
-%     % Hill model
-%     para_final                 = gcamp6_model_sigmoid({spk}, dff, t_frame, para_start, p_fit_index);
-%     fitCaTraces                = func_getCaTraces_sigmoid({spk}, t_frame,para_final);
+%     para_start                   = [20  0  0  1  0.2107];
+%     para_final                   = gcamp6_quadratic_model(spk, dff, t_frame, para_start);
+%     CaTraces                     = func_getCaTraces_quadratic(spk,t_frame,para_final);
+%         
 %     paras(nCell).cellName      = totCell(nCell).cellName;
 %     paras(nCell).nRep          = totCell(nCell).nRep;
 %     paras(nCell).expression    = totCell(nCell).expression;
 %     paras(nCell).CaIndicator   = totCell(nCell).CaIndicator;
-%     paras(nCell).Fm            = para_final(1);
-%     paras(nCell).Ca0           = para_final(2);
-%     paras(nCell).beta          = para_final(3);
+%     paras(nCell).a             = para_final(1);
+%     paras(nCell).b             = para_final(2);
+%     paras(nCell).c             = para_final(3);
 %     paras(nCell).tau_d         = para_final(4);
 %     paras(nCell).tau_r         = para_final(5);
 %     paras(nCell).fitCaTraces   = fitCaTraces;
 %     paras(nCell).ev            = 1- sum((fitCaTraces-dff).^2)/length(dff)/var(dff);
 %     paras(nCell).var            = var(dff);
-% %     disp([paras(nCell).ev paras(nCell).var max(dff)])
+%     disp([paras(nCell).ev paras(nCell).var max(dff)])
 % end
 % 
-% save([TempDatDir 'ParamsFitCells_S2CModel_sigmoid_nofix.mat'], 'paras');
+% save([TempDatDir 'ParamsFitCells_S2CModel_quadratic_nofix.mat'], 'paras');
+                    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% S2C model -- all fited
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                    
+p_fit_index      = [false, false, false, true, true]; % Fm, Kd, n, tau_d, tau_r
+
+                    
+for nCell        = 1:length(totCell)  
+    spk          = totCell(nCell).spk;
+    dff          = totCell(nCell).dff;
+    if isa(dff, 'single'); dff = double(dff); end
+    para_start   = [20   20.4788    1.1856    parasOld(nCell).tau_d    parasOld(nCell).tau_r];
+    t_frame      = totCell(nCell).CaTime;
+    
+    %%%%%%%% linear model
+    % para_start                   = [20   0    1    0.2107];
+    % para_final                   = gcamp6_linear_model({spk}, dff, para.t_frame, para_start);
+    % CaTraces                     = func_getCaTraces_linear({spk},para.t_frame,para_final);
+    
+    %%%%%%%% quadratic model
+    % para_start                   = [20  0  0  1  0.2107];
+    % para_final                   = gcamp6_quadratic_model({spk}, dff, para.t_frame, para_start);
+    % CaTraces                     = func_getCaTraces_quadratic({spk},para.t_frame,para_final);
+    
+    % sigmoid model
+    para_final                 = gcamp6_model_sigmoid({spk}, dff, t_frame, para_start, p_fit_index);
+    fitCaTraces                = func_getCaTraces_sigmoid({spk}, t_frame,para_final);
+    paras(nCell).cellName      = totCell(nCell).cellName;
+    paras(nCell).nRep          = totCell(nCell).nRep;
+    paras(nCell).expression    = totCell(nCell).expression;
+    paras(nCell).CaIndicator   = totCell(nCell).CaIndicator;
+    paras(nCell).Fm            = para_final(1);
+    paras(nCell).Ca0           = para_final(2);
+    paras(nCell).beta          = para_final(3);
+    paras(nCell).tau_d         = para_final(4);
+    paras(nCell).tau_r         = para_final(5);
+    paras(nCell).fitCaTraces   = fitCaTraces;
+    paras(nCell).ev            = 1- sum((fitCaTraces-dff).^2)/length(dff)/var(dff);
+    paras(nCell).var            = var(dff);
+%     disp([paras(nCell).ev paras(nCell).var max(dff)])
+end
+
+save([TempDatDir 'ParamsFitCells_S2CModel_sigmoid_nofix.mat'], 'paras');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % S2C model -- Fm fixed
@@ -83,7 +147,7 @@ for nCell        = 1:length(totCell)
     para_start   = [10   20.4788    1.1856    parasOld(nCell).tau_d    parasOld(nCell).tau_r];
     t_frame      = totCell(nCell).CaTime;
         
-    % Hill model
+    % sigmoid model
     para_final                 = gcamp6_model_sigmoid({spk}, dff, t_frame, para_start);
     fitCaTraces                = func_getCaTraces_sigmoid({spk}, t_frame,para_final);
     
