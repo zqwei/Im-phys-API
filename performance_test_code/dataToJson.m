@@ -38,19 +38,32 @@ for nCell  = 1:length(totCell)
     writetable(table(spkTime, spk), spk_file);
     
     time         = totCell(nCell).CaTime;    
-    raw_dff      = normalized_dat(totCell(nCell).dff);
-    S2C_Linear   = normalized_dat(S2C_linear_Function(nCell).fitCaTraces);
-    S2C_Hill     = normalized_dat(S2C_Hill_Function(nCell).fitCaTraces);
-    S2C_Sigmoid  = normalized_dat(S2C_Sigmoid_Function(nCell).fitCaTraces);
-    C2S_Nonnegative_Wienner_Filter = normalized_dat(wiener.F_est_nonneg)';
-    C2S_Fast_OOPSI = normalized_dat(fast.F_est)';
-    C2S_Finite_Rate_Innovation = normalized_dat(fri.F_est);
-    C2S_Constrained_OOPSI_AR1 = normalized_dat(cf1.c)';
-    C2S_Constrained_OOPSI_AR2 = normalized_dat(cf2.c)';
-    C2S_Constrained_OOPSI_AR3 = normalized_dat(cf3.c)';
-    C2S_Constrained_OOPSI_MCMC = normalized_dat(cont.F_est)';
-    C2S_Peel_Linear = normalized_dat(peel.model)';
-    C2S_Peel_NonLinear = normalized_dat(peelNL.model)';
+%     raw_dff      = normalized_dat(totCell(nCell).dff);
+%     S2C_Linear   = normalized_dat(S2C_linear_Function(nCell).fitCaTraces);
+%     S2C_Hill     = normalized_dat(S2C_Hill_Function(nCell).fitCaTraces);
+%     S2C_Sigmoid  = normalized_dat(S2C_Sigmoid_Function(nCell).fitCaTraces);
+%     C2S_Nonnegative_Wienner_Filter = normalized_dat(wiener.F_est_nonneg)';
+%     C2S_Fast_OOPSI = normalized_dat(fast.F_est)';
+%     C2S_Finite_Rate_Innovation = normalized_dat(fri.F_est);
+%     C2S_Constrained_OOPSI_AR1 = normalized_dat(cf1.c)';
+%     C2S_Constrained_OOPSI_AR2 = normalized_dat(cf2.c)';
+%     C2S_Constrained_OOPSI_AR3 = normalized_dat(cf3.c)';
+%     C2S_Constrained_OOPSI_MCMC = normalized_dat(cont.F_est)';
+%     C2S_Peel_Linear = normalized_dat(peel.model)';
+%     C2S_Peel_NonLinear = normalized_dat(peelNL.model)';
+    raw_dff      = totCell(nCell).dff;
+    S2C_Linear   = S2C_linear_Function(nCell).fitCaTraces;
+    S2C_Hill     = S2C_Hill_Function(nCell).fitCaTraces;
+    S2C_Sigmoid  = S2C_Sigmoid_Function(nCell).fitCaTraces;
+    C2S_Nonnegative_Wienner_Filter = wiener.F_est_nonneg';
+    C2S_Fast_OOPSI = fast.F_est';
+    C2S_Finite_Rate_Innovation = fri.F_est;
+    C2S_Constrained_OOPSI_AR1 = cf1.c';
+    C2S_Constrained_OOPSI_AR2 = cf2.c';
+    C2S_Constrained_OOPSI_AR3 = cf3.c';
+    C2S_Constrained_OOPSI_MCMC = cont.F_est';
+    C2S_Peel_Linear = peel.model';
+    C2S_Peel_NonLinear = peelNL.model';
     
     calcium_file  = [fileFold '/' totCell(nCell).cellName '_' num2str(totCell(nCell).nRep, '%03d') '_dff.csv'];
     
