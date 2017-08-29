@@ -43,11 +43,10 @@ txlim = [230, 4, 20, 10];
 for nTitle = 1:length(nTitles) - 1
     subplot(1, length(nTitles), nTitle);
     hold on;
-    for nGroup = [2 4]
+    for nGroup = 1:4
         [f,xi] = ksdensity(paraMat(group==nGroup, nTitle));
-        nanstd(paraMat(group==nGroup, nTitle))
-        nanmedian(paraMat(group==nGroup, nTitle))
-        nanmean(paraMat(group==nGroup, nTitle))
+        [nTitles{nTitle} '_' expression{nGroup} '_' CaIndicator{nGroup}]
+        [nanstd(paraMat(group==nGroup, nTitle)), nanmedian(paraMat(group==nGroup, nTitle)), nanmean(paraMat(group==nGroup, nTitle))]    
         plot(xi, f, '-', 'color', groupColor(nGroup, :), 'linewid', 1.5);
     end
     xlabel(nTitles{nTitle});
