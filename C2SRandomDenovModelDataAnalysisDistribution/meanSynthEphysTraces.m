@@ -28,9 +28,11 @@ per_list               = 0.02:0.01:0.98;
 tau_d_list             = icdf('Normal', per_list, 0, 1) * std_d + median_d;
 
 for nTau              = 1:length(tau_d_list)
-    spikeDataSet      = getSyntheticSpikeDeconvDataSimpleVersion(nDataSet, median_r, tau_d_list(nTau), params);   %#ok<*NASGU>
-    save([TempDatDir 'directDeconv/' DataSetList(nData).name '_Tau' num2str(nTau, '%02d') '.mat'], 'spikeDataSet');
-    clear spikeDataSet
+    if ~exist([TempDatDir 'directDeconv/' DataSetList(nData).name '_Tau' num2str(nTau, '%02d') '.mat'], 'file')
+        spikeDataSet      = getSyntheticSpikeDeconvDataSimpleVersion(nDataSet, median_r, tau_d_list(nTau), params);   %#ok<*NASGU>
+        save([TempDatDir 'directDeconv/' DataSetList(nData).name '_Tau' num2str(nTau, '%02d') '.mat'], 'spikeDataSet');
+        clear spikeDataSet
+    end
 end
 
 
@@ -46,9 +48,11 @@ per_list               = 0.02:0.01:0.98;
 tau_d_list             = icdf('Normal', per_list, 0, 1) * std_d + median_d;
 
 for nTau              = 1:length(tau_d_list)
-    spikeDataSet      = getSyntheticSpikeDeconvDataSimpleVersion(nDataSet, median_r, tau_d_list(nTau), params);   %#ok<*NASGU>
-    save([TempDatDir 'directDeconv/' DataSetList(nData).name '_Tau' num2str(nTau, '%02d') '.mat'], 'spikeDataSet');
-    clear spikeDataSet
+    if ~exist([TempDatDir 'directDeconv/' DataSetList(nData).name '_Tau' num2str(nTau, '%02d') '.mat'], 'file')
+        spikeDataSet      = getSyntheticSpikeDeconvDataSimpleVersion(nDataSet, median_r, tau_d_list(nTau), params);   %#ok<*NASGU>
+        save([TempDatDir 'directDeconv/' DataSetList(nData).name '_Tau' num2str(nTau, '%02d') '.mat'], 'spikeDataSet');
+        clear spikeDataSet
+    end
 end
 
 
@@ -65,9 +69,11 @@ tau_d_list             = icdf('Normal', per_list, 0, 1) * std_d + median_d;
 
 
 for nTau              = 1:length(tau_d_list)
-    spikeDataSet      = getSyntheticSpikeDeconvDataSimpleVersion(nDataSet, median_r, tau_d_list(nTau), params);  
-    save([TempDatDir 'directDeconv/' DataSetList(nData).name '_Tau' num2str(nTau, '%02d') '.mat'], 'spikeDataSet');
-    clear spikeDataSet
+    if ~exist([TempDatDir 'directDeconv/' DataSetList(nData).name '_Tau' num2str(nTau, '%02d') '.mat'], 'file')
+        spikeDataSet      = getSyntheticSpikeDeconvDataSimpleVersion(nDataSet, median_r, tau_d_list(nTau), params);   %#ok<*NASGU>
+        save([TempDatDir 'directDeconv/' DataSetList(nData).name '_Tau' num2str(nTau, '%02d') '.mat'], 'spikeDataSet');
+        clear spikeDataSet
+    end
 end
 
 
@@ -84,9 +90,11 @@ tau_d_list             = icdf('Normal', per_list, 0, 1) * std_d + median_d;
 
 
 for nTau              = 1:length(tau_d_list)
-    spikeDataSet      = getSyntheticSpikeDeconvDataSimpleVersion(nDataSet, median_r, tau_d_list(nTau), params);  
-    save([TempDatDir 'directDeconv/' DataSetList(nData).name '_Tau' num2str(nTau, '%02d') '.mat'], 'spikeDataSet');
-    clear spikeDataSet
+    if ~exist([TempDatDir 'directDeconv/' DataSetList(nData).name '_Tau' num2str(nTau, '%02d') '.mat'], 'file')
+        spikeDataSet      = getSyntheticSpikeDeconvDataSimpleVersion(nDataSet, median_r, tau_d_list(nTau), params);   %#ok<*NASGU>
+        save([TempDatDir 'directDeconv/' DataSetList(nData).name '_Tau' num2str(nTau, '%02d') '.mat'], 'spikeDataSet');
+        clear spikeDataSet
+    end
 end
 
 
@@ -103,7 +111,9 @@ tau_d_list             = icdf('Normal', per_list, 0, 1) * std_d + median_d;
 
 
 for nTau              = 1:length(tau_d_list)
-    spikeDataSet      = getSyntheticSpikeDeconvDataSimpleVersion(nDataSet, median_r, tau_d_list(nTau), params);  
-    save([TempDatDir 'directDeconv/' DataSetList(nData).name '_Tau' num2str(nTau, '%02d') '.mat'], 'spikeDataSet');
-    clear spikeDataSet
+    if ~exist([TempDatDir 'directDeconv/' DataSetList(nData).name '_Tau' num2str(nTau, '%02d') '.mat'], 'file')
+        spikeDataSet      = getSyntheticSpikeDeconvDataSimpleVersion(nDataSet, median_r, tau_d_list(nTau), params);   %#ok<*NASGU>
+        save([TempDatDir 'directDeconv/' DataSetList(nData).name '_Tau' num2str(nTau, '%02d') '.mat'], 'spikeDataSet');
+        clear spikeDataSet
+    end
 end
