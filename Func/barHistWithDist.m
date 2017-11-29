@@ -29,21 +29,22 @@ function barHistWithDist (barData, Dist, xlabels, barSeries, barColor, barSign)
     end
 
     [histFreq, histXout] = hist(barData, barSeries);
-    bar(histXout, histFreq*barSign, 'faceColor', barColor, 'edgeColor', barColor);  
-    if strcmp(Dist, 'Poisson')
-        PD                   = fitdist(floor(barData(barData<10)), Dist); 
-    else
-        PD                   = fitdist(barData, Dist); 
-    end
-    if strcmp(Dist, 'Poisson')
-        %binWidth             = round(histXout(2)-histXout(1));
-        binWidth             = histXout(2)-histXout(1);
-        % plot(histXout, pdf(PD, round(histXout))*binWidth*sum(histFreq)*barSign, 'Color', barColor, 'linewid',1.0);
-        plot(histXout, pdf(PD, histXout)*binWidth*sum(histFreq)*barSign, 'Color', barColor, 'linewid',1.0);
-    else
-        binWidth             = histXout(2)-histXout(1);
-        plot(histXout, pdf(PD, histXout)*binWidth*sum(histFreq)*barSign, 'Color', barColor, 'linewid',1.0);
-    end
+%     bar(histXout, histFreq*barSign, 'faceColor', barColor, 'edgeColor', barColor);  
+%     if strcmp(Dist, 'Poisson')
+%         PD                   = fitdist(floor(barData(barData<10)), Dist); 
+%     else
+%         PD                   = fitdist(barData, Dist); 
+%     end
+%     if strcmp(Dist, 'Poisson')
+%         %binWidth             = round(histXout(2)-histXout(1));
+%         binWidth             = histXout(2)-histXout(1);
+%         % plot(histXout, pdf(PD, round(histXout))*binWidth*sum(histFreq)*barSign, 'Color', barColor, 'linewid',1.0);
+%         plot(histXout, pdf(PD, histXout)*binWidth*sum(histFreq)*barSign, 'Color', barColor, 'linewid',1.0);
+%     else
+%         binWidth             = histXout(2)-histXout(1);
+%         plot(histXout, pdf(PD, histXout)*binWidth*sum(histFreq)*barSign, 'Color', barColor, 'linewid',1.0);
+%     end
+    stairs(histXout, histFreq/sum(histFreq)*barSign, 'Color', barColor, 'linewid', 1.0)
     
     ylabel('Count (#)')
     xlabel(xlabels)
