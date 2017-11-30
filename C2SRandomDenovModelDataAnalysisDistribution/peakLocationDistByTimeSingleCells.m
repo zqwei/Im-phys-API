@@ -82,6 +82,22 @@ for nData     = indexDatasets
                 peakiness(nFF) = std(countMaxId([timeTag, timeTag+77]));
             end  
             save([TempDatDir 'directDeconv/' DataSetList(nData).name '_Tau' num2str(nTau, '%02d') '_peak.mat'], 'peakiness');
+            clear spikeDataSet peakiness
         end
     end    
 end
+
+% per_list           = 0.02:0.01:0.98;
+% 
+% for nData     = indexDatasets
+%     s_mat     = nan(97, 97);
+%     for nTau  = 1:97
+%         if exist([TempDatDir 'directDeconv/' DataSetList(nData).name '_Tau' num2str(nTau, '%02d') '.mat'], 'file')
+%             load([TempDatDir 'directDeconv/' DataSetList(nData).name '_Tau' num2str(nTau, '%02d') '_peak.mat'], 'peakiness')
+%             s_mat(nTau, :) = peakiness(1:97);
+%         end
+%     end    
+%     
+%     figure;
+%     imagesc(s_mat);
+% end
