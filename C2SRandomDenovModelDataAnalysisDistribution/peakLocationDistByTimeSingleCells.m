@@ -14,13 +14,13 @@
 addpath('../Func');
 setDir;
 load ([TempDatDir 'DataListShuffle.mat']);
-numFold = 30;
 
 % all data is precomputed by code meanSynthEphysTraces.m
 
-indexDatasets = [2, 3, 5, 6];
+indexDatasets = [2, 3, 4, 5, 6];
 % 2: short Ca GP517
 % 3: short Ca slow
+% 4: short Ca slow virus
 % 5: long Ca fast
 % 6: long Ca slow
 
@@ -53,8 +53,8 @@ for nData     = indexDatasets
                 noUnitData       = getGaussianPSTH (filterInUse, nUnitData, 2);
                 mean_yesUnitData = mean(yesUnitData, 1);
                 mean_noUnitData  = mean(noUnitData, 1);
-                yesSize          = length(spikeDataSet.unit_yes_trial_index);
-                noSize           = length(spikeDataSet.unit_no_trial_index);
+                yesSize          = length(spikeDataSet(nUnit).unit_yes_trial_index);
+                noSize           = length(spikeDataSet(nUnit).unit_no_trial_index);
                 numT             = size(nUnitData, 2);
                 mean_rate        = min([mean_yesUnitData, mean_noUnitData]);
                 baseline_rate    = 0;
@@ -63,8 +63,8 @@ for nData     = indexDatasets
                 ffactor          = noise_factor_list(nFF);
                 yesUnitData      = mean_yesUnitData + ones(size(yesUnitData,1), 1) * std_yesUnitData * ffactor .* randn(yesSize, numT);
                 noUnitData       = mean_noUnitData + ones(size(noUnitData, 1), 1) * std_noUnitData * ffactor .* randn(noSize, numT);
-                yesData          = mean(yesUnitData.unit_yes_trial);
-                noData           = mean(noUnitData.unit_no_trial);
+                yesData          = mean(yesUnitData);
+                noData           = mean(noUnitData);
                 maxData          = max([yesData, noData]);
                 minData          = min([yesData, noData]);
                 rData            = (maxData - minData);
