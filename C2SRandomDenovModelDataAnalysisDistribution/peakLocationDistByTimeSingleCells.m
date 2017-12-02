@@ -105,5 +105,5 @@ for nData     = indexDatasets
     axis xy
     colorbar
     set(gca, 'TickDir', 'out')
-    setPrint(8, 6, [PlotDir 'DistributionAnanlysis/Peakiness_' DataSetList(nData).name])
+    setPrint(8, 6, [PlotDir 'DistributionAnanlysis/Peakiness_' DataSetList(nData).name], 'png')
 end
