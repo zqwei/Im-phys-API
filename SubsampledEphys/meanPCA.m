@@ -45,7 +45,7 @@ for frThres = [1 4 10] % spike count in this case
     bar(1:numComps, squeeze(mean(pcaBar)),'stacked', 'edgecolor', 'none')
     box off
     xlim([0.5 numComps+0.5])
-    ylim([0 0.3])
+    ylim([0 0.4])
     xlabel('Component index')
     ylabel('frac. EV per PC')
     colormap(cmap(1:3, :))

@@ -31,7 +31,6 @@ load([TempDatDir DataSetList(nData).name '.mat'])
 selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';
 
 oldDataSet          = nDataSet;
-hold on
 
 for frThres = [1 4 10] % spike count in this case
     load(['validMat_' num2str(frThres, '%02d')], 'validMat')

@@ -19,20 +19,22 @@ end
 
 frData      = mean(frData, 2);
 
-empY        = hist(mean(frData, 2), 0:1:200); % mean at 5.254 Hz
+empY        = hist(frData, 0:1:200); % mean at 5.254 Hz
 empY        = empY/numNeuron;
+
+stairs((0:1:200)/2.6, empY, 'linewid', 1.0, 'color', 'k')
 
 numFold     = 30;
 
 % low firing rate 1Hz
 
 for frThres = [1 4 10] % spike count in this case
-%     Y           = poisspdf(0:1:200,frThres * 2.6 );
-%     Y           = Y/sum(Y);
-%     subSampleratio = Y./empY;
-%     empFR       = ceil(mean(frData, 2));
-%     validData   = empFR < 40+frThres * 2.6 ;
-%     empRatio    = subSampleratio(empFR);
+    Y           = poisspdf(0:1:200,frThres * 2.6 );
+    Y           = Y/sum(Y);
+    subSampleratio = Y./empY;
+    empFR       = ceil(frData);
+    validData   = empFR < 40+frThres * 2.6 ;
+    empRatio    = subSampleratio(empFR);
 %     
     totCounts   = 0;
     meanFR      = 0;
@@ -40,7 +42,7 @@ for frThres = [1 4 10] % spike count in this case
 %     validMat    = false(numNeuron, numFold);
     load(['validMat_' num2str(frThres, '%02d')], 'validMat')
     for nFold   = 1:numFold
-        empRand     = rand(numNeuron, 1);
+%         empRand     = rand(numNeuron, 1);
 %         validMat(:, nFold) = empRand < empRatio' & validData;
         countsNum   = hist(frData(validMat(:, nFold)), 0:1:200);
         countsNum   = countsNum/sum(countsNum);
