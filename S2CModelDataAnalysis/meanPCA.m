@@ -43,7 +43,7 @@ for nData              = [3 4]
     bar(1:numComps, PCAmargVar(:, 1:numComps)','stacked','edgecolor','none')
 %     PCAmargVar(1, 1:numComps)'./sum(PCAmargVar(:, 1:numComps)', 2)
 %     PCAmargVar(2, 1:numComps)'./sum(PCAmargVar(:, 1:numComps)', 2)
-    1 - PCAmargVar(2, 1:numComps)'./sum(PCAmargVar(:, 1:numComps)', 2)
+%     1 - PCAmargVar(2, 1:numComps)'./sum(PCAmargVar(:, 1:numComps)', 2)
     box off
     xlim([0 numComps+0.5])
     ylim([0 0.5])
