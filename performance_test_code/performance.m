@@ -1,4 +1,4 @@
-tempFitDir = '../tempDat/';
+tempFitDir = '../tempDatOOPSI/';
 plotDir = '../plotExampleNeuron/';
 load('../KS_dat_fit/DataListCells.mat');
 xlimMin = 0;
