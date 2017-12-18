@@ -23,7 +23,7 @@ unitGroup = getLogPValueTscoreSpikeTime(nDataSet, DataSetList(1).params);
 
 numFold     = 30;
 
-for frThres = [1 4 10] % spike count in this case
+for frThres = [0 1 4 10] % spike count in this case
     load(['validMat_' num2str(frThres, '%02d')], 'validMat')
     sizeGroup = nan(numFold, 3);
     for nFold = 1:numFold
@@ -31,7 +31,7 @@ for frThres = [1 4 10] % spike count in this case
         sizeGroup(nFold, :) = nGroup(1:3)/sum(nGroup(1:3));
     end
     figure
-    boxplot(sizeGroup);
+    boxplot(sizeGroup(:, 2:3));
     ylim([0 0.7])
     xlabel('Cell type')
     ylabel('Frac. cell')

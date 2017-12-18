@@ -29,21 +29,21 @@ actMatOri     = [yesProfileMatrix, noProfileMatrix];
 timeTag       = 8:60;
 numFold       = 30;
 
-sMat          = nan(numFold, 10);
+sMat          = nan(numFold, 11);
 
-for frThres = [1 4 10] % spike count in this case
+for frThres = [0 1 4 10] % spike count in this case
     load(['validMat_' num2str(frThres, '%02d')], 'validMat')
     for nFold = 1:numFold
         actMat        = actMatOri(positivePeak & validMat(:,nFold), :);
         [~, maxId]    = max(actMat, [], 2);
         numTime       = 77;
         countMaxId    = hist(maxId, 1:numTimeBin*2)/size(actMat,1)*100;
-        sMat(nFold, frThres)   = std(countMaxId([timeTag, timeTag+77]));
+        sMat(nFold, frThres+1)   = std(countMaxId([timeTag, timeTag+77]));
     end
 end
 
 figure;
-boxplot(sMat(:, [1 4 10]));
+boxplot(sMat(:, [0 1 4 10]+1));
 ylim([1 2])
 xlabel('Cell group')
 ylabel('Peakiness')

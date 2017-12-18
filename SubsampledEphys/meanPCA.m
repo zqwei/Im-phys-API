@@ -26,7 +26,7 @@ pcaX               = firingRatesAverage(:,:);
 firingRatesAverage = bsxfun(@minus, firingRatesAverage, mean(pcaX,2));
 pcaX               = bsxfun(@minus, pcaX, mean(pcaX,2));
 
-for frThres = [1 4 10] % spike count in this case
+for frThres = [0 1 4 10] % spike count in this case
     load(['validMat_' num2str(frThres, '%02d')], 'validMat')
     pcaBar    = nan(numFold, length(margNames), numComps);
     for nFold = 1:numFold

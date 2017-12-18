@@ -32,7 +32,7 @@ selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';
 
 oldDataSet          = nDataSet;
 
-for frThres = [1 4 10] % spike count in this case
+for frThres = 0 %[1 4 10] % spike count in this case
     load(['validMat_' num2str(frThres, '%02d')], 'validMat')
     decodability    = zeros(numFold, size(nDataSet(1).unit_yes_trial,2));    
     for nFold       = 1:numFold
