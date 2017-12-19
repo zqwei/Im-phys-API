@@ -59,3 +59,30 @@ ylabel('Sigmoid fit')
 xlabel('Spike (/s)')
 set(gca, 'TickDir', 'out')
 setPrint(8, 6, 'Performance_spk', 'pdf')
+
+figure
+subplot(3, 1, 1)
+nCell  = 42;
+plot(totCell(nCell).CaTime, totCell(nCell).dff)
+hold on
+plot(totCell(nCell).CaTime, sigmoidParas(nCell).fitCaTraces)
+gridxy(totCell(nCell).spk, [])
+xlim([50 150])
+
+subplot(3, 1, 2)
+nCell   = 29;
+plot(totCell(nCell).CaTime, totCell(nCell).dff)
+hold on
+plot(totCell(nCell).CaTime, sigmoidParas(nCell).fitCaTraces)
+gridxy(totCell(nCell).spk, [])
+xlim([100 200])
+
+subplot(3, 1, 3)
+nCell   = 37;
+plot(totCell(nCell).CaTime, totCell(nCell).dff)
+hold on
+plot(totCell(nCell).CaTime, sigmoidParas(nCell).fitCaTraces)
+gridxy(totCell(nCell).spk, [])
+xlim([100 200])
+
+setPrint(8, 18, 'ExampleNeuron', 'pdf')
