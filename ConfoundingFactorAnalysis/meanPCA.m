@@ -24,13 +24,13 @@ cmap = [         0    0.4470    0.7410
 
 
 % depth
-DataSetToAnalysis = [1 3 6];
+DataSetToAnalysis = 1; % [1 3 6];
 for nData                        = DataSetToAnalysis
     load([TempDatDir DataSetList(nData).name '.mat']);
     depth                        = [DataSetList(nData).cellinfo(:).depth];    
     depthStart                   = 100;
-    depthBin                     = 50;
-    depthEnd                     = 900;    
+    depthBin                     = 100;
+    depthEnd                     = 800;    
     depth                        = floor((depth-depthStart)/depthBin)*depthBin+depthStart;
     depth(depth>depthEnd)        = depthEnd;
     depth(depth<depthStart)      = depthStart;
@@ -41,7 +41,7 @@ for nData                        = DataSetToAnalysis
     numMat                       = nan(length(uniqueDepth), 1);
     
     for nDepth         = 1:length(uniqueDepth)
-        if sum(depth == uniqueDepth(nDepth))>50  
+%         if sum(depth == uniqueDepth(nDepth))>50  
             firingRates        = generateDPCAData(nDataSet, numTrials);
             firingRatesAverage = nanmean(firingRates, ndims(firingRates));
             pcaX               = firingRatesAverage(:,:);
@@ -56,17 +56,18 @@ for nData                        = DataSetToAnalysis
             end
             perMat(nDepth, :, :)  = PCAmargVar(:, 1:numComps);
             numMat(nDepth)     = sum(depth == uniqueDepth(nDepth));
-        end
+%         end
     end
     
     for nComps         = 1:numComps
         subplot(1, 4, nComps)
-        barh(uniqueDepth, squeeze(perMat(:, :, nComps)),'stacked', 'edgecolor', 'k')
+        barh(-uniqueDepth, squeeze(perMat(:, :, nComps)),'stacked', 'edgecolor', 'k')
         colormap(cmap(1:3, :))
         title(['PC' num2str(nComps)]);
         box off
         xlim([0 0.5])
-        set(gca, 'yTick', 0:300:900)
+%         set(gca, 'yTick', 0:300:900)
+        set(gca, 'yTick', -800:400:0)
         xlabel('frac. EV per PC')
         ylabel('Depth (um)')
         colormap(cmap(1:3, :))
@@ -74,10 +75,10 @@ for nData                        = DataSetToAnalysis
     end
     
     subplot(1, 4, 4)
-    barh(uniqueDepth, numMat,'k')
+    barh(-uniqueDepth, numMat,'k')
     title('# Units')
     box off
-    set(gca, 'yTick', 0:300:900)
+    set(gca, 'yTick', -800:400:0)
     xlabel('# cells')
     ylabel('Depth (um)')
     colormap(cmap(1:3, :))
