@@ -84,5 +84,13 @@ hold on
 plot(totCell(nCell).CaTime, sigmoidParas(nCell).fitCaTraces)
 gridxy(totCell(nCell).spk, [])
 xlim([100 200])
-
 setPrint(8, 18, 'ExampleNeuron', 'pdf')
+
+figure
+nCell  = 53;
+plot(totCell(nCell).CaTime, totCell(nCell).dff)
+hold on
+plot(totCell(nCell).CaTime, sigmoidParas(nCell).fitCaTraces)
+gridxy(totCell(nCell).spk, [])
+xlim([50 100])
+setPrint(8, 6, 'ExampleNeuron', 'pdf')
