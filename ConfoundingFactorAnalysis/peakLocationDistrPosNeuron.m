@@ -44,7 +44,7 @@ for nData = [1 3 4]%1:length(DataSetList)
     barplot(1, 1) = std(newCounts);
     [bootstat,~]  = bootstrp(1000,@std,newCounts);
     barplot(1, 2) = std(bootstat);
-    disp(sum(positivePeak & depth<400))
+    disp(sum(positivePeak & depth<=400))
     
     depthActMat   = actMat(positivePeak & depth>400 & depth<800, :);
     [~, maxId]    = max(depthActMat, [], 2);
