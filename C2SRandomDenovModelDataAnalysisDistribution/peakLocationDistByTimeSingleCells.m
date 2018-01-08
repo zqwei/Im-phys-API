@@ -89,7 +89,7 @@ indexDatasets = [2, 3, 4, 5, 6];
 
 per_list           = 0.02:0.01:0.98;
 
-for nData     = indexDatasets
+for nData     = [3, 4] %indexDatasets
     s_mat     = nan(97, 97);
     for nTau  = 1:97
         if exist([TempDatDir 'directDeconv/' DataSetList(nData).name '_Tau' num2str(nTau, '%02d') '.mat'], 'file')
@@ -97,13 +97,16 @@ for nData     = indexDatasets
             s_mat(nTau, :) = peakiness(1:97);
         end
     end    
-    
+    disp(mean(s_mat(:)))
+    disp(std(s_mat(:)))
     figure;
-    imagesc(per_list*100, per_list*100, s_mat);
+    imagesc(per_list*100, per_list*100, s_mat-1.27, [-0.9 -0.7]);
+    colormap(gray)
+    colorbar
     xlabel('percentile noise level')
     ylabel('percentile \tau_d')
     axis xy
     colorbar
     set(gca, 'TickDir', 'out')
-    setPrint(8, 6, [PlotDir 'DistributionAnanlysis/Peakiness_' DataSetList(nData).name], 'png')
+    setPrint(8, 6, [PlotDir 'DistributionAnanlysis/Peakiness_' DataSetList(nData).name], 'pdf')
 end
