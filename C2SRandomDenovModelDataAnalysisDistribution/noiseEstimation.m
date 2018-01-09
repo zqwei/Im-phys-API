@@ -29,7 +29,7 @@ end
 
 % sig - var relation
 % in log-log scale
-loglog(sig_mat(:), sqrt(var_mat(:))./sig_mat(:), '.')
+plot(sig_mat(:), var_mat(:), '.')
 % fit
 % p1 * x + p2
 % p1 = 0.9482
