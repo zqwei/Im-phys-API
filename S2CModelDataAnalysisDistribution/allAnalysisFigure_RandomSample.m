@@ -4,7 +4,7 @@ setDir;
 load([TempDatDir 'DataListShuffle.mat'], 'DataSetList');
 params        = DataSetList(3).params;
 
-dataSetNames  = {DataSetList(4).name, DataSetList(3).name};
+dataSetNames   = {'Modeled_6s_AAV_nRSParaSet_', 'Modeled_GP43_nRSParaSet_'};
 
 % performance in raw imaging data
 % col 1: monophasic
@@ -35,7 +35,7 @@ numComps = 3;
 
 
 for nData = 1:2
-    load([TempDatDir 'ResultsCompiledC2S_' dataSetNames{nData} '.mat'], 'analysisMat')
+    load([TempDatDir 'ResultsCompiled_' dataSetNames{nData} '.mat'], 'analysisMat')
     
     % selectivity
     Z         = reshape([analysisMat.sizeGroup], 3, 1000);
@@ -45,7 +45,8 @@ for nData = 1:2
     figure;
     subplot(1, 6, 1)
     hold on
-    hist(Z(2,:)/numNeuron, 100);
+    [xx, xcount] = hist(Z(2,:)/numNeuron, 100);
+    stairs(xcount, xx);
     gridxy([performanceMat(nData).mono], [],'Color','r','Linestyle','--');
     gridxy([0.58], [],'Color','k','Linestyle','--');
     hold off
@@ -57,7 +58,8 @@ for nData = 1:2
 
     subplot(1, 6, 2)
     hold on
-    hist(Z(3,:)/numNeuron, 100);
+    [xx, xcount] = hist(Z(3,:)/numNeuron, 100);
+    stairs(xcount, xx);
     gridxy([performanceMat(nData).multi], [],'Color','r','Linestyle','--');
     gridxy([0.31], [],'Color','k','Linestyle','--');
     hold off
@@ -72,7 +74,8 @@ for nData = 1:2
     disp(mean(Z'))
     disp(std(Z'))
     subplot(1, 6, 3)
-    hist(Z, 100);
+    [xx, xcount] = hist(Z, 100);
+    stairs(xcount, xx);
     gridxy([performanceMat(nData).peak], [],'Color','r','Linestyle','--');
     gridxy([1.27], [],'Color','k','Linestyle','--');
     hold off
@@ -93,7 +96,8 @@ for nData = 1:2
     subplot(1, 6, 4)
     disp(mean(pcaFracTrial))
     disp(std(pcaFracTrial))
-    hist(pcaFracTrial, 100);
+    [xx, xcount] = hist(pcaFracTrial, 100);
+    stairs(xcount, xx);
     gridxy(refPCAImage, [],'Color','r','Linestyle','--');
     gridxy(refPCAEphys, [],'Color','k','Linestyle','--');
     hold off
@@ -112,7 +116,8 @@ for nData = 1:2
     subplot(1, 6, 5)
     disp(mean(ldaDecodes))
     disp(std(ldaDecodes))
-    hist(ldaDecodes, 100);
+    [xx, xcount] = hist(ldaDecodes, 100);
+    stairs(xcount, xx);
     gridxy(mean(performanceMat(nData).ldaS), [],'Color','r','Linestyle','--');
     gridxy(mean(refEphys.ldaS), [],'Color','k','Linestyle','--');
     hold off
@@ -130,7 +135,8 @@ for nData = 1:2
     subplot(1, 6, 6)
     disp(mean(ldaDecodes))
     disp(std(ldaDecodes))
-    hist(ldaDecodes, 100);
+    [xx, xcount] = hist(ldaDecodes, 100);
+    stairs(xcount, xx);
     gridxy(mean(performanceMat(nData).ldaD), [],'Color','r','Linestyle','--');
     gridxy(mean(refEphys.ldaD), [],'Color','k','Linestyle','--');
     hold off
@@ -140,6 +146,6 @@ for nData = 1:2
     ylabel('# Units')
     set(gca, 'TickDir', 'out')
     
-    setPrint(8*6, 6, ['c2s_' dataSetNames{nData}], 'pdf')
+    setPrint(8*6, 6, ['s2c_' dataSetNames{nData}], 'pdf')
 
 end

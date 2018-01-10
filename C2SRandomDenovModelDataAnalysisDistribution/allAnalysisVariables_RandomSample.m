@@ -26,7 +26,7 @@ per_list   = 2:98;
 noise_factor_list = prctile(noise_dist, per_list);
 
 params            = DataSetList(2).params;
-indexDatasets = [3, 4];
+indexDatasets = 4;% [3, 4];
 % 2: short Ca GP517
 % 3: short Ca slow
 % 4: short Ca slow virus
@@ -45,7 +45,7 @@ numTrainingTrials = numTrialsLDA - numTestTrials;
 numRandPickUnits  = 50;
 
 
-
+factorSet         = [0 0 2.5 5.5 0 0];
 
 for nData         = indexDatasets    
     
@@ -71,7 +71,7 @@ for nData         = indexDatasets
             mean_no_trial  = squeeze(allNoData(randTau(nParaSet, nUnit), nUnit, :))';
             std_no_trial   = ones(numTrialsLDA/2, 1) * sqrt(mean_no_trial* ffactor/params.binsize) .* randn(numTrialsLDA/2, 77);
             min_std_no_trial = min(std_no_trial)./mean_no_trial;
-            nfactor          = 2.5;%/params.binsize;
+            nfactor          = factorSet(nData);
             nDataSet(nUnit).unit_yes_trial   = mean_yes_trial * nfactor + std_yes_trial*sqrt(nfactor);
             nDataSet(nUnit).unit_no_trial    = mean_no_trial * nfactor + std_no_trial*sqrt(nfactor);
             if sum(isnan(nDataSet(nUnit).unit_yes_trial(:)))+sum(isnan(nDataSet(nUnit).unit_no_trial(:)))>0
@@ -144,7 +144,6 @@ for nData         = indexDatasets
             nSessionData        = shuffleSessionData(nDataSet(randPickUnits), totTargets, numTestTrials);
             decodability(nFold,:) = decodabilityLDA(nSessionData, trainingTargets, testTargets);
         end
-        clear nDataSet
         analysisMat(nParaSet).nParaSet     = nParaSet;
         analysisMat(nParaSet).sizeGroup    = sizeGroup;
         analysisMat(nParaSet).peakiness    = peakiness;
