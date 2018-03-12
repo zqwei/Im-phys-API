@@ -50,7 +50,7 @@ indexDatasets = [2, 3, 4, 5, 6];
 % % plot saved file without ephys prior data
 per_list               = 0.02:0.01:0.98;
 
-for nData     = indexDatasets
+for nData     = [3, 4] %indexDatasets
     monoCell  = nan(97, 97);
     multiCell = nan(97, 97);
     validTau  = false(97, 1);
@@ -64,17 +64,25 @@ for nData     = indexDatasets
     end    
     
     figure;
-    subplot(1, 2, 1)
-    imagesc(per_list(validTau)*100, per_list*100, monoCell(validTau, :), [0 1])
+    disp(nanmean(monoCell(:)))
+    disp(nanstd(monoCell(:)))
+    imagesc(per_list(validTau)*100, per_list*100, monoCell(validTau, :) - 0.58, [-0.4 0.4])
     axis xy
     xlabel('Noise level (%)')
     ylabel('\tau_d (%)')
-    title('Frac Monophasic neuron')
-    subplot(1, 2, 2)
-    imagesc(per_list(validTau), per_list, multiCell(validTau, :), [0 1])
+    colormap(french(128, 2))
+    colorbar
+    set(gca, 'TickDir', 'out')
+    setPrint(8, 6, [PlotDir 'DistributionAnanlysis/Cell_type_mono_' DataSetList(nData).name], 'pdf')
+    figure;
+    disp(nanmean(multiCell(:)))
+    disp(nanstd(multiCell(:)))
+    imagesc(per_list(validTau), per_list, multiCell(validTau, :) - 0.31, [-0.5 0.5])
     axis xy
     xlabel('Noise level (%)')
     ylabel('\tau_d (%)')
-    title('Frac Multiphasic neuron')
-    setPrint(8*2, 6, [PlotDir 'DistributionAnanlysis/Cell_type_' DataSetList(nData).name])
+    colormap(french(128, 2))
+    colorbar
+    set(gca, 'TickDir', 'out')    
+    setPrint(8, 6, [PlotDir 'DistributionAnanlysis/Cell_type_multi_' DataSetList(nData).name], 'pdf')
 end
