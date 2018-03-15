@@ -217,6 +217,30 @@ DataSetList(9).ActiveNeuronIndex = findHighFiringUnits(nDataSet, params, minFiri
 save([TempDatDir DataSetList(9).name '_old.mat'], 'nDataSet');
 
 
+minNumTrialToAnalysis  = 15;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% GP43 short delay #10
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+params.frameRate       =  30.0255/2;
+params.binsize         =  1/params.frameRate;
+params.polein          =  -2.4;
+params.poleout         =  -1.2;
+start_time             =  params.polein - 0.5;
+minTimeToAnalysis      =  round(start_time * params.frameRate);
+maxTimeToAnalysis      =  round(1.2 * params.frameRate);
+params.timeWindowIndexRange  = minTimeToAnalysis : maxTimeToAnalysis;
+params.timeSeries      = params.timeWindowIndexRange * params.binsize;
+params.minNumTrialToAnalysis =  minNumTrialToAnalysis;
+params.expression      = 'Transgentic';
+nDataSet               = getCaImagingDataKD(CaImagingSShortDelayFastDir, ...
+                                          CaImagingSShortDelayFastFileList, ...
+                                          params.minNumTrialToAnalysis, params);
+nonActiveNeuronIndex   = findNonActiveNeurons(nDataSet, params);
+DataSetList(10).name    = 'Shuffle_Ca_Fast_SShort_Delay';
+DataSetList(10).params  = params; 
+DataSetList(10).ActiveNeuronIndex = ~nonActiveNeuronIndex;
+save([TempDatDir DataSetList(10).name '.mat'], 'nDataSet');
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 fileList            = {SpikingShortNuoFileList; ...
@@ -227,7 +251,8 @@ fileList            = {SpikingShortNuoFileList; ...
                        CaImagingLongDelaySlowFileList;...
                        SpikingLongNuoFileList;...
                        SpikingShortHiFileList;...
-                       SpikingShortHiIntraFileList};
+                       SpikingShortHiIntraFileList;...
+                       CaImagingSShortDelayFastFileList};
 
 for nData           = 1:length(fileList)
     if exist([TempDatDir DataSetList(nData).name '_old.mat'], 'file')
