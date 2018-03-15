@@ -31,6 +31,7 @@ CaImagingShortDelaySlowDir  = [CaImagingDataDir 'delay1s4t/'];
 CaImagingShortDelaySlowVirusDir  = [CaImagingDataDir 'delay1s4v/'];
 CaImagingLongDelayFastDir   = [CaImagingDataDir 'delay3f0t/'];
 CaImagingLongDelaySlowDir   = [CaImagingDataDir 'delay3s0t/'];
+CaImagingSShortDelayFastDir = [CaImagingDataDir 'delay1f2t/'];
 
 
 % Load filenames
@@ -44,6 +45,8 @@ CaImagingShortDelaySlowFileList = dir([CaImagingDataDir 'delay1s4t/*.mat']);
 CaImagingShortDelaySlowVirusFileList  = dir([CaImagingDataDir 'delay1s4v/*.mat']);
 CaImagingLongDelayFastFileList  = dir([CaImagingDataDir 'delay3f0t/*.mat']);
 CaImagingLongDelaySlowFileList  = dir([CaImagingDataDir 'delay3s0t/*.mat']);
+CaImagingSShortDelayFastFileList= dir([CaImagingDataDir 'delay1f2t/*.mat']);
+
 
 TempDatDir                   = '../TempDat/';
 
