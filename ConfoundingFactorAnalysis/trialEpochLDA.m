@@ -6,7 +6,7 @@
 addpath('../Func');
 setDir;
 load ([TempDatDir 'DataListShuffle.mat']);
-addNoise         = [1 0 0 0];
+addNoise         = [1 0 0 0 0 0 0 0 0 0];
 
 cmap             = cbrewer('div', 'Spectral', 128, 'cubic');
 
@@ -14,7 +14,7 @@ if ~exist([PlotDir '/CollectedUnitsDecodabilityEpoch'],'dir')
     mkdir([PlotDir '/CollectedUnitsDecodabilityEpoch'])
 end
 
-numRandPickUnits    = 50;
+numRandPickUnits    = 100;
 numTrials           = 500;
 numTestTrials       = 200;
 numTrainingTrials   = numTrials - numTestTrials;
@@ -25,15 +25,16 @@ testTargets         = testTargets(randperm(numTestTrials));
 totTargets          = [testTargets; trainingTargets];
 ROCThres            = 0.5;
 numFold             = 30;
-numTime             = 77;
 
-for nData           = [1 3 4]
+for nData           = 10 %[1 3 4]
     if ~exist([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'], 'file')
         load([TempDatDir DataSetList(nData).name '.mat'])
         neuronRemoveList = false(length(nDataSet), 1);
     else
         load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
     end
+    params      = DataSetList(nData).params;
+    numTime     = length(params.timeSeries);
     oldDataSet          = nDataSet;
     depth               = [DataSetList(nData).cellinfo(:).depth];
     depth               = depth(~neuronRemoveList)';

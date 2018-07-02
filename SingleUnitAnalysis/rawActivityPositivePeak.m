@@ -20,8 +20,7 @@ for nData             = [1 3 4 10]
             load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
     end
 %     positivePeak = plotMeanActivityImagescRasterOnlyPositivePeak(nDataSet, DataSetList(nData).params, [], []);
-    plotMeanActivityImagescRasterOnly(nDataSet, DataSetList(nData).params, [], []); 
-%     plotMeanActivityImagescRasterOnlyPositivePeak(nDataSet, DataSetList(nData).params, [], []); 
+    plotMeanActivityImagescRasterOnlyPositivePeak(nDataSet, DataSetList(nData).params, [], []); 
     setPrint(6*2, 3*3, [PlotDir 'SingleUnitsImagescWithSort/SingleUnitsImagescRasterOnlyPositivePeak_' DataSetList(nData).name])
 end
 

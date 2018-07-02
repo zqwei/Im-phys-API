@@ -24,6 +24,7 @@ function positivePeak = plotMeanActivityImagescRasterOnlyPositivePeak (nDataSet,
         blankSpace = round(10/77*numT);
     end
     
+    timePoints  = timePointTrialPeriod(params.polein, params.poleout, params.timeSeries);
     
     actMat     = nan(length(nDataSet),numT*2+blankSpace);
     positivePeak = false(length(nDataSet),1);
@@ -36,8 +37,8 @@ function positivePeak = plotMeanActivityImagescRasterOnlyPositivePeak (nDataSet,
         actMat(nUnit, 1:numT)     = unitYesAct;
         actMat(nUnit, numT+blankSpace+1:end) = unitNoAct;
         
-        positivePeak(nUnit)       = mean(unitYesAct(1:8)) <= mean(unitYesAct(9:47)) ...
-                                   || mean(unitNoAct(1:8)) <= mean(unitNoAct(9:47));
+        positivePeak(nUnit)       = mean(unitYesAct(timePoints(1):timePoints(2))) <= mean(unitYesAct(timePoints(2):timePoints(4))) ...
+                                   || mean(unitNoAct(timePoints(1):timePoints(2))) <= mean(unitNoAct(timePoints(2):timePoints(4)));
     end
     
     actMat                        = actMat(positivePeak, :);
@@ -92,8 +93,8 @@ function positivePeak = plotMeanActivityImagescRasterOnlyPositivePeak (nDataSet,
     end
         
     [~, similaritySort]       = sortrows(bumpStartPoint, 1);%sortrows([bumpStartPoint, bumpSize], [1 -2]);
-    valid_sort                = bumpSize(similaritySort) > 10;
-    similaritySort            = similaritySort(valid_sort);
+%     valid_sort                = bumpSize(similaritySort) > 10;
+%     similaritySort            = similaritySort(valid_sort);
     similaritySort            = similaritySort(end:-1:1);
     
     figure;

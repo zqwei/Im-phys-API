@@ -32,11 +32,11 @@ function [dFF, mean_F, correctRightTrial, correctLeftTrial, errorRightTrial, err
 
     neuronNum          = length(ROI_list);
     [numTime, trialNum]= size(ROI_list(1).intensity);
-    if numTime ~= 135
-%         keyboard()
-%         error('numTime is not 135')
-        numTime = 134;
+    
+    if numTime > 135
+        keyboard()
     end
+    
     neuronSig          = nan(neuronNum, floor(numTime/2), trialNum);
     neuropilSig        = nan(neuronNum, floor(numTime/2), trialNum);
     
@@ -53,6 +53,9 @@ function [dFF, mean_F, correctRightTrial, correctLeftTrial, errorRightTrial, err
     correct           = dat.trial_type == dat.lick_direction;
     type              = dat.trial_type;
     early             = dat.early_lick==1;
+    if length(early) > length(correct)
+        early         = early(1:length(correct));
+    end
     correctRightTrial = correct & (type==1) & (~early);
     correctLeftTrial  = correct & (type==2) & (~early);
     errorRightTrial   = ~correct & (type==1) & (~early);

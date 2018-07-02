@@ -17,20 +17,23 @@ if ~exist([PlotDir 'SingleUnitsFPVT'],'dir')
 end
 
 
-for nData                     = [1 3 4]
+for nData                     = 10%[1 3 4 10]
     if nData   == 1
         load([TempDatDir DataSetList(nData).name '.mat'])
         neuronRemoveList = false(length(nDataSet), 1);
     else
         load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
     end
+    depth                     = [nDataSet.depth_in_um];
+%     nDataSet                  = nDataSet(depth<=380);
     numUnits                  = length(nDataSet);
     pValue                    = applyFuncToCompareTrialType(nDataSet, @pValueTTest2);
     meanDiffValue             = applyFuncToCompareTrialType(nDataSet, @meanDiff);
     logPValue                 = -log(pValue);
+%     logPValue                 = pValue<0.05;
     % yes  -- blue trial
     % no   -- red trial
-    zScores                   = -sign(meanDiffValue).*logPValue;     
+    zScores                   = -sign(meanDiffValue).*logPValue;   
     actMat                    = logPValue;
     numT                      = size(zScores,2);
     bumpActThres              = 3; % > bumpActThres considering as a bump % 3 = -log(0.05)
@@ -181,7 +184,7 @@ for nData                     = [1 3 4]
 end
 
 
-setColorbar(french(128,2), -5, 5, '-log(P)', [PlotDir 'SingleUnitsFPVT/SingleUnitsZScore_'])
+% setColorbar(french(128,2), -0.05, 0.05, '-log(P)', [PlotDir 'SingleUnitsFPVT/SingleUnitsZScore_'])
 
 
 close all

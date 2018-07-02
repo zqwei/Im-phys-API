@@ -21,7 +21,7 @@ cmap = [         0    0.4470    0.7410
 
 
 % depth
-for nData                        = [1 3 4]
+for nData                        = 10%[1 3 4 10]
     if nData == 1
         load([TempDatDir DataSetList(nData).name '.mat']);
         neuronRemoveList = false(length(nDataSet), 1);

@@ -18,21 +18,22 @@ cmap = cbrewer('qual', 'Set1', 9, 'cubic');
 cmap = cmap([3, 5, 9], :);
 groupColors = {cmap(3, :), cmap(2, :), cmap(1, :)};
 
-for nData      = 10% 1:length(DataSetList)
+for nData      = 10 %[1 3 4 10]%1:length(DataSetList)
     if ~exist([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'], 'file')
-        load([TempDatDir DataSetList(nData).name '.mat'])
+        load([TempDatDir DataSetList(nData).name '.mat']);
         neuronRemoveList = false(length(nDataSet), 1);
     else
-        load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
+        load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat']);
     end
     unitGroup = getLogPValueTscoreSpikeTime(nDataSet, DataSetList(nData).params);
     sizeGroup = histcounts(unitGroup, 0:3);
-    disp(sizeGroup)
+    % disp(sizeGroup)
     figure('Visible', 'off');
     groupNames      = {['Non' newline 'n = ' num2str(sum(unitGroup==0))], ... 
                        ['Mono' newline 'n = ' num2str(sum(unitGroup==1))], ...
                        ['Multi' newline 'n = ' num2str(sum(unitGroup==2))]};
-    donut(sizeGroup, groupNames, groupColors)
+    donut(sizeGroup, groupNames, groupColors);
+    % pie(sizeGroup, groupNames)
     axis off
     legend('Location','eastoutside')
     legend('boxoff')
@@ -67,7 +68,8 @@ for nData      = 10% 1:length(DataSetList)
         end
     end
 
-%     [tab, chi2, p] = crosstab(unitGroup(unitGroup>0), depth(unitGroup>0)')
+    [tab, chi2, p] = crosstab(unitGroup(unitGroup>0), depth(unitGroup>0)');
+    disp(p)
 
     groupPerCounts = bsxfun(@rdivide, groupCounts, sum(groupCounts, 2));
 

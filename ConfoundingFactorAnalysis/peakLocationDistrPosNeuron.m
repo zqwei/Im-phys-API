@@ -6,9 +6,7 @@ if ~exist([PlotDir 'SingleUnitsPeakLocation'],'dir')
     mkdir([PlotDir 'SingleUnitsPeakLocation'])
 end
 
-timeTag   = 8:60; % sample to response
-
-for nData = [1 3 4]%1:length(DataSetList)
+for nData = 10%1:length(DataSetList)
     if ~exist([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'], 'file')
         load([TempDatDir DataSetList(nData).name '.mat'])
         neuronRemoveList = false(length(nDataSet), 1);
@@ -18,6 +16,9 @@ for nData = [1 3 4]%1:length(DataSetList)
     depth               = [DataSetList(nData).cellinfo(:).depth];
     depth               = depth(~neuronRemoveList)';
     
+    params      = DataSetList(nData).params;
+    timePoints  = timePointTrialPeriod(params.polein, params.poleout, params.timeSeries);
+
     numTimeBin          = size(nDataSet(1).unit_yes_trial, 2);
     yesProfileMatrix    = nan(length(nDataSet), numTimeBin);
     noProfileMatrix     = yesProfileMatrix;
@@ -32,29 +33,35 @@ for nData = [1 3 4]%1:length(DataSetList)
         noData       = (noData - minData)/(maxData - minData);
         yesProfileMatrix(nUnit, :)    = yesData;
         noProfileMatrix(nUnit, :)     = noData;
-        positivePeak(nUnit)       = mean(yesData(1:8)) <= mean(yesData(9:47)) ...
-                                   || mean(noData(1:8)) <= mean(noData(9:47));
+        positivePeak(nUnit)       = mean(yesData(timePoints(1):timePoints(2))) <= mean(yesData(timePoints(2):timePoints(4))) ...
+                                   || mean(noData(timePoints(1):timePoints(2))) <= mean(noData(timePoints(2):timePoints(4)));
+
     end
     actMat        = [yesProfileMatrix, noProfileMatrix];
-    depthActMat   = actMat(positivePeak & depth<400, :);
+    depthActMat   = actMat(positivePeak & depth<200, :);
     [~, maxId]    = max(depthActMat, [], 2);
     countMaxId = hist(maxId, 1:numTimeBin*2)/size(actMat,1)*100;
-    newCounts  = countMaxId([timeTag, timeTag+77]);
-    newCounts  = newCounts(newCounts>0)*154/sum(newCounts>0);
+    timeTag   = timePoints(2):timePoints(4)+13; % sample to response
+    newCounts  = countMaxId([timeTag, timeTag+numTimeBin]);
+    newCounts  = newCounts(newCounts>0)*numTimeBin*2/sum(newCounts>0);
     barplot(1, 1) = std(newCounts);
     [bootstat,~]  = bootstrp(1000,@std,newCounts);
     barplot(1, 2) = std(bootstat);
-    disp(sum(positivePeak & depth<=400))
+    disp(sum(positivePeak & depth<=200))
+    bootstat_ = bootstat;
     
-    depthActMat   = actMat(positivePeak & depth>400 & depth<800, :);
+    depthActMat   = actMat(positivePeak & depth>200 & depth<400, :);
     [~, maxId]    = max(depthActMat, [], 2);
     countMaxId = hist(maxId, 1:numTimeBin*2)/size(actMat,1)*100;
-    newCounts  = countMaxId([timeTag, timeTag+77]);
-    newCounts  = newCounts(newCounts>0)*154/sum(newCounts>0);
+    newCounts  = countMaxId([timeTag, timeTag+numTimeBin]);
+    newCounts  = newCounts(newCounts>0)*numTimeBin*2/sum(newCounts>0);
     barplot(2, 1) = std(newCounts);
     [bootstat,~]  = bootstrp(1000,@std,newCounts);
     barplot(2, 2) = std(bootstat);
-    disp(sum(positivePeak & depth>400 & depth<800))
+    disp(sum(positivePeak & depth>200 & depth<400))
+    
+    [h, p] = ttest2(bootstat_, bootstat);
+    disp(p)
     
     figure;
     hold on;

@@ -10,7 +10,7 @@ setDir;
 
 numFold             = 30;
 load ([TempDatDir 'DataListShuffle.mat']);
-addNoise         = [1 0 0 0];
+addNoise         = [1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0];
 
 if ~exist([PlotDir '/CollectedUnitsDecodability'],'dir')
     mkdir([PlotDir '/CollectedUnitsDecodability'])
@@ -24,15 +24,13 @@ cmap = [         0    0.4470    0.7410
     0.3010    0.7450    0.9330
     0.6350    0.0780    0.1840];
 
-numRandPickUnits    = 50;
+numRandPickUnits    = 200;
 numTrials           = numRandPickUnits*5;
 numTestTrials       = numRandPickUnits*2;
 numTrainingTrials   = numTrials - numTestTrials;
-ROCThres            = 0.5;
+ROCThres            = 0.50;
 
-figure;
-
-for nData             = [1 3 4]    
+for nData             = 10 %[1 3 4]    
     if nData == 1
         load([TempDatDir DataSetList(nData).name '.mat'])
         selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';
@@ -43,8 +41,13 @@ for nData             = [1 3 4]
         % selectedNeuronalIndex = true(sum(~neuronRemoveList), 1);
     end
     oldDataSet          = nDataSet;
+    figure;
     hold on
     selectedNeuronalIndex = selectedHighROCneurons(oldDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);
+    addTrialNumber        = mean(selectedNeuronalIndex)*4;
+    selectedNeuronalIndex = double(selectedNeuronalIndex);
+    selectedNeuronalIndex(selectedNeuronalIndex==0) = rand(sum(selectedNeuronalIndex==0), 1);
+    selectedNeuronalIndex = selectedNeuronalIndex > 1 - addTrialNumber;
     nDataSet              = oldDataSet(selectedNeuronalIndex);
     decodability          = zeros(numFold, size(nDataSet(1).unit_yes_trial,2));        
     for nFold    = 1:numFold
@@ -59,14 +62,15 @@ for nData             = [1 3 4]
         totDecisions        = [testDecisions; trainingDecisions];
 
         randPickUnits       = randperm(length(nDataSet));
-        randPickUnits       = randPickUnits(1:numRandPickUnits);
+        randPickUnits       = randPickUnits(1:end);%numRandPickUnits
 
         nSessionData        = shuffleSessionData(nDataSet(randPickUnits), totTargets, numTestTrials);
-        decodability(nFold,:) = decodabilityLDA(nSessionData +randn(size(nSessionData))*1e-3/sqrt(numTrials)* addNoise(nData), trainingTargets, testTargets);
+%         decodability(nFold,:) = decodabilitySLDA(nSessionData, trainingTargets, testTargets); 
+        decodability(nFold,:) = decodabilityLDA(nSessionData, trainingTargets, testTargets); % +randn(size(nSessionData))*1e-3/sqrt(numTrials)* addNoise(nData)
     end
     shadedErrorBar(DataSetList(nData).params.timeSeries, mean(decodability,1),...
         std(decodability, 1)/sqrt(numFold),...
-        {'-', 'linewid', 1.0, 'color', cmap(nData,:)}, 0.5);  
+        {'-', 'linewid', 1.0, 'color', 'b'}, 0.5);  %cmap(nData,:)
     xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
     ylim([0.5 1])
     gridxy ([DataSetList(nData).params.polein, 0],[], 'Color','k','Linestyle','--','linewid', 0.5)
@@ -77,18 +81,18 @@ for nData             = [1 3 4]
     ylabel('Decodability');
 end
 
-setPrint(8, 6, [PlotDir 'CollectedUnitsDecodability/CollectedUnitsDecodabilityROC_Summary'])
-margNames = {'Spike', '', 'GP 4.3', '6s-AAV'};
-
-figure;
-hold on
-for nColor = [1 3 4]
-    plot(0, nColor, 's', 'color', cmap(nColor,:), 'MarkerFaceColor',cmap(nColor,:),'MarkerSize', 8)
-    text(1, nColor, margNames{nColor})
-end
-xlim([0 10])
-hold off
-axis off
-setPrint(3, 2, [PlotDir 'CollectedUnitsDecodability/CollectedUnitsDecodabilityROC_SummaryLabel'])
-
-close all;
+% setPrint(8, 6, [PlotDir 'CollectedUnitsDecodability/CollectedUnitsDecodabilityROC_Summary'])
+% margNames = {'Spike', '', 'GP 4.3', '6s-AAV'};
+% 
+% figure;
+% hold on
+% for nColor = [1 3 4]
+%     plot(0, nColor, 's', 'color', cmap(nColor,:), 'MarkerFaceColor',cmap(nColor,:),'MarkerSize', 8)
+%     text(1, nColor, margNames{nColor})
+% end
+% xlim([0 10])
+% hold off
+% axis off
+% setPrint(3, 2, [PlotDir 'CollectedUnitsDecodability/CollectedUnitsDecodabilityROC_SummaryLabel'])
+% 
+% close all;

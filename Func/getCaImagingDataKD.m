@@ -24,7 +24,6 @@ function CaImagingDataSet    = getCaImagingDataKD(CaImagingDir, CaImagingFileLis
     for nfile = 1:length(CaImagingFileList)
         fname               = CaImagingFileList(nfile).name;
         load([CaImagingDir fname])
-        
         [dFF, mean_F, correctRightTrial, correctLeftTrial, errorRightTrial, errorLeftTrial, cell_position] = ...
             extractALMImagingDataKD (dat_small, paramsROI);
         
