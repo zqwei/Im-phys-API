@@ -68,7 +68,7 @@ actPre = mean([yesActMat(contraIndex& otherIndex,1:100), noActMat(contraIndex & 
 actYes = mean(yesActMat(contraIndex& otherIndex,435:550), 2);
 actNo = mean(noActMat(contraIndex& otherIndex,435:550), 2);
 
-[~, p] = ttest2(actPre, actYes, 'tail', 'left');
+[~, p] = ttest(actPre, actYes, 'tail', 'left');
 [~, p] = ttest(actPre, actNo, 'tail', 'right');
 
 subplot(1, 2, 2)
