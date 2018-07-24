@@ -95,7 +95,7 @@ function plotMeanActivityImagescRasterOnly (nDataSet, params, maxValue, minValue
     timeSeries                    = [timeSeries, maxTime + (1:blankSpace)*params.binsize, timeSeries+constShift];
     tMaxTime                      = timeSeries(end);
     b = imagesc(timeSeries, 1:length(similaritySort), actMat(similaritySort, :), [0 1]);
-    set(b,'AlphaData',~isnan(actMat));
+    set(b,'AlphaData',~isnan(actMat(similaritySort, :)));
     axis xy;
     %gridxy ([maxTime + betweenSpace/2],[], 'Color','k','Linestyle','-','linewid', 2.0)
     gridxy ([params.polein, params.poleout, 0, params.polein+constShift, params.poleout+constShift, constShift],[], 'Color','k','Linestyle','--','linewid', 1.0)
