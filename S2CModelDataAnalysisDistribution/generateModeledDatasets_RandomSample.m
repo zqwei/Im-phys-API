@@ -82,4 +82,45 @@ for nParaSet           = 1:1000
     save([TempDatDir DataSetList(mData).name '.mat'], 'nDataSet'); 
 end
 
+
+
+% Modeled GP517
+nData                  = 3;
+load([TempDatDir 'FineTuned6fNLParams.mat'], 'nlParams');
+nlParamsnData          = nlParams;
+nlParamsnData(sum(isnan(nlParams),2)>0, :) = [];
+truncatedNormal        = truncate(makedist('Normal'), -0.9, 1.5);
+% external noise is add after Fm, it does no matter how Fm is given
+params.Fm              = nlParamsnData(:, 2);
+params.F0              = nlParamsnData(:, 1);
+std_r                  = 0.0222;
+median_r               = 0.0213;
+std_d                  = 0.5390;
+median_d               = 0.5898;
+params.tau_r           = random(truncatedNormal, length(nDataSet), 1) *  std_r + median_r;
+params.intNoise        = 0.95;
+params.extNoise        = 0.40;
+
+depth                  = [nDataSet.depth_in_um];
+spikeDataSet           = nDataSet(depth<471);
+ActiveNeuronIndex      = ActiveNeuronIndex(depth<471);
+
+Ca0List                = nlParamsnData(:, 3);
+taudList               = random(truncatedNormal, length(nDataSet), 1) *  std_d + median_d;
+
+for nParaSet           = 1:1000
+    params.Ca0         = prctile(Ca0List, randi(100, length(nDataSet), 1));
+    params.n           = 10.^(1.0612-log10(params.Ca0)*0.8662);
+    params.tau_d       = prctile(taudList, randi(100, length(nDataSet), 1));
+
+    nDataSet           = getFakeCaImagingDataSigmoidNL(spikeDataSet, params);
+    mData              = mData + 1;
+    DataSetList(mData).name    = ['Modeled_GP517_nRSParaSet_' num2str(nParaSet, '%04d')];
+    DataSetList(mData).params  = params; 
+    DataSetList(mData).ActiveNeuronIndex = ActiveNeuronIndex;
+    save([TempDatDir DataSetList(mData).name '.mat'], 'nDataSet'); 
+end
+
+
+
 save([TempDatDir 'DataListS2CModelRSDistribution.mat'], 'DataSetList');
