@@ -51,7 +51,7 @@ for nParaSet           = 1:1000
 end
 
 
-% Modeled 6s-AAV
+% Modeled GP43
 nData                  = 2;
 nlParamsnData          = squeeze(nlParams(nData, :, :));
 truncatedNormal        = truncate(makedist('Normal'), -1.5, 1.5);

@@ -29,7 +29,7 @@ totTargets          = [testTargets; trainingTargets];
 ROCThres            = 0.5;
 numFold             = 30;
 
-for nData           = 10 %[1 3 4]
+for nData           = [1 3 4]
     load([TempDatDir DataSetList(nData).name '.mat'])   
     selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';
     selectedNeuronalIndex = selectedHighROCneurons(nDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);

@@ -34,7 +34,7 @@ for nData             = [1 3 4]
     decodabilityAll          = zeros(maxRandPickUnits, size(nDataSet(1).unit_yes_trial,2));
     figure;
     hold on
-    for numRandPickUnits      = 1:maxRandPickUnits;
+    for numRandPickUnits      = 1:maxRandPickUnits
         selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';% & [DataSetList(nData).cellinfo(:).cellType] == 1;
         selectedNeuronalIndex = selectedHighROCneurons(oldDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);
         nDataSet              = oldDataSet(selectedNeuronalIndex);
@@ -83,7 +83,7 @@ for nData             = [1 3 4]
     decodabilityAll          = zeros(maxRandPickUnits, size(nDataSet(1).unit_yes_trial,2));
     figure;
     hold on
-    for numRandPickUnits      = 1:maxRandPickUnits;
+    for numRandPickUnits      = 1:maxRandPickUnits
         selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';% & [DataSetList(nData).cellinfo(:).cellType] == 1;
         selectedNeuronalIndex = selectedHighROCneurons(oldDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);
         nDataSet              = oldDataSet(selectedNeuronalIndex);

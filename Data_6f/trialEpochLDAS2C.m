@@ -5,8 +5,8 @@
 
 addpath('../Func');
 setDir;
-load ([TempDatDir 'DataListShuffle.mat']);
-addNoise         = [1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0];
+load ([TempDatDir 'DataListS2C6fModel.mat']);
+addNoise         = [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0];
 
 if ~exist([PlotDir '/CollectedUnitsDecodabilityEpoch'],'dir')
     mkdir([PlotDir '/CollectedUnitsDecodabilityEpoch'])
@@ -17,7 +17,7 @@ cmap = [         0    0.4470    0.7410
     0.4660    0.6740    0.1880
     0.6350    0.0780    0.1840];
 
-numRandPickUnits    = 50;
+numRandPickUnits    = 1000;
 numTrials           = numRandPickUnits*5;
 numTestTrials       = numRandPickUnits*2;
 numTrainingTrials   = numTrials - numTestTrials;
@@ -27,32 +27,17 @@ testTargets         = [true(numTestTrials/2,1); false(numTestTrials/2,1)];
 testTargets         = testTargets(randperm(numTestTrials));
 totTargets          = [testTargets; trainingTargets];
 ROCThres            = 0.5;
-numFold             = 10;
+numFold             = 30;
 
-for nData           = [1 10]
-    if ~exist([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'], 'file')
-        load([TempDatDir DataSetList(nData).name '.mat']);
-        neuronRemoveList = false(length(nDataSet), 1);
-        selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';
-    else
-        load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat']);
-        selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex(~neuronRemoveList)';
-    end
-    
-    depth_list          = [nDataSet.depth_in_um]';    
-    oldDataSet          = nDataSet;
-    selectedNeuronalIndex = selectedHighROCneurons(oldDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);
-    selectedNeuronalIndex = selectedNeuronalIndex & depth_list < 471;
-    nDataSet              = oldDataSet(selectedNeuronalIndex);
-
-    
+for nData           = 2
+    load([TempDatDir DataSetList(nData).name '.mat'])    
     figure;
     timePoints            = timePointTrialPeriod(DataSetList(nData).params.polein, DataSetList(nData).params.poleout, DataSetList(nData).params.timeSeries);
     numPeriods            = length(timePoints) - 1;
     decodability          = zeros(numFold, numPeriods, size(nDataSet(1).unit_yes_trial,2));
     for nFold        = 1:numFold
         numUnits     = length(nDataSet);
-        nSessionData = shuffleSessionData(nDataSet(randperm(numUnits, numRandPickUnits)), totTargets, numTestTrials);
+        nSessionData = shuffleSessionData(nDataSet, totTargets, numTestTrials);
         nSessionData = permute(nSessionData,[1 3 2]);
         EpochIndex   = epochIndex(DataSetList(nData).params);
         EpochIndex   = EpochIndex(:,ones(1,numTrials))';
