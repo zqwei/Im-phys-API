@@ -4,7 +4,7 @@ setDir;
 load([TempDatDir 'DataListShuffle.mat'], 'DataSetList');
 params            = DataSetList(1).params;
 
-dataSetNames   = {'Modeled_6s_AAV_nRSParaSet_', 'Modeled_GP43_nRSParaSet_'};
+dataSetNames   = {'Modeled_6s_AAV_nRSParaSet_', 'Modeled_GP43_nRSParaSet_', 'Modeled_GP517_nRSParaSet_'};
 
 timeTag        = 8:60;
 numComps       = 3;
@@ -17,14 +17,15 @@ numTestTrials  = 200;
 numTrainingTrials   = numTrialsLDA - numTestTrials;
 numRandPickUnits = 50;
 
-for nData         = 1:2
+for nData         = 1:3
     for nParaSet  = 1:1000
-        load([TempDatDir dataSetNames{nData} num2str(nParaSet, '%04d') '.mat'])    
-        
+        load([TempDatDir dataSetNames{nData} num2str(nParaSet, '%04d') '.mat'])
+
         % cell type data
-        unitGroup = getLogPValueTscoreSpikeTime(nDataSet, params);       
+        disp(nParaSet)
+        unitGroup = getLogPValueTscoreSpikeTime(nDataSet, params);
         sizeGroup = histcounts(unitGroup, 0:3); % record this for cell type data
-        
+
         % peakiness
         numTimeBin          = size(nDataSet(1).unit_yes_trial, 2);
         yesProfileMatrix    = nan(length(nDataSet), numTimeBin);
@@ -48,7 +49,7 @@ for nData         = 1:2
         [~, maxId]    = max(actMat, [], 2);
         countMaxId    = hist(maxId, 1:numTimeBin*2)/size(actMat,1)*100;
         peakiness     = std(countMaxId([timeTag, timeTag+77]));
-        
+
         % pca
         evMat              = zeros(numFold, length(combinedParams), numComps);
         firingRates        = generateDPCAData(nDataSet, numTrials);
@@ -64,9 +65,9 @@ for nData         = 1:2
             PCAmargVar(i,:)= sum((Wpca' * Xmargs{i}).^2, 2)' / totalVar;
         end
         PCAVar             = PCAmargVar(:, 1:numComps)';
-        
+
         %lda
-        decodability            = zeros(numFold, size(nDataSet(1).unit_yes_trial,2));        
+        decodability            = zeros(numFold, size(nDataSet(1).unit_yes_trial,2));
         for nFold    = 1:numFold
             trainingTargets     = [true(numTrainingTrials/2,1); false(numTrainingTrials/2,1)];
             trainingTargets     = trainingTargets(randperm(numTrainingTrials));
@@ -82,7 +83,7 @@ for nData         = 1:2
             decodability(nFold,:) = decodabilityLDA(nSessionData +randn(size(nSessionData))*1e-3/sqrt(numTrialsLDA), trainingTargets, testTargets);
         end
         clear nDataSet
-        
+
         save([TempDatDir 'Results_' dataSetNames{nData} num2str(nParaSet, '%04d') '.mat'], 'sizeGroup', 'countMaxId', 'peakiness', 'PCAVar', 'decodability')
     end
 end
