@@ -18,7 +18,7 @@ cmap = [0.8000    0.8000    0.8000;
    
  
 % ffactor     = [0.7; 0.6];
-for nData      = 1:2
+for nData      = 1:3
     load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
     fracNeuron = [];
     for ffactor = 0.5:0.05:3.95

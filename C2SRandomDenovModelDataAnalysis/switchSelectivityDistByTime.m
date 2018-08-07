@@ -18,8 +18,9 @@ cmap = [0.8000    0.8000    0.8000;
    
  
 % ffactor     = [0.7; 0.6];
-for nData      = 1:2
-    load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
+for nData      = 3%1:2
+%     load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
+    load([TempDatDir DataSetList(nData).name '.mat'])
     fracNeuron = [];
     for ffactor = 0.05:0.05:0.95
         unitGroup = getLogPValueTscoreSpikeTimeAve(nDataSet, DataSetList(nData).params, ffactor);    
@@ -49,9 +50,10 @@ end
    
    
 
-ffactor     = [0.7; 0.6];
-for nData      = 1:2
-    load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
+ffactor     = [0.7; 0.6; 0.55];
+for nData      = 3 %1:2
+%     load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
+    load([TempDatDir DataSetList(nData).name '.mat'])
     unitGroup = getLogPValueTscoreSpikeTimeAve(nDataSet, DataSetList(nData).params, ffactor(nData));    
     sizeGroup = histcounts(unitGroup, 0:3);
 %     sizeGroup

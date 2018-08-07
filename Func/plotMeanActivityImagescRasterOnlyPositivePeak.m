@@ -32,8 +32,8 @@ function positivePeak = plotMeanActivityImagescRasterOnlyPositivePeak (nDataSet,
     % of sample + delay
     
     for nUnit = 1: length(nDataSet)
-        unitYesAct                = mean(nDataSet(nUnit).unit_yes_trial);
-        unitNoAct                 = mean(nDataSet(nUnit).unit_no_trial);
+        unitYesAct                = mean(nDataSet(nUnit).unit_yes_trial, 1);
+        unitNoAct                 = mean(nDataSet(nUnit).unit_no_trial, 1);
         actMat(nUnit, 1:numT)     = unitYesAct;
         actMat(nUnit, numT+blankSpace+1:end) = unitNoAct;
         

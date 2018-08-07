@@ -46,8 +46,9 @@ load ([TempDatDir 'DataListC2SRandomDeconvModel.mat']);
 
 
 
-for nData     = [1 2]
-    load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
+for nData     = 3%[1 2]
+%     load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
+    load([TempDatDir DataSetList(nData).name '.mat'])
     numTimeBin          = size(nDataSet(1).unit_yes_trial, 2);
     yesProfileMatrix    = nan(length(nDataSet), numTimeBin);
     noProfileMatrix     = yesProfileMatrix;
@@ -87,7 +88,7 @@ for nData     = [1 2]
 %     stairs(timeStep, countMaxId(1+numTimeBin:end), '-', 'linewid', 1.0, 'color', [0 0 0.7]);
     bplot = bar(timeStep, countMaxId(1+numTimeBin:end), 1, 'facecolor', 'r', 'edgecolor', 'none');
     bplot.FaceAlpha = 0.5;
-    xlim([timeStep(1) 2])
+    xlim([timeStep(1) 1.2])
     ylim([0 8])
     gridxy ([polein, poleout, 0],[1/(numTimeBin-8)/2*100], 'Color','k','Linestyle','--','linewid', 1.0)
     box off

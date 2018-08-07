@@ -28,8 +28,8 @@ function plotMeanActivityImagescRasterOnly (nDataSet, params, maxValue, minValue
     actMat     = nan(length(nDataSet),numT*2+blankSpace);
     
     for nUnit = 1: length(nDataSet)
-        actMat(nUnit, 1:numT)     = mean(nDataSet(nUnit).unit_yes_trial);
-        actMat(nUnit, numT+blankSpace+1:end) = mean(nDataSet(nUnit).unit_no_trial);
+        actMat(nUnit, 1:numT)     = mean(nDataSet(nUnit).unit_yes_trial, 1);
+        actMat(nUnit, numT+blankSpace+1:end) = mean(nDataSet(nUnit).unit_no_trial, 1);
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

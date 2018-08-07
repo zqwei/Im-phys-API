@@ -35,7 +35,8 @@ function DataSetOOPSI = getFakeSpikeNLDeconvData(spikeDataSet, tau_r, tau_d, nlP
         minData       = min([mean(yesUnitData,1), mean(noUnitData,1)]);
         maxData       = max([mean(yesUnitData,1), mean(noUnitData,1)]);
         randCell      = ceil(rand*length(nlParams));
-        paramInv      = squeeze(nlParams(2, randCell, :));
+        % paramInv      = squeeze(nlParams(2, randCell, :));
+        paramInv      = squeeze(nlParams(randCell, :));
         paramInv(1)   = minData;
         paramInv(2)   = maxData;
         

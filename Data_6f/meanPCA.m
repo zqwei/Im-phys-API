@@ -27,7 +27,7 @@ cmap = [         0    0.4470    0.7410
 ROCThres            = 0.70;
 
 
-for nData      = [1 10]
+for nData      = 10%[1 10]
     if ~exist([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'], 'file')
         load([TempDatDir DataSetList(nData).name '.mat'])
         neuronRemoveList = false(length(nDataSet), 1);
@@ -43,6 +43,7 @@ for nData      = [1 10]
     selectedNeuronalIndex = selectedHighROCneurons(oldDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);
     selectedNeuronalIndex = selectedNeuronalIndex & depth_list < 471;
     nDataSet              = oldDataSet(selectedNeuronalIndex);
+    disp(length(nDataSet))
     decodability          = zeros(numFold, size(nDataSet(1).unit_yes_trial,2)); 
     
     evMat              = zeros(numFold, length(combinedParams), numComps);
@@ -75,4 +76,82 @@ for nData      = [1 10]
     legend({'Trial type', 'Time', 'Other'})
     legend('boxoff')
     setPrint(8, 6, [PlotDir 'CollectedUnitsPCA/' DataSetList(nData).name '_pca'], 'svg')   
+end
+
+
+
+for nData                        = 10
+    if nData == 1
+        load([TempDatDir DataSetList(nData).name '.mat']);
+        neuronRemoveList = false(length(nDataSet), 1);
+    else
+        load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat']);
+    end
+    
+    depth_list          = [nDataSet.depth_in_um]';
+    
+    oldDataSet          = nDataSet;
+    selectedNeuronalIndex = selectedHighROCneurons(oldDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);
+    selectedNeuronalIndex = selectedNeuronalIndex & depth_list < 471;
+    nDataSet              = oldDataSet(selectedNeuronalIndex);
+    
+    depth                        = [nDataSet.depth_in_um];    
+    depthStart                   = 100;
+    depthBin                     = 100;
+    depthEnd                     = 800;    
+    depth                        = floor((depth-depthStart)/depthBin)*depthBin+depthStart;
+    depth(depth>depthEnd)        = depthEnd;
+    depth(depth<depthStart)      = depthStart;
+    
+    uniqueDepth                  = depthStart:depthBin:depthEnd;
+    
+    perMat                       = nan(length(uniqueDepth), 3, numComps);
+    numMat                       = nan(length(uniqueDepth), 1);
+    
+    for nDepth         = 1:length(uniqueDepth)
+        if sum(depth == uniqueDepth(nDepth))>10  
+            firingRates        = generateDPCAData(nDataSet, numTrials);
+            firingRatesAverage = nanmean(firingRates, ndims(firingRates));
+            pcaX               = firingRatesAverage(:,:);
+            firingRatesAverage = bsxfun(@minus, firingRatesAverage, mean(pcaX,2));
+            pcaX               = bsxfun(@minus, pcaX, mean(pcaX,2));
+            Xmargs             = dpca_marginalize(firingRatesAverage, 'combinedParams', combinedParams, 'ifFlat', 'yes');
+            totalVar           = sum(sum(pcaX.^2));
+            [~, ~, Wpca] = svd(pcaX');
+            PCAmargVar         = zeros(length(combinedParams), length(nDataSet));
+            for i=1:length(Xmargs)
+                PCAmargVar(i,:)= sum((Wpca' * Xmargs{i}).^2, 2)' / totalVar;
+            end
+            perMat(nDepth, :, :)  = PCAmargVar(:, 1:numComps);
+            numMat(nDepth)     = sum(depth == uniqueDepth(nDepth));
+        end
+    end
+    
+    figure;
+    for nComps         = 1:numComps
+        subplot(1, 4, nComps)
+        barh(-uniqueDepth, squeeze(perMat(:, :, nComps)),'stacked', 'edgecolor', 'none')
+        colormap(cmap(1:3, :))
+        title(['PC' num2str(nComps)]);
+        box off
+        xlim([0 0.9])
+        ylim([-850 0])
+        set(gca, 'yTick', -800:400:0)
+        xlabel('frac. EV per PC')
+        ylabel('Depth (um)')
+        colormap(cmap(1:3, :))
+        set(gca, 'TickDir', 'out')
+    end
+    
+    subplot(1, 4, 4)
+    barh(-uniqueDepth, numMat,'k')
+    title('# Units')
+    box off
+    set(gca, 'yTick',  -800:400:0)
+    ylim([-850 0])
+    xlabel('# cells')
+    ylabel('Depth (um)')
+    colormap(cmap(1:3, :))
+    set(gca, 'TickDir', 'out')
+    setPrint(8*4, 6, [PlotDir 'CollectedUnitsPCA/CollectedUnitsPCADepth_' DataSetList(nData).name '_withOLRemoval'])
 end

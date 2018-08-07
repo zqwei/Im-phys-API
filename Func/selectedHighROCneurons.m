@@ -16,7 +16,7 @@ function ROCDataIndex = filterOutLowFR(nDataSet, params, ROCThres)
         
     ROCIndex           = ROCPop(nDataSet, params);
     ROCIndex           = ROCIndex > ROCThres; % ROCIndex(:, 1)<0.60 & 
-    ROCDataIndex       = sum(ROCIndex(:,2:3),2)>0 ;
-    % ROCDataIndex       = sum(ROCIndex(:,2:4),2)>0 ;
+    % ROCDataIndex       = sum(ROCIndex(:,2:3),2)>0 ;
+    ROCDataIndex       = sum(ROCIndex(:,2:4),2)>0 ;
     
 end

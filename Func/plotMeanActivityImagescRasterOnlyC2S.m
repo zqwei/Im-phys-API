@@ -35,9 +35,11 @@ function plotMeanActivityImagescRasterOnlyC2S (nDataSet, params, maxValue, minVa
         nUnitData                 = mean(nDataSet(nUnit).unit_yes_trial, 1);
         actMat(nUnit, 1:3)        = nan;
         actMat(nUnit, 4:numT)     = getGaussianPSTH (filterInUse, nUnitData(4:end), 2);
+        actMat(nUnit, 4:numT)     = actMat(nUnit, 4:numT);
         nUnitData                 = mean(nDataSet(nUnit).unit_no_trial, 1);
         actMat(nUnit, numT+blankSpace+1:numT+blankSpace+3) = nan;
         actMat(nUnit, numT+blankSpace+4:end) = getGaussianPSTH (filterInUse, nUnitData(4:end), 2);
+        actMat(nUnit, numT+blankSpace+4:end) = actMat(nUnit, 4:numT);
     end
     
     

@@ -35,7 +35,6 @@ for frThres = [1 4 10] % spike count in this case
     empFR       = ceil(frData);
     validData   = empFR < 40+frThres * 2.6 ;
     empRatio    = subSampleratio(empFR);
-%     
     totCounts   = 0;
     meanFR      = 0;
 %     

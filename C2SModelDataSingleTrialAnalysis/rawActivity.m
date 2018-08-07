@@ -24,3 +24,20 @@ end
 
 
 close all;
+
+
+load ([TempDatDir 'DataListShuffle.mat']);
+caDataSetList = DataSetList;
+load ([TempDatDir 'DataListC2SRandomDeconvModel.mat']);
+nData = 10;
+load([TempDatDir caDataSetList(nData).name '_withOLRemoval.mat'])
+positivePeak = plotMeanActivityImagescRasterOnlyPositivePeak(nDataSet, caDataSetList(nData).params, [], []); 
+fName = 'ModelSpikeMCMCSingleTrial_OOPSI_Ca_Fast_SShort_Delay';
+load([TempDatDir fName '.mat'])
+C2SDataSet = nDataSet;
+% C2SDataSet = C2SDataSet(~neuronRemoveList);
+C2SDataSet = C2SDataSet(positivePeak);
+plotMeanActivityImagescRasterOnlyC2S(C2SDataSet, DataSetList(3).params, [], [], 'DF/F'); 
+setPrint(6*2, 3*3, [PlotDir 'SingleUnitsImagescWithSort/SingleUnitsImagescRasterOnly_' fName '_withOLRemoval'])
+
+close all;
