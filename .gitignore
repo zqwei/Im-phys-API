@@ -1,5 +1,6 @@
 # ignore .mat files, anywhere in the tree
-
+Depreciated*
+_
 TempDat/
 Texts/
 KSLab_Files/
