@@ -18,6 +18,7 @@ cmap = [         0    0.4470    0.7410
     0.9290    0.6940    0.1250];
 
 load([TempDatDir DataSetList(1).name '.mat'])
+load('caData.mat')
 
 
 firingRates        = generateDPCAData(nDataSet, numTrials);
@@ -25,8 +26,10 @@ firingRatesAverage = nanmean(firingRates, ndims(firingRates));
 pcaX               = firingRatesAverage(:,:);
 firingRatesAverage = bsxfun(@minus, firingRatesAverage, mean(pcaX,2));
 pcaX               = bsxfun(@minus, pcaX, mean(pcaX,2));
-
-for frThres = [0 1 4 10] % spike count in this case
+frThress           = [0 1 4 10];
+figure
+for nThres         = 1:4 % spike count in this case
+    frThres        = frThress(nThres);
     load(['validMat_' num2str(frThres, '%02d')], 'validMat')
     pcaBar    = nan(numFold, length(margNames), numComps);
     for nFold = 1:numFold
@@ -41,16 +44,20 @@ for frThres = [0 1 4 10] % spike count in this case
         end
         pcaBar(nFold, :, :) = PCAmargVar(:, 1:numComps)';
     end
-    figure
-    bar(1:numComps, squeeze(mean(pcaBar)),'stacked', 'edgecolor', 'none')
-    box off
-    xlim([0.5 numComps+0.5])
-    ylim([0 0.4])
-    xlabel('Component index')
-    ylabel('frac. EV per PC')
-    colormap(cmap(1:3, :))
-    set(gca, 'xTick', 1:3)
-    set(gca, 'TickDir', 'out')
-    setPrint(8, 6, ['pca_' num2str(frThres, '%02d')], 'pdf')  
+    
+    hold on
+    bar((1:numComps)*2 + nThres*0.4 - 0.4, squeeze(mean(pcaBar)), 0.18,'stacked', 'edgecolor', 'none')
+
 end
 
+bar((1:numComps)*2+1.6, caPCA(:, 1:numComps)', 0.18,'stacked', 'edgecolor', 'none')
+
+box off
+% xlim([0.5 numComps+0.5])
+% ylim([0 0.4])
+xlabel('Component index')
+ylabel('frac. EV per PC')
+% colormap(cmap(1:3, :))
+% set(gca, 'xTick', 1:3)
+set(gca, 'TickDir', 'out') 
+setPrint(8, 6, 'PCA', 'pdf')

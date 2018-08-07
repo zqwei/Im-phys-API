@@ -32,7 +32,9 @@ selectedNeuronalIndex = DataSetList(nData).ActiveNeuronIndex';
 
 oldDataSet          = nDataSet;
 
-for frThres = 0 %[1 4 10] % spike count in this case
+figure
+hold on
+for frThres = [0 1 4 10] % spike count in this case
     load(['validMat_' num2str(frThres, '%02d')], 'validMat')
     decodability    = zeros(numFold, size(nDataSet(1).unit_yes_trial,2));    
     for nFold       = 1:numFold
@@ -53,19 +55,23 @@ for frThres = 0 %[1 4 10] % spike count in this case
         nSessionData        = shuffleSessionData(nDataSet(randPickUnits), totTargets, numTestTrials);
         decodability(nFold,:) = decodabilityLDA(nSessionData +randn(size(nSessionData))*1e-3/sqrt(numTrials)* addNoise, trainingTargets, testTargets);
     end
-    figure
-    shadedErrorBar(DataSetList(nData).params.timeSeries, mean(decodability,1),...
-            std(decodability, 1)/sqrt(numFold),...
-            {'-', 'linewid', 1.0, 'color', cmap(nData,:)}, 0.5);  
-    xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
-    ylim([0.5 1])
-    gridxy ([DataSetList(nData).params.polein, 0],[], 'Color','k','Linestyle','--','linewid', 0.5)
-    set(gca, 'TickDir', 'out')
-    box off;
-    hold off;
-    xlabel('Time (s)');
-    ylabel('Decodability');
-    setPrint(8, 6, ['decodability_' num2str(frThres, '%02d')], 'pdf')
+    plot(DataSetList(nData).params.timeSeries, mean(decodability,1), 'linewid', 1, 'color', cmap(mod(frThres+1, 7), :));
+    plot(DataSetList(nData).params.timeSeries, mean(decodability,1)-std(decodability, 1)/sqrt(numFold), 'linewid', 0.5, 'color', cmap(mod(frThres+1, 7), :));
+    plot(DataSetList(nData).params.timeSeries, mean(decodability,1)+std(decodability, 1)/sqrt(numFold), 'linewid', 0.5, 'color', cmap(mod(frThres+1, 7), :));
 end
 
+load('caData.mat')
+plot(DataSetList(nData).params.timeSeries, mean(caDecodability,1), 'linewid', 1, 'color', 'k');
+plot(DataSetList(nData).params.timeSeries, mean(caDecodability,1)-std(caDecodability, 1)/sqrt(numFold), 'linewid', 0.5, 'color', 'k');
+plot(DataSetList(nData).params.timeSeries, mean(caDecodability,1)+std(caDecodability, 1)/sqrt(numFold), 'linewid', 0.5, 'color', 'k');
+
+xlim([min(DataSetList(nData).params.timeSeries) max(DataSetList(nData).params.timeSeries)]);
+ylim([0.5 1])
+gridxy ([DataSetList(nData).params.polein, 0],[], 'Color','k','Linestyle','--','linewid', 0.5)
+set(gca, 'TickDir', 'out')
+box off;
+hold off;
+xlabel('Time (s)');
+ylabel('Decodability');
+setPrint(8, 6, 'Decodability', 'pdf')
 

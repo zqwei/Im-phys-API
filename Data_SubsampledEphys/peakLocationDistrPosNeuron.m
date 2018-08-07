@@ -6,7 +6,7 @@ if ~exist([PlotDir 'SingleUnitsPeakLocation'],'dir')
     mkdir([PlotDir 'SingleUnitsPeakLocation'])
 end
 
-
+load('caData.mat')
 load([TempDatDir DataSetList(1).name '.mat'])
 numTimeBin          = size(nDataSet(1).unit_yes_trial, 2);
 yesProfileMatrix    = nan(length(nDataSet), numTimeBin);
@@ -43,8 +43,8 @@ for frThres = [0 1 4 10] % spike count in this case
 end
 
 figure;
-boxplot(sMat(:, [0 1 4 10]+1));
-ylim([1 2])
+boxplot([sMat(:, [0 1 4 10]+1), caSMat(randsample(1000,numFold), 1)]);
+% ylim([1 2])
 xlabel('Cell group')
 ylabel('Peakiness')
 set(gca, 'TickDir', 'out')
