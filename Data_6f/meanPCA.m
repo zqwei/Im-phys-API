@@ -27,7 +27,7 @@ cmap = [         0    0.4470    0.7410
 ROCThres            = 0.70;
 
 
-for nData      = 10%[1 10]
+for nData      = [1 10]
     if ~exist([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'], 'file')
         load([TempDatDir DataSetList(nData).name '.mat'])
         neuronRemoveList = false(length(nDataSet), 1);
