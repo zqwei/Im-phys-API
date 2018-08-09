@@ -114,3 +114,21 @@ for nTau              = 1:length(tau_d_list)
         clear spikeDataSet
     end
 end
+
+% 6f data
+nData  = 10;
+params = DataSetList(nData).params;
+std_r                  = 0.0222;
+median_r               = 0.0212;
+std_d                  = 0.3447;
+median_d               = 0.5656;
+load([TempDatDir DataSetList(nData).name '_withOLRemoval.mat'])
+per_list               = 0.02:0.01:0.98;
+tau_d_list             = icdf('Normal', per_list, 0, 1) * std_d + median_d;
+for nTau              = 1:length(tau_d_list)
+    if tau_d_list(nTau) > 0
+        spikeDataSet      = getSyntheticSpikeDeconvDataSimpleVersion(nDataSet, median_r, tau_d_list(nTau), params);   %#ok<*NASGU>
+        save([TempDatDir 'directDeconv/' DataSetList(nData).name '_Tau' num2str(nTau, '%02d') '.mat'], 'spikeDataSet');
+        clear spikeDataSet
+    end
+end

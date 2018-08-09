@@ -22,11 +22,11 @@ for nNeuron = 1:numNeuron
 end
 
 noise_dist = (var_mat(:)*params.binsize^2)./(sig_mat(:)*params.binsize);
-per_list   = 2:98;
+per_list   = 10:98;
 noise_factor_list = prctile(noise_dist, per_list);
 
 params            = DataSetList(2).params;
-indexDatasets = 4;% [3, 4];
+indexDatasets = 10;% [3, 4];
 % 2: short Ca GP517
 % 3: short Ca slow
 % 4: short Ca slow virus
@@ -44,8 +44,8 @@ numTestTrials  = 200;
 numTrainingTrials = numTrialsLDA - numTestTrials;
 numRandPickUnits  = 50;
 
-
-factorSet         = [0 0 2.5 5.5 0 0];
+numT              = 63;
+factorSet         = [0 0 2.5 5.5 0 0 0 0 0 2.5 0 0 0 0 0 0];
 
 for nData         = indexDatasets    
     
@@ -56,24 +56,26 @@ for nData         = indexDatasets
     allYesData    = yesData;
     allNoData     = noData;
     
-    randTau       = randi(97, 1000, numUnit);
+    randTau       = randi(88, 1000, numUnit)+10;
     randFF        = randi(97, 1000, numUnit);
     nDataSet      = repmat(struct('unit_yes_trial', 1, 'unit_no_trial', 1),numUnit, 1);
     validUnit     = true(numUnit, 1);
     
     for nParaSet  = 1:1000        
         
+        disp(nParaSet)
+        
         for nUnit = 1:numUnit
             ffactor = noise_factor_list(randFF(nParaSet, nUnit));
             mean_yes_trial = squeeze(allYesData(randTau(nParaSet, nUnit), nUnit, :))';
-            std_yes_trial  = ones(numTrialsLDA/2, 1) * sqrt(mean_yes_trial* ffactor/params.binsize) .* randn(numTrialsLDA/2, 77);
+            std_yes_trial  = ones(numTrialsLDA/2, 1) * sqrt(mean_yes_trial* ffactor/params.binsize) .* randn(numTrialsLDA/2, numT);
             min_std_yes_trial = min(std_yes_trial)./mean_yes_trial;
             mean_no_trial  = squeeze(allNoData(randTau(nParaSet, nUnit), nUnit, :))';
-            std_no_trial   = ones(numTrialsLDA/2, 1) * sqrt(mean_no_trial* ffactor/params.binsize) .* randn(numTrialsLDA/2, 77);
+            std_no_trial   = ones(numTrialsLDA/2, 1) * sqrt(mean_no_trial* ffactor/params.binsize) .* randn(numTrialsLDA/2, numT);
             min_std_no_trial = min(std_no_trial)./mean_no_trial;
             nfactor          = factorSet(nData);
-            nDataSet(nUnit).unit_yes_trial   = mean_yes_trial * nfactor + std_yes_trial*sqrt(nfactor);
-            nDataSet(nUnit).unit_no_trial    = mean_no_trial * nfactor + std_no_trial*sqrt(nfactor);
+            nDataSet(nUnit).unit_yes_trial   = bsxfun(@plus, mean_yes_trial * nfactor, std_yes_trial*sqrt(nfactor));
+            nDataSet(nUnit).unit_no_trial    = bsxfun(@plus, mean_no_trial * nfactor, std_no_trial*sqrt(nfactor));
             if sum(isnan(nDataSet(nUnit).unit_yes_trial(:)))+sum(isnan(nDataSet(nUnit).unit_no_trial(:)))>0
                 validUnit(nUnit) = false;
             end
@@ -110,7 +112,7 @@ for nData         = indexDatasets
         actMat        = actMat(positivePeak, :);
         [~, maxId]    = max(actMat, [], 2);
         countMaxId    = hist(maxId, 1:numTimeBin*2)/size(actMat,1)*100;
-        peakiness     = std(countMaxId([timeTag, timeTag+77]));
+        peakiness     = std(countMaxId([timeTag, timeTag+numT]));
         
         % pca
         evMat              = zeros(numFold, length(combinedParams), numComps);
