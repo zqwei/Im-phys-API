@@ -43,7 +43,6 @@ for nData      = [1 10]
     selectedNeuronalIndex = selectedHighROCneurons(oldDataSet, DataSetList(nData).params, ROCThres, selectedNeuronalIndex);
     selectedNeuronalIndex = selectedNeuronalIndex & depth_list < 471;
     nDataSet              = oldDataSet(selectedNeuronalIndex);
-    disp(length(nDataSet))
     decodability          = zeros(numFold, size(nDataSet(1).unit_yes_trial,2)); 
     
     evMat              = zeros(numFold, length(combinedParams), numComps);
