@@ -4,8 +4,8 @@ This is the code to convert Bei-Jung Lin's recording from matlab format to [NWB]
 
 The detail of the data is described as:
 
-Simultaneous calcium imaging using GCaMP sensors and electrophysiology in L2/3 pyramidal neurons of the visual cortex in thy1 transgenic mice
+__Simultaneous calcium imaging using GCaMP sensors and electrophysiology in L2/3 pyramidal neurons of the visual cortex in thy1 transgenic mice__
 
-Bei-Jung Lin, Tsai-Wen Chen, Douglas Kim, Karel Svoboda
+_Bei-Jung Lin, Tsai-Wen Chen, Douglas Kim, Karel Svoboda_
 
 [DOI:10.6080/K0S46PV7](https://doi.org/10.6080/K0S46PV7)
