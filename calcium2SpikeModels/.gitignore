@@ -15,7 +15,6 @@ tmp
 peel_nl_oopsi.m
 *.m~
 DepreciatedCode
-*.md
 Stash
 *.eps
 *.pdf
@@ -103,4 +102,3 @@ celerybeat-schedule
 # Spyder project settings
 .spyderproject
 Status API Training Shop Blog About Pricing
-
