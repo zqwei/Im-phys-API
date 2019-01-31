@@ -1,0 +1,4 @@
+[submodule "nonsimBenchmarks"]
+	path = nonsimBenchmarks
+	url = https://github.com/zqwei/Neural-Recording-Methodology-Comparison.git
+	branch = api
