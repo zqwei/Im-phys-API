@@ -6,8 +6,8 @@ API package for http://im-phys.org/codes
 Detail documentation will be updated at http://im-phys.org/codes
 
 ## Code 
-* __Benchmarks for non-simultaneous recording data benchmarks__ : forked from 
-* __Imaging-Spike Models for simultaneous recording data__ : forked from 
+* __Benchmarks for non-simultaneous recording data benchmarks__ : updated at  
+* __Imaging-Spike Models for simultaneous recording data__ : updated at
 * __GUI__
 
 
