@@ -19,6 +19,6 @@ Detail documentation will be updated at http://im-phys.org/codes
 * Precompiled data is downloaded through the code in GUI folder.
 
 
-## Other community-based resources:
+## Other community-based resources
 * [SpikeFinder](http://spikefinder.codeneuro.org/)
 * [NeuroFinder](http://neurofinder.codeneuro.org/)
