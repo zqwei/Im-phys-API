@@ -6,7 +6,7 @@ API package for http://im-phys.org/codes
 Detail documentation will be updated at http://im-phys.org/codes
 
 ## Code 
-* __Benchmarks for non-simultaneous recording data benchmarks__ : updated in [Neural Recording Methodlogy Comparison repo under API branch](https://github.com/zqwei/Neural-Recording-Methodology-Comparison/tree/api)
+* __Benchmarks for matched non-simultaneous recording data__ : updated in [Neural Recording Methodlogy Comparison repo under API branch](https://github.com/zqwei/Neural-Recording-Methodology-Comparison/tree/api)
 * __Imaging-Spike Models for simultaneous recording data__ : updated in [Calcium Deconvolution repo](https://github.com/zqwei/Ca-Imaging-Deconv-List)
 * __GUI__: updated in this repo
 
