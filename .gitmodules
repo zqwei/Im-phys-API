@@ -1,7 +1,7 @@
 [submodule "nonsimBenchmarks"]
 	path = nonsimBenchmarks
-	url = https://github.com/zqwei/Neural-Recording-Methodology-Comparison.git
+url=https://github.com/zqwei/Neural-Recording-Methodology-Comparison
 	branch = api
 [submodule "simModels"]
 	path = simModels
-	url = https://zqwei@github.com/zqwei/Ca-Imaging-Deconv-List.git
+url=https://github.com/zqwei/Ca-Imaging-Deconv-List
