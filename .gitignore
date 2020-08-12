@@ -3,3 +3,5 @@
 *Temp*
 *Plot*
 *.mat
+*.zip
+*.ipynb_checkpoints*
